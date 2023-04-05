@@ -1,14 +1,10 @@
 //import statements
 import { useEffect, useState } from "react";
-import TradieForm from "../../components/TradieForm";
-import CustomerForm from "../../components/CustomerForm";
+import ServiceProviderSignUp from "../../components/ServiceProviderSignUp";
+import CustomerSignUp from "../../components/CustomerSignUp";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -111,8 +107,8 @@ export default function SignUp() {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              {customerContentVisible && <CustomerForm />}
-              {tradieContentVisible && <TradieForm />}
+              {customerContentVisible && <CustomerSignUp />}
+              {tradieContentVisible && <ServiceProviderSignUp />}
             </Grid>
           </Grid>
         </Box>
