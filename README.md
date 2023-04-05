@@ -49,3 +49,5 @@ To see the documentation visit our [Google Doc](https://docs.google.com/document
 
 ## Other
 * To see a more in depth readme on technology used in front and backend, navigate to either [Frontend REAMDE](https://github.com/damonDevelops/csit314-TradieConnect/blob/main/frontend/README.md) or [Backend REAMDE](https://github.com/damonDevelops/csit314-TradieConnect/blob/main/backend/README.md)
+
+test  discord bot
