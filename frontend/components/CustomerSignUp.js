@@ -15,6 +15,15 @@ import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -54,6 +63,16 @@ export default function CustomerSignUp() {
   const [passwordOpen, setPasswordOpen] = React.useState(false);
   const [failedSignUp, setFailedSignUp] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [finalOpen, setFinalOpen] = React.useState(false);
+  const timer = React.useRef();
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
+
+  //function to handle the alerts
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   //function to handle the alerts
   const handleAlert = (warning_type) => {
@@ -67,7 +86,14 @@ export default function CustomerSignUp() {
       setPasswordOpen(true);
     } else if (warning_type == "failed") {
       setFailedSignUp(true);
+    } else if (warning_type == "final") {
+      setFinalOpen(true);
     }
+  };
+
+  //function to handle the sign up
+  const redirect = () => {
+    window.location.href = "../Common-Pages/SignIn";
   };
 
   //function to close the alerts
@@ -76,6 +102,7 @@ export default function CustomerSignUp() {
       return;
     }
 
+    setBackdropOpen(false);
     setOpen(false);
     setPostCodeOpen(false);
     setEmailOpen(false);
@@ -91,7 +118,7 @@ export default function CustomerSignUp() {
   });
 
   //state variables for the form
-  const [membershipType, setMembershipType] = useState("");
+  const [returnMemberType, setMembershipType] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -136,6 +163,7 @@ export default function CustomerSignUp() {
     { value: "NT", label: "NT" },
   ];
 
+  //const to hold the trade options
   const membershipOptions = [
     { value: "Subscription", label: "Subscription" },
     { value: "Pay on Demand", label: "Pay on Demand" },
@@ -166,14 +194,17 @@ export default function CustomerSignUp() {
         email: event.target.email.value,
         password: event.target.password.value,
         phoneNumber: phoneNumber.textmask,
-        address: event.target.address.value,
-
-        //extra data TODO: remove this comment when we have the extra data added to the endpoint
-        // membership: membershipType,
-        // city: event.target.city.value,
-        // state: returnState,
-        // postcode: event.target.postcode.value,
+        streetAddress: event.target.address.value,
+        city: event.target.city.value,
+        state: returnState,
+        postCode: event.target.postcode.value.toString(),
+        membership: {
+          membershipType: "ACC_CREATED",
+          description: returnMemberType,
+        },
       };
+      // console.log(JSON.stringify(returnData));
+      // alert(JSON.stringify(returnData));
 
       // Send the data to the server in JSON format.
       const JSONdata = JSON.stringify(returnData);
@@ -196,17 +227,27 @@ export default function CustomerSignUp() {
       // Send the form data to our forms API on Vercel and get a response.
       const response = await fetch(endpoint, options);
 
-      // If the response is good, show the success message, redirect
+      // If the response is good, show the success message,
+      //A loading symbol will go for 5 seconds (can be reduced)
+      //and then the user will be redirected to the sign in page
       if (response.status == 200) {
-        handleAlert("success");
+        setBackdropOpen(true);
+        timer.current = window.setTimeout(() => {
+          setBackdropOpen(false);
+          handleAlert("final");
+        }, 3000);
+
         // Redirect to the sign in page
-        window.location.href = "../Common-Pages/SignIn";
       } else {
         handleAlert("error");
       }
     }
   };
 
+  //not going to leave any comments on the implementation of components, you can google
+  //material ui components to see how they work or go to the documentation
+  //main premise is a grid with form items, a snackbar full of different alert types
+  //and a backdrop for the loading symbol
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
@@ -358,7 +399,7 @@ export default function CustomerSignUp() {
             autoComplete="confirmPassword"
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item>
           <Button
             type="submit"
             fullWidth
@@ -368,6 +409,13 @@ export default function CustomerSignUp() {
             Sign Up
           </Button>
         </Grid>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={backdropOpen}
+          onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
@@ -437,6 +485,7 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
         </Stack>
+
         <Grid container justifyContent="flex-end">
           <Grid item>
             <Link href="/Common-Pages/SignIn" variant="body2">
@@ -444,6 +493,56 @@ export default function CustomerSignUp() {
             </Link>
           </Grid>
         </Grid>
+
+        <Dialog
+          open={finalOpen}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              backgroundColor: "#4caf50",
+              color: "white",
+            }}
+            id="alert-dialog-title"
+          >
+            {" Success!"} <TaskAltIcon />
+          </DialogTitle>
+          <DialogContent
+            style={{
+              backgroundColor: "#4caf50",
+            }}
+          >
+            <DialogContentText
+              style={{
+                backgroundColor: "#4caf50",
+                color: "white",
+              }}
+              id="alert-dialog-description"
+            >
+              Your account was successfully created, you will be redirected to
+              the sign in page now where you can enter your details to log in.
+              Thanks for joing us {firstName}!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions
+            style={{
+              backgroundColor: "#4caf50",
+            }}
+          >
+            <Button
+              style={{
+                backgroundColor: "#4caf50",
+                color: "white",
+              }}
+              onClick={redirect}
+              autoFocus
+            >
+              Sign In
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
     </form>
   );

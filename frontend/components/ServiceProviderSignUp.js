@@ -1,4 +1,4 @@
-//import statements
+//import statements for mui components
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
@@ -15,6 +15,14 @@ import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -54,6 +62,18 @@ export default function CustomerSignUp() {
   const [successfulSignUp, setSuccessfulSignUp] = React.useState(false);
   const [passwordOpen, setPasswordOpen] = React.useState(false);
   const [failedSignUp, setFailedSignUp] = React.useState(false);
+  const [finalOpen, setFinalOpen] = React.useState(false);
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
+
+  //state variable for the timer
+  const timer = React.useRef();
+
+  //function to handle the timer
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   //function to handle the alerts
   const handleAlert = (warning_type) => {
@@ -69,7 +89,14 @@ export default function CustomerSignUp() {
       setPasswordOpen(true);
     } else if (warning_type == "failed") {
       setFailedSignUp(true);
+    } else if (warning_type == "final") {
+      setFinalOpen(true);
     }
+  };
+
+  //function to handle the backdrop redirect
+  const redirect = () => {
+    window.location.href = "../Common-Pages/SignIn";
   };
 
   //function to close the alerts
@@ -77,6 +104,7 @@ export default function CustomerSignUp() {
     if (reason === "clickaway") {
       return;
     }
+    setBackdropOpen(false);
     setABNOpen(false);
     setPostCodeOpen(false);
     setEmailOpen(false);
@@ -101,6 +129,7 @@ export default function CustomerSignUp() {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [returnState, setState] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [returnTrade, setTradeType] = useState("");
 
@@ -138,11 +167,13 @@ export default function CustomerSignUp() {
     { value: "NT", label: "NT" },
   ];
 
+  //const to hold the membership options
   const membershipOptions = [
     { value: "Subscription", label: "Subscription" },
     { value: "Commission", label: "Commission" },
   ];
 
+  //const to hold the trade options
   const serviceAreas = [
     { value: "Plumbing", label: "Plumbing" },
     { value: "Electrical", label: "Electrical" },
@@ -172,20 +203,20 @@ export default function CustomerSignUp() {
 
       // Get data from the form.
       const returnData = {
+        companyName: event.target.companyName.value,
         email: event.target.email.value,
         password: event.target.password.value,
         phoneNumber: phoneNumber.textmask,
-        address: event.target.address.value,
-
-        //TODO: get Brendan to tell me datatype for these values or change to string
-        membership: returnMembership,
-        companyName: event.target.companyName.value,
+        streetAddress: event.target.address.value,
+        city: event.target.city.value,
+        state: returnState,
+        postcode: event.target.postcode.value,
         serviceArea: returnTrade,
-
-        //new data TODO: get brendan to add these data endpoints to the backend
-        // abn: event.target.abn.value,
-        // city: event.target.city.value,
-        // postcode: event.target.postcode.value,
+        abn: event.target.abn.value,
+        membership: {
+          membershipType: "ACC_CREATED",
+          description: returnMembership,
+        },
       };
 
       // Send the data to the server in JSON format.
@@ -209,17 +240,27 @@ export default function CustomerSignUp() {
       // Send the form data to our forms API on Vercel and get a response.
       const response = await fetch(endpoint, options);
 
-      // If the response is good, show the success message, redirect
+      // If the response is good, show the success message,
+      //A loading symbol will go for 5 seconds (can be reduced)
+      //and then the user will be redirected to the sign in page
       if (response.status == 200) {
-        handleAlert("success");
+        setBackdropOpen(true);
+        timer.current = window.setTimeout(() => {
+          setBackdropOpen(false);
+          handleAlert("final");
+        }, 3000);
+
         // Redirect to the sign in page
-        window.location.href = "../Common-Pages/SignIn";
       } else {
         handleAlert("error");
       }
     }
   };
 
+  //not going to leave any comments on the implementation of components, you can google
+  //material ui components to see how they work or go to the documentation
+  //main premise is a grid with form items, a snackbar full of different alert types
+  //and a backdrop for the loading symbol
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
@@ -351,6 +392,9 @@ export default function CustomerSignUp() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
+            onChange={(event, newValue) => {
+              setState(newValue.value);
+            }}
             disablePortal
             id="combo-box-demo"
             options={stateOptions}
@@ -385,7 +429,7 @@ export default function CustomerSignUp() {
             autoComplete="confirmPassword"
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item>
           <Button
             type="submit"
             fullWidth
@@ -395,6 +439,14 @@ export default function CustomerSignUp() {
             Sign Up
           </Button>
         </Grid>
+
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={backdropOpen}
+          onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
@@ -484,6 +536,55 @@ export default function CustomerSignUp() {
           </Grid>
         </Grid>
       </Grid>
+      <Dialog
+        open={finalOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            backgroundColor: "#4caf50",
+            color: "white",
+          }}
+          id="alert-dialog-title"
+        >
+          {" Success!"} <TaskAltIcon />
+        </DialogTitle>
+        <DialogContent
+          style={{
+            backgroundColor: "#4caf50",
+          }}
+        >
+          <DialogContentText
+            style={{
+              backgroundColor: "#4caf50",
+              color: "white",
+            }}
+            id="alert-dialog-description"
+          >
+            Your account was successfully created, you will be redirected to the
+            sign in page now where you can enter your details to log in. Thanks
+            for joing us {companyName}!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{
+            backgroundColor: "#4caf50",
+          }}
+        >
+          <Button
+            style={{
+              backgroundColor: "#4caf50",
+              color: "white",
+            }}
+            onClick={redirect}
+            autoFocus
+          >
+            Sign In
+          </Button>
+        </DialogActions>
+      </Dialog>
     </form>
   );
 }
