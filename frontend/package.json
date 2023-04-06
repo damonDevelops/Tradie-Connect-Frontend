@@ -21,8 +21,11 @@
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-imask": "^6.5.0-alpha.0",
+    "react-number-format": "^5.1.4",
     "rechart": "^0.0.1",
-    "recharts": "^2.5.0"
+    "recharts": "^2.5.0",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "eslint": "latest",

@@ -121,6 +121,32 @@ export default function Developer() {
                 </Button>
               </Paper>
             </Grid>
+            <Grid item sm={4}>
+              <Paper
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  height: 120,
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  align="center"
+                  color="text.secondary"
+                  paragraph
+                >
+                  Test Features
+                </Typography>
+                <Button
+                  variant="contained"
+                  align="center"
+                  href="../Common-Pages/testFeatures"
+                >
+                  Phone
+                </Button>
+              </Paper>
+            </Grid>
           </Grid>
         </Container>
       </main>
