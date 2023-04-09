@@ -180,7 +180,10 @@ function DashboardContent() {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }} href="./NewRequest">
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    href="./NewRequest/NewRequestIndex"
+                  >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
