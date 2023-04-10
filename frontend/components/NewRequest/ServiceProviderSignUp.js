@@ -274,6 +274,7 @@ export default function CustomerSignUp() {
             type={"number"}
             fullWidth
             id="abn"
+            helperText="Eleven Digit"
             label="ABN"
             name="abn"
             onChange={(event) => setABN(event.target.value)}

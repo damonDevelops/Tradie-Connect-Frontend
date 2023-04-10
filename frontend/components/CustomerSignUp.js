@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Autocomplete } from "@mui/material";
-import PropTypes from "prop-types";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
@@ -20,8 +19,23 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
-
 import postCodeToState from "./postcodeToState";
+
+{
+  /*
+  BUG: when reloading the page, sometimes react will throw the following error:
+   "SyntaxError: Unexpected token 'export'"
+   I've looked into this extensively and it seems to be a bug with Next.js and React.
+   The only way to fix this is to comment the below imports out, save and reload the page.
+   Then uncomment and reload the page again, should work fine.
+   If I have time I'll come back and change the packages being used.
+*/
+}
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -31,15 +45,43 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 //default function for the customer sign up page
 export default function CustomerSignUp() {
   //state variables for the alerts
-  const [postCodeOpen, setPostCodeOpen] = React.useState(false);
-  const [emailOpen, setEmailOpen] = React.useState(false);
-  const [successfulSignUp, setSuccessfulSignUp] = React.useState(false);
-  const [passwordOpen, setPasswordOpen] = React.useState(false);
-  const [failedSignUp, setFailedSignUp] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [finalOpen, setFinalOpen] = React.useState(false);
+  const [postCodeAlertOpen, setPostCodeOpen] = React.useState(false);
+  const [emailAlertOpen, setEmailOpen] = React.useState(false);
+  const [successfulSignUpDialogOpen, setSuccessfulSignUp] =
+    React.useState(false);
+  const [passwordAlertOpen, setPasswordOpen] = React.useState(false);
+  const [failedSignUpOpen, setFailedSignUp] = React.useState(false);
+  const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
+
   const timer = React.useRef();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
+  const [paymentDialogOpen, setPaymentOpen] = React.useState(false);
+
+  //Card Information
+  const [cardNumber, setCardNumber] = React.useState("");
+  const [cardName, setCardName] = React.useState("");
+  const [expiryDate, setExpiryDate] = React.useState(dayjs());
+  const [cvv, setCVV] = React.useState("");
+  const [flag, setFlag] = React.useState(true);
+  const [noPayment, setNoPaymentOpen] = React.useState(false);
+  const [hasCustomerPaid, setHasCustomerPaid] = React.useState(false);
+
+  //function to close the add payment method dialog
+  const closeCard = () => {
+    console.log(
+      "Card Number: " + cardNumber,
+      "Card Name: " + cardName,
+      "Expiry Date: " + dayjs(expiryDate).format("MM/YY"),
+      "CVV: " + cvv
+    );
+
+    //check if all the fields are filled
+    if (cardName && cardNumber && expiryDate && cvv) {
+      setPaymentOpen(false);
+      setFlag(!flag);
+      setHasCustomerPaid(true);
+    }
+  };
 
   //function to handle the alerts
   React.useEffect(() => {
@@ -62,7 +104,13 @@ export default function CustomerSignUp() {
       setFailedSignUp(true);
     } else if (warning_type == "final") {
       setFinalOpen(true);
+    } else if (warning_type == "noPayment") {
+      setNoPaymentOpen(true);
     }
+  };
+
+  const handlePaymentOpen = () => {
+    setPaymentOpen(true);
   };
 
   //function to handle the sign up
@@ -77,12 +125,32 @@ export default function CustomerSignUp() {
     }
 
     setBackdropOpen(false);
-    setOpen(false);
     setPostCodeOpen(false);
     setEmailOpen(false);
     setSuccessfulSignUp(false);
     setPasswordOpen(false);
     setFailedSignUp(false);
+    setPaymentOpen(false);
+  };
+
+  //function to handle the payment dialog
+  const handlePaymentClose = (event, reason) => {
+    if (reason && reason == "backdropClick") return;
+    setPaymentOpen(false);
+  };
+
+  //function to check if the card information is valid
+  const validateCardInfo = () => {
+    if (cardName && cardNumber && expiryDate && cvv) {
+      return true;
+    }
+  };
+
+  //function to check if the customer has paid
+  const paymentPending = () => {
+    if (hasCustomerPaid) {
+      return true;
+    }
   };
 
   //state variables for the form
@@ -103,12 +171,28 @@ export default function CustomerSignUp() {
 
   //limit the number of characters in the postcode field
   const postcodeLimitChar = 4;
+  const cardNumberLimit = 16;
+  const cvvLimit = 3;
 
   //function to handle the postcode change
   const handlePostcodeChange = (event) => {
     if (event.target.value.toString().length <= postcodeLimitChar) {
       setPostcode(event.target.value);
       setState(postCodeToState(event.target.value));
+    }
+  };
+
+  //function to handle the card number change to make sure it's less than 16 characters
+  const handleCardNumberChange = (event) => {
+    if (event.target.value.toString().length <= cardNumberLimit) {
+      setCardNumber(event.target.value);
+    }
+  };
+
+  //function to handle the cvv change to make sure it's less than 3 characters
+  const handleCVVChange = (event) => {
+    if (event.target.value.toString().length <= cvvLimit) {
+      setCVV(event.target.value);
     }
   };
 
@@ -132,6 +216,8 @@ export default function CustomerSignUp() {
       event.target.password.value != event.target.confirmPassword.value
     ) {
       handleAlert("password");
+    } else if (cardNumber.length == 0) {
+      handleAlert("noPayment");
     } else {
       event.preventDefault();
 
@@ -151,6 +237,12 @@ export default function CustomerSignUp() {
           membershipType: "ACC_CREATED",
           description: returnMemberType,
         },
+
+        //CARD INFORMATION
+        // cardNumber: cardNumber,
+        // cardName: cardName,
+        // expiryDate: dayjs(expiryDate).format("MM/YY"),
+        // cvv: cvv,
       };
       // console.log(JSON.stringify(returnData));
       // alert(JSON.stringify(returnData));
@@ -241,7 +333,7 @@ export default function CustomerSignUp() {
             autoComplete="family-name"
           />
         </Grid>
-        <Grid item xs={12} sm={7.5}>
+        <Grid item sm={7}>
           <TextField
             required
             fullWidth
@@ -253,7 +345,7 @@ export default function CustomerSignUp() {
             autoComplete="email"
           />
         </Grid>
-        <Grid item xs={4.5}>
+        <Grid item xs={5}>
           <TextField
             required
             fullWidth
@@ -342,12 +434,88 @@ export default function CustomerSignUp() {
             autoComplete="confirmPassword"
           />
         </Grid>
-        <Grid item>
+        <Grid item xs={12}>
           <Button
-            type="submit"
+            onClick={handlePaymentOpen}
+            disabled={!flag}
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            color={flag ? "primary" : "success"}
+            sx={{
+              "&.Mui-disabled": {
+                background: "#CEEAD0",
+                color: "white",
+              },
+            }}
+          >
+            {flag ? "Add Payment Method" : "Payment Method Added"}
+          </Button>
+        </Grid>
+        <Dialog open={paymentDialogOpen} onClose={handlePaymentClose}>
+          <DialogTitle>Payment Method</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  id="cardName"
+                  label="Name on Card"
+                  onChange={(event) => setCardName(event.target.value)}
+                  value={cardName}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoFocus
+                  type="number"
+                  fullWidth
+                  id="cardNumber"
+                  label="Card Number"
+                  value={cardNumber}
+                  onChange={(event) => handleCardNumberChange(event)}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker", "DatePicker"]}>
+                    <DatePicker
+                      label={"Expiry Date"}
+                      views={["month", "year"]}
+                      value={expiryDate}
+                      minDate={dayjs()}
+                      onChange={(event) => setExpiryDate(event)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoFocus
+                  type="number"
+                  fullWidth
+                  id="cvv"
+                  label="CVV"
+                  value={cvv}
+                  onChange={(event) => handleCVVChange(event)}
+                  required
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeCard} disabled={!validateCardInfo()}>
+              Add Payment Method
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Grid item xs={6}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={!paymentPending()}
           >
             Sign Up
           </Button>
@@ -362,7 +530,7 @@ export default function CustomerSignUp() {
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
-            open={emailOpen}
+            open={emailAlertOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -375,7 +543,7 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
           <Snackbar
-            open={postCodeOpen}
+            open={postCodeAlertOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -389,7 +557,7 @@ export default function CustomerSignUp() {
           </Snackbar>
 
           <Snackbar
-            open={successfulSignUp}
+            open={successfulSignUpDialogOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -402,7 +570,7 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
           <Snackbar
-            open={passwordOpen}
+            open={passwordAlertOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -415,7 +583,20 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
           <Snackbar
-            open={failedSignUp}
+            open={noPayment}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="warning"
+              sx={{ width: "100%" }}
+            >
+              No Payment Method Entered, please enter one and try again.
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={failedSignUpOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -438,7 +619,7 @@ export default function CustomerSignUp() {
         </Grid>
 
         <Dialog
-          open={finalOpen}
+          open={finalAlertDialogOpen}
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
