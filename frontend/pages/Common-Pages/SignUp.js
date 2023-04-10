@@ -1,6 +1,6 @@
 //import statements
 import { useEffect, useState } from "react";
-import ServiceProviderSignUp from "../../components/ServiceProviderSignUp";
+import ServiceProviderSignUp from "../../components/NewRequest/ServiceProviderSignUp";
 import CustomerSignUp from "../../components/CustomerSignUp";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
