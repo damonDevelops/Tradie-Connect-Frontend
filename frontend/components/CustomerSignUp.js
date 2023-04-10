@@ -7,10 +7,6 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Autocomplete } from "@mui/material";
 import PropTypes from "prop-types";
-import { IMaskInput } from "react-imask";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
@@ -25,34 +21,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 
+import postCodeToState from "./postcodeToState";
+
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-
-//not entirely sure how this works but it's required for the text mask of
-//the phone number. This formats the number as users enter it
-const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
-  const { onChange, ...other } = props;
-  return (
-    <IMaskInput
-      {...other}
-      mask="0400 000 000"
-      definitions={{
-        "#": /[0-9]/,
-      }}
-      inputRef={ref}
-      onAccept={(value) => onChange({ target: { name: props.name, value } })}
-      overwrite
-    />
-  );
-});
-
-//PropTypes for the text mask
-TextMaskCustom.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
 
 //default function for the customer sign up page
 export default function CustomerSignUp() {
@@ -111,12 +85,6 @@ export default function CustomerSignUp() {
     setFailedSignUp(false);
   };
 
-  //state variables for the text mask (phone number)
-  const [phoneNumber, setPhoneNumber] = React.useState({
-    textmask: "(00) 000-0000",
-    numberformat: "1320",
-  });
-
   //state variables for the form
   const [returnMemberType, setMembershipType] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -140,28 +108,9 @@ export default function CustomerSignUp() {
   const handlePostcodeChange = (event) => {
     if (event.target.value.toString().length <= postcodeLimitChar) {
       setPostcode(event.target.value);
+      setState(postCodeToState(event.target.value));
     }
   };
-
-  //function to handle the phone number change
-  const handlePhoneChange = (event) => {
-    setPhoneNumber({
-      ...phoneNumber,
-      [event.target.name]: event.target.value,
-    });
-    setNewPhoneNumber(event.target.value);
-  };
-
-  // const to hold the state options
-  const stateOptions = [
-    { value: "NSW", label: "NSW" },
-    { value: "VIC", label: "VIC" },
-    { value: "QLD", label: "QLD" },
-    { value: "WA", label: "WA" },
-    { value: "SA", label: "SA" },
-    { value: "TAS", label: "TAS" },
-    { value: "NT", label: "NT" },
-  ];
 
   //const to hold the trade options
   const membershipOptions = [
@@ -305,18 +254,16 @@ export default function CustomerSignUp() {
           />
         </Grid>
         <Grid item xs={4.5}>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">Phone Number</InputLabel>
-            <OutlinedInput
-              fullWidth
-              label="Phone Number"
-              value={phoneNumber.textmask}
-              onChange={handlePhoneChange}
-              name="textmask"
-              id="formatted-text-mask-input"
-              inputComponent={TextMaskCustom}
-            />
-          </FormControl>
+          <TextField
+            required
+            fullWidth
+            id="phoneNumber"
+            label="Phone Number"
+            name="phone"
+            onChange={(event) => setNewPhoneNumber(event.target.value)}
+            value={newPhoneNumber}
+            autoComplete="phone"
+          />
         </Grid>
         <Grid item xs={12} sm={7}>
           <TextField
@@ -337,10 +284,10 @@ export default function CustomerSignUp() {
             fullWidth
             id="city"
             label="City"
-            name="city"
+            name="address-level2"
             onChange={(event) => setCity(event.target.value)}
             value={city}
-            autoComplete="city"
+            autoComplete="address-level2"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -351,26 +298,22 @@ export default function CustomerSignUp() {
             fullWidth
             id="postcode"
             label="Postcode"
-            name="postcode"
+            name="postal-code"
             onChange={(event) => handlePostcodeChange(event)}
             value={postcode}
-            autoComplete="postcode"
+            autoComplete="postal-code"
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Autocomplete
-            isOptionEqualToValue={(option, value) =>
-              option.value === value.value
-            }
-            onChange={(event, newValue) => {
-              setState(newValue.value);
-            }}
-            disablePortal
-            id="combo-box-demo"
-            options={stateOptions}
-            renderInput={(params) => (
-              <TextField required {...params} label="State" />
-            )}
+          <TextField
+            required
+            fullWidth
+            id="state"
+            label="State"
+            name="state"
+            onChange={(event) => setState(event.target.value)}
+            value={returnState}
+            autoComplete="address-level1"
           />
         </Grid>
         <Grid item xs={12}>
