@@ -20,6 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import postCodeToState from "./postcodeToState";
+import axios from "axios";
 
 {
   /*
@@ -31,11 +32,11 @@ import postCodeToState from "./postcodeToState";
    If I have time I'll come back and change the packages being used.
 */
 }
-import dayjs from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import dayjs from "dayjs";
+// import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -60,7 +61,9 @@ export default function CustomerSignUp() {
   //Card Information
   const [cardNumber, setCardNumber] = React.useState("");
   const [cardName, setCardName] = React.useState("");
-  const [expiryDate, setExpiryDate] = React.useState(dayjs());
+
+  const [expiryDate, setExpiryDate] = React.useState("");
+  //const [expiryDate, setExpiryDate] = React.useState(dayjs());
   const [cvv, setCVV] = React.useState("");
   const [flag, setFlag] = React.useState(true);
   const [noPayment, setNoPaymentOpen] = React.useState(false);
@@ -68,13 +71,6 @@ export default function CustomerSignUp() {
 
   //function to close the add payment method dialog
   const closeCard = () => {
-    console.log(
-      "Card Number: " + cardNumber,
-      "Card Name: " + cardName,
-      "Expiry Date: " + dayjs(expiryDate).format("MM/YY"),
-      "CVV: " + cvv
-    );
-
     //check if all the fields are filled
     if (cardName && cardNumber && expiryDate && cvv) {
       setPaymentOpen(false);
@@ -226,9 +222,10 @@ export default function CustomerSignUp() {
         //given data
         firstName: event.target.firstName.value,
         lastName: event.target.lastName.value,
+
         email: event.target.email.value,
         password: event.target.password.value,
-        phoneNumber: phoneNumber.textmask,
+        phoneNumber: newPhoneNumber,
         streetAddress: event.target.address.value,
         city: event.target.city.value,
         state: returnState,
@@ -281,6 +278,39 @@ export default function CustomerSignUp() {
         // Redirect to the sign in page
       } else {
         handleAlert("error");
+      }
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (validator.isEmail(email) == false) {
+      handleAlert("email");
+    } else if (!postcodeRegex.test(postcode)) {
+      handleAlert("postcode");
+    } else if (password != confirmPassword) {
+      handleAlert("password");
+    } else {
+      e.preventDefault();
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/auth/register",
+          {
+            email: email,
+            password: password,
+            role: "ROLE_CUSTOMER",
+          }
+        );
+        setBackdropOpen(true);
+        timer.current = window.setTimeout(() => {
+          setBackdropOpen(false);
+          handleAlert("final");
+        }, 3000);
+        console.log(response);
+      } catch (error) {
+        alert("Registration failed!");
+        console.log(error);
       }
     }
   };
@@ -479,7 +509,16 @@ export default function CustomerSignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  id="expiryDate"
+                  label="Expiry Date"
+                  onChange={(event) => setExpiryDate(event.target.value)}
+                  value={expiryDate}
+                  required
+                />
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker", "DatePicker"]}>
                     <DatePicker
                       label={"Expiry Date"}
@@ -489,7 +528,7 @@ export default function CustomerSignUp() {
                       onChange={(event) => setExpiryDate(event)}
                     />
                   </DemoContainer>
-                </LocalizationProvider>
+                </LocalizationProvider> */}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -513,7 +552,8 @@ export default function CustomerSignUp() {
         </Dialog>
         <Grid item xs={6}>
           <Button
-            type="submit"
+            //type="submit"
+            onClick={handleRegister}
             variant="contained"
             disabled={!paymentPending()}
           >

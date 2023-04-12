@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useEffect } from "react";
+import axios from "axios";
 
 function Copyright(props) {
   return (
@@ -36,17 +37,24 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-  const [returnedEmail, setEmail] = useState("");
+  const [authenticateEmail, setAuthenticateEmail] = useState("");
+  const [authenticatePassword, setAuthenticatePassword] = useState("");
 
-  const handleSubmit = (event) => {
-    console.log("users", users);
-    event.preventDefault();
-
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/authenticate",
+        {
+          email: authenticateEmail,
+          password: authenticatePassword,
+        }
+      );
+      window.location.href = "../Customer/Dashboard";
+    } catch (error) {
+      alert("Authentication failed!");
+      console.log(error);
+    }
   };
 
   return (
@@ -80,8 +88,8 @@ export default function SignIn() {
               id="email"
               label="Email Address"
               name="email"
-              onChange={(event) => setEmail(event.target.value)}
-              value={returnedEmail}
+              onChange={(event) => setAuthenticateEmail(event.target.value)}
+              value={authenticateEmail}
               autoComplete="email"
               autoFocus
             />
@@ -92,6 +100,8 @@ export default function SignIn() {
               name="password"
               label="Password"
               type="password"
+              onChange={(event) => setAuthenticatePassword(event.target.value)}
+              value={authenticatePassword}
               id="password"
               autoComplete="current-password"
             />
