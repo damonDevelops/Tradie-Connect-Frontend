@@ -20,6 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import postCodeToState from "../postcodeToState";
+import axios from "axios";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -134,11 +135,11 @@ export default function CustomerSignUp() {
 
   //const to hold the trade options
   const serviceAreas = [
-    { value: "Plumbing", label: "Plumbing" },
-    { value: "Electrical", label: "Electrical" },
-    { value: "Carpentry", label: "Carpentry" },
-    { value: "Painting", label: "Painting" },
-    { value: "Cleaning", label: "Cleaning" },
+    { value: "TREE_REMOVAL", label: "Tree Removal" },
+    { value: "ROOF_CLEANING", label: "Roof Cleaning" },
+    { value: "FENCE_INSTALLATION", label: "Fence Installation" },
+    { value: "OVEN_REPAIRS", label: "Oven Repair" },
+    { value: "POOL_CLEANING", label: "Pool Cleaning" },
   ];
 
   //function to handle the form submission
@@ -212,6 +213,48 @@ export default function CustomerSignUp() {
         // Redirect to the sign in page
       } else {
         handleAlert("error");
+      }
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (validator.isEmail(email) == false) {
+      handleAlert("email");
+    } else if (!postcodeRegex.test(postcode)) {
+      handleAlert("postcode");
+    } else if (password != confirmPassword) {
+      handleAlert("password");
+    } else {
+      e.preventDefault();
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/auth/register",
+          {
+            email: email,
+            password: password,
+            role: "ROLE_SERVICE_PROVIDER",
+            companyName: companyName,
+            abn: abn,
+            phoneNumber: newPhoneNumber,
+            streetAddress: address,
+            suburb: {
+              name: city,
+              state: returnState,
+            },
+            postCode: postcode,
+          }
+        );
+        setBackdropOpen(true);
+        timer.current = window.setTimeout(() => {
+          setBackdropOpen(false);
+          handleAlert("final");
+        }, 3000);
+        console.log(response);
+      } catch (error) {
+        alert("Registration failed!");
+        console.log(error);
       }
     }
   };
@@ -385,7 +428,8 @@ export default function CustomerSignUp() {
         </Grid>
         <Grid item>
           <Button
-            type="submit"
+            //type="submit"
+            onClick={handleRegister}
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
