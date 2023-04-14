@@ -282,6 +282,9 @@ export default function CustomerSignUp() {
     }
   };
 
+  // handler for axios
+  // note: still throws error when accessing through event.target.xx.value
+  // Error: (Cannot read properties of undefined (reading 'value'))
   const handleRegister = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
@@ -300,6 +303,15 @@ export default function CustomerSignUp() {
             email: email,
             password: password,
             role: "ROLE_CUSTOMER",
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: newPhoneNumber,
+            streetAddress: address,
+            suburb: {
+              name: city,
+              state: returnState,
+            },
+            postCode: postcode,
           }
         );
         setBackdropOpen(true);

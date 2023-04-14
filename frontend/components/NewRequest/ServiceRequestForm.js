@@ -11,10 +11,10 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 
 function BasicSelect() {
-  const [WorkType, setAge] = React.useState("");
+  const [WorkType, setWorkType] = React.useState("");
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setWorkType(event.target.value);
   };
 
   return (
@@ -28,10 +28,11 @@ function BasicSelect() {
           label="Work Type"
           onChange={handleChange}
         >
-          <MenuItem value={10}>Plumbing</MenuItem>
-          <MenuItem value={20}>Fence Repair</MenuItem>
-          <MenuItem value={30}>Tiling</MenuItem>
-          <MenuItem value={40}>Electrical</MenuItem>
+          <MenuItem value="TREE_REMOVAL">Tree Removal</MenuItem>
+          <MenuItem value="ROOF_CLEANING">Roof Cleaning</MenuItem>
+          <MenuItem value="FENCE_INSTALLATION">Fence Installation</MenuItem>
+          <MenuItem value="OVEN_REPAIRS">Oven Repair</MenuItem>
+          <MenuItem value="POOL_CLEANING">Pool Cleaning</MenuItem>
         </Select>
       </FormControl>
     </Box>
@@ -39,6 +40,9 @@ function BasicSelect() {
 }
 
 export default function ServiceRequestForm() {
+  const [description, setDescription] = React.useState("");
+  const [WorkType, setWorkType] = React.useState("");
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -46,13 +50,34 @@ export default function ServiceRequestForm() {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <BasicSelect />
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Work Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={WorkType}
+                label="Work Type"
+                onChange={(event) => setWorkType(event.target.value)}
+              >
+                <MenuItem value="TREE_REMOVAL">Tree Removal</MenuItem>
+                <MenuItem value="ROOF_CLEANING">Roof Cleaning</MenuItem>
+                <MenuItem value="FENCE_INSTALLATION">
+                  Fence Installation
+                </MenuItem>
+                <MenuItem value="OVEN_REPAIRS">Oven Repair</MenuItem>
+                <MenuItem value="POOL_CLEANING">Pool Cleaning</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Grid>
         <Grid item xs={12} md={6}></Grid>
         <Grid item xs={12}>
           <TextField
             fullWidth
             multiline={true}
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
             label="Enter a description of the work required"
           />
         </Grid>
