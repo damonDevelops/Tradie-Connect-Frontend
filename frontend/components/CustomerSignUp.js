@@ -298,7 +298,7 @@ export default function CustomerSignUp() {
 
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/auth/register",
+          "http://localhost:8080/api/auth/SignUp",
           {
             email: email,
             password: password,
