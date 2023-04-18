@@ -44,17 +44,25 @@ export default function SignIn() {
     const [postCode , setPostCode] = useState("");
     const [suburbState, setState] = useState("");
 
-    useEffect(() => {
-        axios
-      .get(`http://localhost:8080/api/customers`, config)
-      .then((res) => {
-        setFirstName(res.data.firstName);
-        setLastName(res.data.lastName);
-        setEmail(res.data.email);
-        setStreetAddress(res.data.streetAddress);
-        console.log(res.data.firstName);
-      });
-      }, []);
+    // useEffect(() => {
+    //     axios
+    //   .get(`http://localhost:8080/api/customers`, config)
+    //   .then((res) => {
+    //     setFirstName(res.data.firstName);
+    //     setLastName(res.data.lastName);
+    //     setEmail(res.data.email);
+    //     setStreetAddress(res.data.streetAddress);
+    //     console.log(res.data.firstName);
+    //   });
+    //   }, []);
+
+    const instance = axios.create({
+      withCredentials: true,
+      
+    });
+
+    instance.get("http://localhost:8080/api/customers")
+    .then((response) => console.log(response.data));
 
     const initialState = {
         access:
@@ -66,14 +74,20 @@ export default function SignIn() {
     const { decodedToken, isExpired } = useJwt(initialState.access);
 
     const config = {
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + initialState.access}
-      };
+      //headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + initialState.access}
+      
+    };
 
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.put(`http://localhost:8080/api/customers`, {
-        firstName: firstName
+    console.log(initialState.access)
+    instance.put(`http://localhost:8080/api/customers`, {
+        firstName: firstName,
+        suburb:{
+          name: "suburb",
+          state: "NSW"
+        }
     }, config) 
     .then((res) => {
         console.log(res);
