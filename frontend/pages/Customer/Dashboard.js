@@ -149,7 +149,7 @@ function DashboardContent() {
               Dashboard
             </Typography>
             <IconButton color="inherit">
-              <Link href="/" color="inherit">
+              <Link href="/Customer/account" color="inherit">
                 {<AccountCircleRoundedIcon fontSize="large" />}
               </Link>
             </IconButton>
