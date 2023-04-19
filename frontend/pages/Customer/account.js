@@ -1,179 +1,285 @@
+// import statements
+import * as React from "react";
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiDrawer from "@mui/material/Drawer";
+import Box from "@mui/material/Box";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Link from "@mui/material/Link";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Chart from "../../components/Chart";
+import Deposits from "../../components/Deposits";
+import Account from "../../components/Account";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StarBorder from "@mui/icons-material/StarBorder";
+import Collapse from "@mui/material/Collapse";
 
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import { useJwt } from 'react-jwt';
-import axios from 'axios';
-import { useState } from 'react';
-import { useEffect } from 'react';
-
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PeopleIcon from "@mui/icons-material/People";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import LayersIcon from "@mui/icons-material/Layers";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Test The New Dashboard © "}
+      <Link color="inherit" href="/NewDashboad">
+        New Dashboard
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
 
-const theme = createTheme();
+const drawerWidth = 240;
 
-export default function SignIn() {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [streetAddress, setStreetAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [postCode , setPostCode] = useState("");
-    const [suburbState, setState] = useState("");
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
 
-    // useEffect(() => {
-    //     axios
-    //   .get(`http://localhost:8080/api/customers`, config)
-    //   .then((res) => {
-    //     setFirstName(res.data.firstName);
-    //     setLastName(res.data.lastName);
-    //     setEmail(res.data.email);
-    //     setStreetAddress(res.data.streetAddress);
-    //     console.log(res.data.firstName);
-    //   });
-    //   }, []);
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  "& .MuiDrawer-paper": {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: "border-box",
+    ...(!open && {
+      overflowX: "hidden",
+      transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      width: theme.spacing(7),
+      [theme.breakpoints.up("sm")]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
-    const instance = axios.create({
-      withCredentials: true,
-      
-    });
+const mdTheme = createTheme();
 
-    instance.get("http://localhost:8080/api/customers")
-    .then((response) => console.log(response.data));
+function DashboardContent() {
+  const [open, setOpen] = React.useState(true);
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
 
-    const initialState = {
-        access:
-          typeof window !== "undefined"
-            ? window.localStorage.getItem("JWTToken")
-            : false,
-      };
-    
-    const { decodedToken, isExpired } = useJwt(initialState.access);
+  const [newOpen, setnewOpen] = React.useState(true);
 
-    const config = {
-      //headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + initialState.access}
-      
-    };
-
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(initialState.access)
-    instance.put(`http://localhost:8080/api/customers`, {
-        firstName: firstName,
-        suburb:{
-          name: "suburb",
-          state: "NSW"
-        }
-    }, config) 
-    .then((res) => {
-        console.log(res);
-        console.log(res.data);
-      }
-    )
+  const handleClick = () => {
+    setnewOpen(!newOpen);
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+    <ThemeProvider theme={mdTheme}>
+      <Box sx={{ display: "flex" }}>
         <CssBaseline />
+        <AppBar position="absolute" open={open}>
+          <Toolbar
+            sx={{
+              pr: "24px", // keep right padding when drawer closed
+            }}
+          >
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer}
+              sx={{
+                marginRight: "36px",
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Dashboard
+            </Typography>
+            <IconButton color="inherit">
+              <Link href="/Customer/account" color="inherit">
+                {<AccountCircleRoundedIcon fontSize="large" />}
+              </Link>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer variant="permanent" open={open}>
+          <Toolbar
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              px: [1],
+            }}
+          >
+            <IconButton onClick={toggleDrawer}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider />
+          <List component="nav">
+            <React.Fragment>
+              <ListItemButton onClick={handleClick}>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Requests" />
+                {newOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={newOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    href="./NewRequest/NewRequestIndex"
+                  >
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="New Request" />
+                  </ListItemButton>
+                </List>
+              </Collapse>
+              <Collapse in={newOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Current Requests" />
+                  </ListItemButton>
+                </List>
+              </Collapse>
+              <Collapse in={newOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Past Requests" />
+                  </ListItemButton>
+                </List>
+              </Collapse>
+              <ListItemButton>
+                <ListItemIcon>
+                  <ShoppingCartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Account Details" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemIcon>
+                  <BarChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Reports" />
+              </ListItemButton>
+            </React.Fragment>
+            <Divider sx={{ my: 1 }} />
+            <React.Fragment>
+              <ListSubheader component="div" inset>
+                Saved reports
+              </ListSubheader>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Current month" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Last quarter" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Year-end sale" />
+              </ListItemButton>
+            </React.Fragment>
+          </List>
+        </Drawer>
         <Box
+          component="main"
           sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            backgroundColor: (theme) =>
+              theme.palette.mode === "light"
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
+            flexGrow: 1,
+            height: "100vh",
+            overflow: "auto",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <AccountCircleRoundedIcon fontSize="large" />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Manage Account Details
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            autoComplete="given-name"
-            name="firstName"
-            onChange={(event) => setFirstName(event.target.value)}
-            value={firstName}
-            required
-            fullWidth
-            id="firstName"
-            label="First Name"
-            autoFocus
-          />
-          <br />
-          <TextField
-            autoComplete="given-name"
-            name="lastName"
-            onChange={(event) => setLastName(event.target.value)}
-            value={lastName}
-            required
-            fullWidth
-            id="lastName"
-            label="Last Name"
-            autoFocus
-          />
-          <TextField
-            autoComplete="email"
-            name="email"
-            onChange={(event) => setEmail(event.target.value)}
-            value={email}
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            autoFocus
-          />
-          <TextField
-            autoComplete="street-address"
-            name="streetAddress"
-            onChange={(event) => setStreetAddress(event.target.value)}
-            value={streetAddress}
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            autoFocus
-          />
-            <Button
-              type="submit"
-              color="warning"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Update Account Information
-            </Button>
-            <Grid container>
+          <Toolbar />
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Grid container spacing={3}>
+              {/* Recent Orders */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+                  <Account />
+                </Paper>
+              </Grid>
             </Grid>
-          </Box>
+            <Copyright sx={{ pt: 4 }} />
+          </Container>
         </Box>
-      </Container>
+      </Box>
     </ThemeProvider>
   );
+}
+
+export default function Dashboard() {
+  return <DashboardContent />;
 }

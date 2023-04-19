@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function Copyright(props) {
   return (
@@ -50,6 +51,7 @@ export default function SignIn() {
           password: authenticatePassword,
         }
       );
+      Cookies.set("JWT", response.data.token);
       window.location.href = "../Customer/Dashboard";
     } catch (error) {
       alert("Authentication failed!");
