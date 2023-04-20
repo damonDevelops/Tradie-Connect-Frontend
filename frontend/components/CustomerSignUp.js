@@ -23,22 +23,6 @@ import postCodeToState from "./postcodeToState";
 import axios from "axios";
 
 
-{
-  /*
-  BUG: when reloading the page, sometimes react will throw the following error:
-   "SyntaxError: Unexpected token 'export'"
-   I've looked into this extensively and it seems to be a bug with Next.js and React.
-   The only way to fix this is to comment the below imports out, save and reload the page.
-   Then uncomment and reload the page again, should work fine.
-   If I have time I'll come back and change the packages being used.
-*/
-}
-// import dayjs from "dayjs";
-// import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -700,7 +684,7 @@ export default function CustomerSignUp() {
             >
               Your account was successfully created, you will be redirected to
               the sign in page now where you can enter your details to log in.
-              Thanks for joing us {firstName}!
+              Thanks for joining us {firstName}!
             </DialogContentText>
           </DialogContent>
           <DialogActions

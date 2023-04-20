@@ -1,17 +1,20 @@
 import * as React from "react";
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import Title from "./Title";
 import { TextField } from "@mui/material";
 import Grid from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
+import postCodeToState from "./postcodeToState";
+import { Alert } from "@mui/material";
+import { Stack } from "@mui/material";
+import { Snackbar } from "@mui/material";
+import {Dialog} from "@mui/material";
+import {DialogTitle} from "@mui/material";
+import {DialogContent} from "@mui/material";
+import {DialogContentText} from "@mui/material";
+import {DialogActions} from "@mui/material";
 
 function preventDefault(event) {
   event.preventDefault();
@@ -20,12 +23,49 @@ function preventDefault(event) {
 export default function Account() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postcode, setPostcode] = useState("");
   const [state, setState] = useState("");
+
+  const [confirmationOpen, setConfirmationOpen] = React.useState(false);
+
+
+  //open variables for alerts
+  const [postCodeAlertOpen, setPostCodeAlertOpen] = useState(false);
+
+  const postcodeRegex = new RegExp("^(0[289][0-9]{2})|([1-9][0-9]{3})");
+  const postcodeLimitChar = 4;
+
+  const suburbHandler = (event) => {
+    setSuburb(event.target.value.toLowerCase());
+  };
+
+  const handlePostcodeChange = (event) => {
+    if (event.target.value.toString().length <= postcodeLimitChar) {
+      setPostcode(event.target.value);
+      setState(postCodeToState(event.target.value));
+    }
+  };
+
+  const handleAlert = (warning_type) => {
+    if (warning_type == "postcode") {
+      setPostCodeAlertOpen(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setPostCodeAlertOpen(false);
+    setConfirmationOpen(false);
+  };
+
+  const handleConfirmOpen = () => {
+    setConfirmationOpen(true);
+  };
 
   useEffect(() => {
     fetchData();
@@ -44,7 +84,6 @@ export default function Account() {
       response.data.map((data) => {
         setFirstName(data.firstName);
         setLastName(data.lastName);
-        setEmail(data.email);
         setPhone(data.phoneNumber);
         setAddress(data.streetAddress);
         setCity(data.suburb.name);
@@ -58,18 +97,40 @@ export default function Account() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    instance.put(`http://localhost:8080/api/customers`, {
-        firstName: firstName,
-        suburb:{
-          name: "suburb",
-          state: "NSW"
-        }
-    }, config) 
-    .then((res) => {
-        console.log(res);
-        console.log(res.data);
+
+    if (!postcodeRegex.test(postcode)) {
+      handleAlert("postcode");
+    } else {
+      try {
+        instance
+          .put(`http://localhost:8080/api/customers`, {
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phone,
+            streetAddress: address,
+            suburb: {
+              name: city,
+              state: state,
+            },
+            postCode: postcode,
+            
+          })
+          .then((res) => {
+            // alert(firstName + 
+            //     " " + lastName +
+            //     " " + phone +
+            //     " " + address +
+            //     " " + city +
+            //     " " + postcode +
+            //     " " + state)
+            console.log(res);
+            console.log(res.data);
+            window.location.reload(true);
+          });
+      } catch (error) {
+        console.error(error);
       }
-    )
+    }
   };
 
   return (
@@ -97,18 +158,6 @@ export default function Account() {
         fullWidth
         id="lastName"
         label="Last Name"
-        autoFocus
-      />
-      <br />
-      <TextField
-        autoComplete="email"
-        name="email"
-        onChange={(event) => setEmail(event.target.value)}
-        value={email}
-        required
-        fullWidth
-        id="email"
-        label="Email"
         autoFocus
       />
       <br />
@@ -151,7 +200,7 @@ export default function Account() {
       <TextField
         autoComplete="postcode"
         name="postcode"
-        onChange={(event) => setPostcode(event.target.value)}
+        onChange={(event) => handlePostcodeChange(event)}
         value={postcode}
         required
         fullWidth
@@ -172,9 +221,19 @@ export default function Account() {
         autoFocus
       />
       <br />
+      {/* <Autocomplete
+        id="combo-box-demo"
+        options={testData}
+        style={{
+          width: 300,
+        }}
+        renderInput={(params) => (
+          <TextField {...params} label="Combo box" variant="outlined" />
+        )}
+      /> */}
       <Button
         //type="submit"
-        onClick={handleSubmit}
+        onClick={handleConfirmOpen}
         variant="contained"
         color="warning"
       >
@@ -188,6 +247,65 @@ export default function Account() {
       >
         Back to Dashboard
       </Button>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          open={postCodeAlertOpen}
+          autoHideDuration={6000}
+          onClose={handleClose}
+        >
+          <Alert
+            onClose={handleClose}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            Invalid Postcode, please try again
+          </Alert>
+        </Snackbar>
+      </Stack>
+      <Dialog
+        open={confirmationOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Confirmation of New Account Details"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Please check that the following details are correct:
+          </DialogContentText>
+          <br />
+          <DialogContentText id="alert-dialog-description">
+            Updated First Name: {firstName}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Updated Last Name: {lastName}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Updated Phone Number: {phone}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Updated Address: {address}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Updated City: {city}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Updated Postcode: {postcode}
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            Updated State: {state}
+          </DialogContentText>
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Edit Details</Button>
+          <Button onClick={handleSubmit} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }
