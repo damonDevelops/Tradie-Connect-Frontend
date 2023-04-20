@@ -22,7 +22,6 @@ import Backdrop from "@mui/material/Backdrop";
 import postCodeToState from "./postcodeToState";
 import axios from "axios";
 
-
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -96,7 +95,7 @@ export default function CustomerSignUp() {
 
   //function to handle the sign up
   const redirect = () => {
-    window.location.href = "../Common-Pages/SignIn";
+    window.location.href = "../SignIn";
   };
 
   //function to close the alerts
@@ -649,7 +648,7 @@ export default function CustomerSignUp() {
 
         <Grid container justifyContent="flex-end">
           <Grid item>
-            <Link href="/Common-Pages/SignIn" variant="body2">
+            <Link href="/SignIn" variant="body2">
               Already have an account? Sign in
             </Link>
           </Grid>

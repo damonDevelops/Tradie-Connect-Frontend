@@ -10,11 +10,11 @@ import postCodeToState from "./postcodeToState";
 import { Alert } from "@mui/material";
 import { Stack } from "@mui/material";
 import { Snackbar } from "@mui/material";
-import {Dialog} from "@mui/material";
-import {DialogTitle} from "@mui/material";
-import {DialogContent} from "@mui/material";
-import {DialogContentText} from "@mui/material";
-import {DialogActions} from "@mui/material";
+import { Dialog } from "@mui/material";
+import { DialogTitle } from "@mui/material";
+import { DialogContent } from "@mui/material";
+import { DialogContentText } from "@mui/material";
+import { DialogActions } from "@mui/material";
 
 function preventDefault(event) {
   event.preventDefault();
@@ -30,7 +30,6 @@ export default function Account() {
   const [state, setState] = useState("");
 
   const [confirmationOpen, setConfirmationOpen] = React.useState(false);
-
 
   //open variables for alerts
   const [postCodeAlertOpen, setPostCodeAlertOpen] = useState(false);
@@ -113,10 +112,9 @@ export default function Account() {
               state: state,
             },
             postCode: postcode,
-            
           })
           .then((res) => {
-            // alert(firstName + 
+            // alert(firstName +
             //     " " + lastName +
             //     " " + phone +
             //     " " + address +
@@ -297,7 +295,6 @@ export default function Account() {
           <DialogContentText id="alert-dialog-description">
             Updated State: {state}
           </DialogContentText>
-          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Edit Details</Button>

@@ -59,10 +59,10 @@ const Developer = () => {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" href="./Customer/Dashboard">
+              <Button variant="contained" href="./Customer">
                 Customer Dashboard
               </Button>
-              <Button variant="contained" href="./Service-Provider/Dashboard">
+              <Button variant="contained" href="./Service-Provider">
                 Tradie Dashboard
               </Button>
             </Stack>
@@ -88,11 +88,7 @@ const Developer = () => {
                 >
                   Sign Up
                 </Typography>
-                <Button
-                  variant="contained"
-                  align="center"
-                  href="./Common-Pages/SignUp"
-                >
+                <Button variant="contained" align="center" href="./SignUp">
                   Sign Up
                 </Button>
               </Paper>
@@ -114,11 +110,7 @@ const Developer = () => {
                 >
                   Sign In
                 </Typography>
-                <Button
-                  variant="contained"
-                  align="center"
-                  href="./Common-Pages/SignIn"
-                >
+                <Button variant="contained" align="center" href="./SignIn">
                   Sign In
                 </Button>
               </Paper>
@@ -156,4 +148,6 @@ const Developer = () => {
   );
 };
 
-export default withAuth(Developer, ["Admin"]);
+export default Developer;
+
+//export default withAuth(Developer, ["Admin"]);
