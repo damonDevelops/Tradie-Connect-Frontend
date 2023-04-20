@@ -15,45 +15,79 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import Cookies from "js-cookie";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import { Stack } from "@mui/material";
 
 const theme = createTheme();
 
 export default function SignIn() {
+
+  //time for loading backdrop
+  const timer = React.useRef();
+
+  //state variables for authentication
   const [authenticateEmail, setAuthenticateEmail] = useState("");
   const [authenticatePassword, setAuthenticatePassword] = useState("");
 
+  //state variables for alerts
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
+  const [loginFailAlert, setLoginFailAlert] = useState(false);
+
+  //function to handle the alerts
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setLoginFailAlert(false);
+  };
+
+  //function to handle the timer
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
+
+
+  //function to handle the authentication
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //tries to log the user in 
     try {
+      //open the loading wheel
+      setBackdropOpen(true);
+
+      //make the axios request
       const response = await axios.post(
-        "http://localhost:8080/api/auth/authenticate",
+        "http://localhost:8080/api/auth/SignIn",
         {
           email: authenticateEmail,
           password: authenticatePassword,
         }
       );
+
+      //if the response is successful, open the wheel for a bit
+      if (response.status === 200) {
+        setBackdropOpen(true);
+        timer.current = window.setTimeout(() => {
+          setBackdropOpen(false);
+        }, 10000);
+      }
+
+      //set the JWT cookie and redirect to the dashboard
+      Cookies.set("JWT", response.data.token);
       window.location.href = "../Customer/Dashboard";
+
     } catch (error) {
-      alert("Authentication failed!");
-      console.log(error);
+      //close loading
+      setBackdropOpen(false);
+      //if the response is unsuccessful, open the alert
+      setLoginFailAlert(true);
     }
   };
 
@@ -105,6 +139,13 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={backdropOpen}
+              onClick={handleClose}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -117,6 +158,7 @@ export default function SignIn() {
             >
               Sign In
             </Button>
+
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -131,7 +173,21 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar
+            open={loginFailAlert}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              Incorrect email or password, please try again
+            </Alert>
+          </Snackbar>
+        </Stack>
       </Container>
     </ThemeProvider>
   );

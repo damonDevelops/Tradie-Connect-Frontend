@@ -20,7 +20,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Chart from "../../components/Chart";
 import Deposits from "../../components/Deposits";
-import Orders from "../../components/Orders";
+import Account from "../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -149,7 +149,7 @@ function DashboardContent() {
               Dashboard
             </Typography>
             <IconButton color="inherit">
-              <Link href="/" color="inherit">
+              <Link href="/Customer/account" color="inherit">
                 {<AccountCircleRoundedIcon fontSize="large" />}
               </Link>
             </IconButton>
@@ -289,12 +289,6 @@ function DashboardContent() {
                   }}
                 >
                   <Deposits />
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <Orders />
                 </Paper>
               </Grid>
             </Grid>
