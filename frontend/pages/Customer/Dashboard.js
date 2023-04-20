@@ -182,7 +182,8 @@ function DashboardContent() {
                 <List component="div" disablePadding>
                   <ListItemButton
                     sx={{ pl: 4 }}
-                    href="./NewRequest/NewRequestIndex"
+                    href="./NewRequest"
+                    
                   >
                     <ListItemIcon>
                       <StarBorder />
