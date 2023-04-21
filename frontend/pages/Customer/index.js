@@ -14,7 +14,8 @@ import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
+//import Link from "@mui/material/Link";
+import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -182,15 +183,14 @@ function CustomerDash() {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton
-                    sx={{ pl: 4 }}
-                    href="./NewRequest/NewRequestIndex"
-                  >
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="New Request" />
-                  </ListItemButton>
+                  <Link href="./Customer/NewRequest" passHref legacyBehavior>
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText primary="New Request" />
+                    </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
