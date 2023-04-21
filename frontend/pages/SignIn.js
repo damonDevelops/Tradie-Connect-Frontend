@@ -21,11 +21,14 @@ import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { Stack } from "@mui/material";
+import { useCurrentUser } from "../components/hooks/CurrentUserContext";
+import { useRouter } from "next/router";
+
+import { checkLogin, checkRole } from "../components/hooks/checkUser";
 
 const theme = createTheme();
 
 export default function SignIn() {
-
   //time for loading backdrop
   const timer = React.useRef();
 
@@ -36,6 +39,10 @@ export default function SignIn() {
   //state variables for alerts
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [loginFailAlert, setLoginFailAlert] = useState(false);
+
+  //variable for fetching current user to store in current user context
+  //const { fetchCurrentUser } = useCurrentUser(); // part of current user context, maybe delete
+  const router = useRouter();
 
   //function to handle the alerts
   const handleClose = (event, reason) => {
@@ -52,12 +59,11 @@ export default function SignIn() {
     };
   }, []);
 
-
   //function to handle the authentication
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //tries to log the user in 
+    //tries to log the user in
     try {
       //open the loading wheel
       setBackdropOpen(true);
@@ -74,6 +80,7 @@ export default function SignIn() {
       //if the response is successful, open the wheel for a bit
       if (response.status === 200) {
         setBackdropOpen(true);
+        //fetchCurrentUser(); // part of current user context, maybe delete
         timer.current = window.setTimeout(() => {
           setBackdropOpen(false);
         }, 10000);
@@ -81,8 +88,12 @@ export default function SignIn() {
 
       //set the JWT cookie and redirect to the dashboard
       Cookies.set("JWT", response.data.token);
-      window.location.href = "../Customer/Dashboard";
 
+      if (checkRole() == "ROLE_CUSTOMER") {
+        router.push("/Customer");
+      } else router.push("/Service-Provider");
+
+      //window.location.href = "../Customer/Index";
     } catch (error) {
       //close loading
       setBackdropOpen(false);

@@ -1,6 +1,6 @@
 import Developer from "../../pages/DevDashboard";
-import SignIn from "../../pages/Common-Pages/SignIn";
-import SignUp from "../../pages/Common-Pages/SignUp";
+import SignIn from "../../pages/SignIn";
+import SignUp from "../../pages/SignUp";
 
 const routes = [
   {

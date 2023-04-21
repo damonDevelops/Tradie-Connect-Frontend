@@ -19,7 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
-import postCodeToState from "../postcodeToState";
+import postCodeToState from "./postcodeToState";
 import axios from "axios";
 
 //Alert component
@@ -70,7 +70,7 @@ export default function CustomerSignUp() {
 
   //function to handle the backdrop redirect
   const redirect = () => {
-    window.location.href = "../Common-Pages/SignIn";
+    window.location.href = "../SignIn";
   };
 
   //function to close the alerts
@@ -183,7 +183,7 @@ export default function CustomerSignUp() {
       const JSONdata = JSON.stringify(returnData);
 
       // API endpoint where we send form data.
-      const endpoint = `http://localhost:8080/api/service-providers`;
+      const endpoint = `http://localhost:8080/api/auth/SignUp`;
 
       // Form the request for sending data to the server.
       const options = {
@@ -230,7 +230,7 @@ export default function CustomerSignUp() {
 
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/auth/register",
+          "http://localhost:8080/api/auth/SignUp",
           {
             email: email,
             password: password,
@@ -528,7 +528,7 @@ export default function CustomerSignUp() {
         </Stack>
         <Grid container justifyContent="flex-end">
           <Grid item>
-            <Link href="/Common-Pages/SignIn" variant="body2">
+            <Link href="/SignIn" variant="body2">
               Already have an account? Sign in
             </Link>
           </Grid>
@@ -563,7 +563,7 @@ export default function CustomerSignUp() {
           >
             Your account was successfully created, you will be redirected to the
             sign in page now where you can enter your details to log in. Thanks
-            for joing us {companyName}!
+            for joining us {companyName}!
           </DialogContentText>
         </DialogContent>
         <DialogActions

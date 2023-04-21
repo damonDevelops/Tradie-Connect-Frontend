@@ -253,12 +253,8 @@ export default function DashboardContent() {
                 {newOpen ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                  <ListItemButton
-                    sx={{ pl: 4 }}
-                    href="./NewRequest"
-                    
-                  >
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }} href="./NewRequest">
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
