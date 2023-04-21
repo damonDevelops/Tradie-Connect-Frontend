@@ -52,6 +52,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import Link from "next/link";
+import jwt_decode from "jwt-decode";
+import Cookies from "js-cookie";
 
 const drawerWidth = 240;
 
@@ -106,45 +108,27 @@ export default function DashboardContent() {
     window.location.href = "../Customer/Dashboard";
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const instance = axios.create({
     withCredentials: true,
   });
 
-  const fetchData = async () => {
-    try {
-      const response = await instance.get(
-        "http://localhost:8080/api/customers"
-      );
-      console.log(response);
 
-      response.data.map((data) => {
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setEmail(data.email);
-        setPhone(data.phoneNumber);
-        setAddress(data.streetAddress);
-        setCity(data.suburb.name);
-        setPostCode(data.postCode);
-        setState(data.suburb.state);
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
+  var token = Cookies.get("JWT");
+  
   const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [address, setAddress] = React.useState("");
-  const [postCode, setPostCode] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [state, setState] = React.useState("");
+
   const [WorkType, setWorkType] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [cost, setCost] = React.useState("");
+  
+  const [startDate, setStartDate] = React.useState(
+    new Date().toLocaleDateString("en-GB")
+  );
+  //make a const variable which returns the day after startDate in the same format
+  const [endDate, setEndDate] = React.useState(
+    new Date().toLocaleDateString("en-GB")
+  );
 
   const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
 
@@ -168,28 +152,40 @@ export default function DashboardContent() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    try {
-      instance
-        .post(
-          `http://localhost:8080/api/service-requests/create/1/${WorkType.toUpperCase()}`,
-          {
-            serviceType: WorkType.toUpperCase(),
-            scheduledTime: null,
-            status: "CREATED",
-            cost: 500,
-          }
-        )
-        .then((res) => {
-          setFinalOpen(true);
-        });
-    } catch (error) {
-      console.error(error);
+    //TODO take the token and get the customer subscription type and then display cost
+    // console.log(token);
+    // console.log(jwt_decode(token).role)
+
+    //validation for start and end date
+    if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
+      alert("invalid date");
+    } else if (startDate > endDate || startDate == endDate) {
+      alert("Start Date cannot be after or the same as End Date");
+    } else {
+
+
+      try {
+        //post request
+        instance
+          .post(
+            `http://localhost:8080/api/service-requests/create/${WorkType.toUpperCase()}`,
+            {
+              serviceType: WorkType.toUpperCase(),
+              description: description,
+              scheduledStartDate: startDate,
+              scheduledEndDate: endDate,
+              cost: cost,
+            }
+          )
+          .then((res) => {
+            setFinalOpen(true);
+          });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
-  const handleCheckboxChange = (event) => {
-    setChecked(event.target.checked);
-  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -343,126 +339,19 @@ export default function DashboardContent() {
                     p: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: 900,
+                    height: 700,
                   }}
                 >
+                  <form onSubmit={handleSubmit}>
                   <Typography variant="h4" gutterBottom>
                     New Request
                   </Typography>
-                  <Divider />
-                  <Typography sx={{ mt: 2 }} variant="h5" gutterBottom>
-                    Customer Information
-                  </Typography>
-
-                  <form onSubmit={handleSubmit}>
-                    <TextField
-                      sx={{ mr: "2%", width: "49%" }}
-                      required
-                      id="outlined-required"
-                      label="First Name"
-                      name="firstName"
-                      onChange={(event) => setFirstName(event.target.value)}
-                      value={checked ? firstName : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      sx={{ width: "49%" }}
-                      required
-                      id="outlined-required"
-                      label="Last Name"
-                      name="lastName"
-                      onChange={(event) => setLastName(event.target.value)}
-                      value={checked ? lastName : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <br />
-                    <TextField
-                      sx={{ mr: "2%", width: "40%" }}
-                      margin="normal"
-                      required
-                      id="outlined-required"
-                      label="Phone"
-                      name="contactPhone"
-                      onChange={(event) => setPhone(event.target.value)}
-                      value={checked ? phone : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-
-                    <TextField
-                      sx={{ width: "58%" }}
-                      margin="normal"
-                      required
-                      id="outlined-required"
-                      label="Email"
-                      name="contactEmail"
-                      onChange={(event) => setEmail(event.target.value)}
-                      value={checked ? email : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <br />
-                    <TextField
-                      sx={{ mr: "2%", width: "60%" }}
-                      margin="normal"
-                      required
-                      id="outlined-required"
-                      label="Address"
-                      name="contactPosition"
-                      onChange={(event) => setAddress(event.target.value)}
-                      value={checked ? address : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      sx={{ width: "38%" }}
-                      margin="normal"
-                      required
-                      id="outlined-required"
-                      label="Postcode"
-                      name="postcode"
-                      onChange={(event) => setPostCode(event.target.value)}
-                      value={checked ? postCode : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <br />
-                    <TextField
-                      sx={{ mr: "2%", width: "49%" }}
-                      margin="normal"
-                      required
-                      id="outlined-required"
-                      label="City"
-                      name="City"
-                      onChange={(event) => setCity(event.target.value)}
-                      value={checked ? address : ""}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      sx={{ width: "49%" }}
-                      margin="normal"
-                      required
-                      id="outlined-required"
-                      label="State"
-                      value={checked ? state : ""}
-                      InputLabelProps={{ shrink: true }}
-                      name="city"
-                      onChange={(event) => setState(event.target.value)}
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          color="secondary"
-                          name="saveAddress"
-                          value="yes"
-                          checked={checked}
-                          onChange={handleCheckboxChange}
-                        />
-                      }
-                      label="Use account information"
-                    />
-
-                    <Divider sx={{ mt: 3 }} />
+                  
+                    <Divider />
                     <Typography sx={{ mt: 2 }} variant="h5" gutterBottom>
                       Request Details
                     </Typography>
-                    <FormControl fullWidth>
+                    <FormControl sx={{ width: "40%" }}>
                       <InputLabel id="demo-simple-select-label">
                         Work Type
                       </InputLabel>
@@ -489,14 +378,38 @@ export default function DashboardContent() {
                     </Typography>
                     <TextField
                       fullWidth
-                      id="outlined-multiline-static"
+                      id="outlined-m<form onSubmit={handleSubmit}>ultiline-static"
                       label="Description"
                       multiline
                       rows={4}
+                      value={description}
+                      onChange={(event) => setDescription(event.target.value)}
                       defaultValue="Insert any relevant information about the job here"
                     />
+                    <TextField
+                      sx={{ width: "30%" }}
+                      margin="normal"
+                      required
+                      id="outlined-required"
+                      label="Start Date"
+                      name="date"
+                      onChange={(event) => setStartDate(event.target.value)}
+                      value={startDate}
+                      InputLabelProps={{ shrink: true }}
+                    />
                     <br />
-                    <br />
+                    <TextField
+                      sx={{ width: "30%" }}
+                      margin="normal"
+                      required
+                      id="outlined-required"
+                      label="End Date"
+                      name="date"
+                      onChange={(event) => setEndDate(event.target.value)}
+                      value={endDate}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                    <br /><br />
                     <Button
                       color="success"
                       fullWidth
@@ -504,6 +417,16 @@ export default function DashboardContent() {
                       variant="contained"
                     >
                       Submit New Work Request
+                    </Button>
+                    <br />
+                    <br />
+                    <Button
+                      color="primary"
+                      fullWidth
+                      onclick={redirect}
+                      variant="contained"
+                    >
+                      Back to Dashboard
                     </Button>
                   </form>
                   <Dialog
@@ -533,8 +456,7 @@ export default function DashboardContent() {
                         }}
                         id="alert-dialog-description"
                       >
-                        You have successfully created a service request{" "}
-                        {firstName}! The job has been broadcasted to Service
+                        You have successfully created a service request! The job has been broadcasted to Service
                         Providers in your area who will apply for the job
                         shortly. After this you can approve a particular service
                         provider and they'll get right to work! To see the
