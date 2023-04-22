@@ -8,7 +8,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
+import Divider from "@mui/material/Divider";``
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
@@ -19,9 +19,8 @@ import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import Chart from "../../components/Chart";
-import Deposits from "../../components/Deposits";
-import Account from "../../components/Account";
+
+//import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -41,24 +40,12 @@ import LayersIcon from "@mui/icons-material/Layers";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
 import withAuth from "../../components/router/withAuth";
+import HomeIcon from "@mui/icons-material/Home";
+import NewRequestPage from "./NewRequest/index";
+import CurrentRequestPage from "./CurrentRequest/index";
+import PastRequestsPage from "./PastRequests/index";
+import AccountPage from "../../components/Account";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Test The New Dashboard © "}
-      <Link color="inherit" href="/NewDashboad">
-        New Dashboard
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 
@@ -120,6 +107,8 @@ function CustomerDash() {
     setnewOpen(!newOpen);
   };
 
+  const [currentPage, setCurrentPage] = React.useState("Dashboard");
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -152,9 +141,12 @@ function CustomerDash() {
               Dashboard
             </Typography>
             <IconButton color="inherit">
-              <Link href="/Customer/account" color="inherit">
-                {<AccountCircleRoundedIcon fontSize="large" />}
-              </Link>
+              {
+                <AccountCircleRoundedIcon
+                  onClick={() => setCurrentPage("Account")}
+                  fontSize="large"
+                />
+              }
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -174,6 +166,12 @@ function CustomerDash() {
           <Divider />
           <List component="nav">
             <React.Fragment>
+              <ListItemButton onClick={() => setCurrentPage("Dashboard")}>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItemButton>
               <ListItemButton onClick={handleClick}>
                 <ListItemIcon>
                   <InboxIcon />
@@ -183,19 +181,23 @@ function CustomerDash() {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <Link href="./Customer/NewRequest" passHref legacyBehavior>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText primary="New Request" />
-                    </ListItemButton>
-                  </Link>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    onClick={() => setCurrentPage("NewRequest")}
+                  >
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="New Request" />
+                  </ListItemButton>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    onClick={() => setCurrentPage("CurrentRequests")}
+                  >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
@@ -205,7 +207,10 @@ function CustomerDash() {
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    onClick={() => setCurrentPage("PastRequest")}
+                  >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
@@ -266,38 +271,26 @@ function CustomerDash() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Chart />
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ pt: 4 }} />
+            {currentPage === "NewRequest" && <NewRequestPage />}
+            {currentPage === "CurrentRequests" && <CurrentRequestPage />}
+            {currentPage === "PastRequest" && <PastRequestsPage />}
+            {currentPage === "Account" && <AccountPage />}
           </Container>
         </Box>
       </Box>
+      <Paper
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: 700,
+                  }}
+                >
+        <Typography variant="h4" gutterBottom>
+          Home Page - Dashboard
+        </Typography>
+
+      </Paper>
     </ThemeProvider>
   );
 }
