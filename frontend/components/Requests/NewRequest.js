@@ -68,8 +68,25 @@ export default function NewRequest() {
     setnewOpen(!newOpen);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    var startDateParts = startDate.split("/");
+    var endDateParts = endDate.split("/");
+
+    var submitStartDateFormat =
+      startDateParts[startDateParts.length - 1] +
+      "-" +
+      startDateParts[startDateParts.length - 2] +
+      "-" +
+      startDateParts[startDateParts.length - 3];
+
+    var submitEndDateFormat =
+      endDateParts[endDateParts.length - 1] +
+      "-" +
+      endDateParts[endDateParts.length - 2] +
+      "-" +
+      endDateParts[endDateParts.length - 3];
 
     //TODO take the token and get the customer subscription type and then display cost
     // console.log(token);
@@ -82,10 +99,9 @@ export default function NewRequest() {
       alert("Start Date cannot be after or the same as End Date");
     } else {
       try {
-
         //post request
-        instance
-          .post(`http://localhost:8080/api/service-requests/create`, {
+        await instance
+          .post("http://localhost:8080/api/service-requests/create", {
             // serviceType: WorkType.toUpperCase(),
             // //scheduledStartDate: startDate.replaceAll("/", "-"),
             // //scheduledEndDate: endDate.replaceAll("/", "-"),
@@ -93,17 +109,15 @@ export default function NewRequest() {
             // scheduledEndDate: [2023, 11, 20],
             // cost: 10000.00,
             // description: description,
-
-            serviceType: "POOL_CLEANING",
-            requestedDate: [2023, 4, 22],
-            requestedTime: [16, 54, 14, 240405300],
-            scheduledStartDate: [2023, 11, 20],
-            scheduledStartTime: [9, 0],
-            scheduledEndDate: [2023, 11, 22],
-            scheduledEndTime: [17, 0],
-            status: "CREATED",
             cost: 10000.0,
-            description: "Poo poo",
+            description: description,
+            dateTimeRange: {
+              startDate: submitStartDateFormat,
+              startTime: "9:00am",
+              endDate: submitEndDateFormat,
+              endTime: "5:00pm",
+              serviceType: WorkType,
+            },
           })
           .then((res) => {
             setFinalOpen(true);
@@ -116,8 +130,6 @@ export default function NewRequest() {
 
   return (
     <React.Fragment>
-
-    
       <Paper
         sx={{
           p: 2,
@@ -199,7 +211,7 @@ export default function NewRequest() {
           <Button
             color="primary"
             fullWidth
-            onclick={redirect}
+            onClick={redirect}
             variant="contained"
           >
             Back to Dashboard

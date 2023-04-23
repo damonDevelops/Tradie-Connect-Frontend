@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
-import { TextField } from "@mui/material";
+import { Link, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -15,9 +15,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { useEffect } from "react";
-import {Stack} from "@mui/material";
-import {Snackbar} from "@mui/material";
-import {Alert} from "@mui/material";
+import { Stack } from "@mui/material";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 //import { DataGrid } from "@mui/x-data-grid";
 
 const theme = createTheme();
@@ -27,12 +27,12 @@ export default function CurrentRequest() {
   const [data, setData] = useState([]);
   const [sortModel, setSortModel] = React.useState([
     {
-      field: 'id',
-      sort: 'desc',
+      field: "id",
+      sort: "desc",
     },
   ]);
-  
-  const [requests, setRequests] = useState('');
+
+  const [requests, setRequests] = useState("");
 
   const [requestID, setRequestID] = useState("");
   const [requestType, setRequestType] = useState("");
@@ -41,7 +41,6 @@ export default function CurrentRequest() {
   const [requestEndDate, setRequestEndDate] = useState("");
   const [requestCost, setRequestCost] = useState("");
   const [requestDescription, setRequestDescription] = useState("");
-
 
   useEffect(() => {
     fetchData();
@@ -54,13 +53,13 @@ export default function CurrentRequest() {
   const fetchData = async () => {
     try {
       const response = await instance.get(
-        "http://localhost:8080/api/service-requests", {
-          responseType: "json"
+        "http://localhost:8080/api/service-requests/user-requests",
+        {
+          responseType: "json",
         }
-        
       );
-      console.log(response.data)
-
+      setData(response.data);
+      console.log(response.data);
 
       response.data.map((data) => {
         setRequestID(data.id);
@@ -117,6 +116,25 @@ export default function CurrentRequest() {
         <p>Request End Date: {requestEndDate}</p>
         <p>Request Cost: {requestCost}</p>
         <p>Request Description: {requestDescription}</p>
+      </Paper>
+
+      <Paper
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: 750,
+        }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Current Requests lists
+        </Typography>
+        {data.map((serviceRequests) => (
+          <Typography>
+            <Link>id:{serviceRequests.id}</Link>
+            Service Type: {serviceRequests.serviceType}
+          </Typography>
+        ))}
       </Paper>
     </ThemeProvider>
   );
