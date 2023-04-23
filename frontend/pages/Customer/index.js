@@ -46,7 +46,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import NewRequestPage from "./NewRequest/index";
 import CurrentRequestPage from "./CurrentRequest/index";
 import PastRequestsPage from "./PastRequests/index";
-import AccountPage from "../../components/Account";
+import AccountPage from "../../components/Account/Account";
 import DashboardPage from "./Dashboard/index";
 
 const drawerWidth = 240;
@@ -152,6 +152,15 @@ function CustomerDash(props) {
                 }
               </Link>
             </IconButton>
+            <IconButton color="inherit">
+              <Link href="/Customer/NewRequest" color="inherit">
+                {
+                  <AccountCircleRoundedIcon
+                    fontSize="small"
+                  />
+                }
+              </Link>
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -170,12 +179,14 @@ function CustomerDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
+              <Link href="./" color="inherit">
               <ListItemButton onClick={() => setCurrentPage(" ")}>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItemButton>
+              </Link>
               <ListItemButton onClick={handleClick}>
                 <ListItemIcon>
                   <InboxIcon />
@@ -185,15 +196,16 @@ function CustomerDash(props) {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
+                <Link href="/Customer/account" color="inherit">
                   <ListItemButton
                     sx={{ pl: 4 }}
-                    onClick={() => setCurrentPage("NewRequest")}
                   >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
                     <ListItemText primary="New Request" />
                   </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>

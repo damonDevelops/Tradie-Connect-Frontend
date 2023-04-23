@@ -114,8 +114,7 @@ export default function NewRequest() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <React.Fragment>
       <Paper
         sx={{
           p: 2,
@@ -256,6 +255,6 @@ export default function NewRequest() {
           </DialogActions>
         </Dialog>
       </Paper>
-    </ThemeProvider>
+    </React.Fragment>
   );
 }

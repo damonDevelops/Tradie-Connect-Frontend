@@ -1,8 +1,7 @@
 // import statements
 import * as React from "react";
-import Account from "../../components/Account";
+import Account from "../../components/Account/Account";
 import CustomerDash from "./index";
-import { Paper } from "@mui/material";
 
 export default function AccountScreen() {
   return (

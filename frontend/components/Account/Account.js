@@ -19,9 +19,7 @@ import {Stack} from "@mui/material";
 import {Snackbar} from "@mui/material";
 import {Alert} from "@mui/material";
 
-const theme = createTheme();
-
-export default function NewRequest() {
+export default function Account() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -134,8 +132,6 @@ export default function NewRequest() {
 
   return (
     <React.Fragment>
-
-    
       <Paper
         sx={{
           p: 2,
