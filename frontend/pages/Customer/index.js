@@ -9,6 +9,7 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+``;
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
@@ -19,9 +20,8 @@ import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import Chart from "../../components/Chart";
-import Deposits from "../../components/Deposits";
-import Account from "../../components/Account";
+
+//import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -41,24 +41,13 @@ import LayersIcon from "@mui/icons-material/Layers";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
 import withAuth from "../../components/router/withAuth";
+import HomeIcon from "@mui/icons-material/Home";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Test The New Dashboard © "}
-      <Link color="inherit" href="/NewDashboad">
-        New Dashboard
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import NewRequestPage from "./NewRequest/index";
+import CurrentRequestPage from "./CurrentRequest/index";
+import PastRequestsPage from "./PastRequests/index";
+import AccountPage from "../../components/Account/Account";
+import DashboardPage from "./Dashboard/index";
 
 const drawerWidth = 240;
 
@@ -108,7 +97,7 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function CustomerDash() {
+function CustomerDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -153,7 +142,11 @@ function CustomerDash() {
             </Typography>
             <IconButton color="inherit">
               <Link href="/Customer/account" color="inherit">
-                {<AccountCircleRoundedIcon fontSize="large" />}
+                {
+                  <AccountCircleRoundedIcon
+                    fontSize="large"
+                  />
+                }
               </Link>
             </IconButton>
           </Toolbar>
@@ -174,6 +167,14 @@ function CustomerDash() {
           <Divider />
           <List component="nav">
             <React.Fragment>
+              <Link href="./" passHref legacyBehavior color="inherit">
+              <ListItemButton>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItemButton>
+              </Link>
               <ListItemButton onClick={handleClick}>
                 <ListItemIcon>
                   <InboxIcon />
@@ -183,42 +184,54 @@ function CustomerDash() {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <Link href="./Customer/NewRequest" passHref legacyBehavior>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText primary="New Request" />
-                    </ListItemButton>
+                <Link href="/Customer/NewRequest" passHref legacyBehavior color="inherit">
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="New Request" />
+                  </ListItemButton>
                   </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
+                  <Link href="/Customer/CurrentRequest" passHref legacyBehavior color="inherit">
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                  >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
                     <ListItemText primary="Current Requests" />
                   </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
+                  <Link href="/Customer/PastRequests" passHref legacyBehavior color="inherit">
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                  >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
                     <ListItemText primary="Past Requests" />
                   </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
+              <Link href="/Customer/account" passHref legacyBehavior color="inherit">
               <ListItemButton>
                 <ListItemIcon>
                   <ShoppingCartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Account Details" />
               </ListItemButton>
+              </Link>
               <ListItemButton>
                 <ListItemIcon>
                   <BarChartIcon />
@@ -266,35 +279,12 @@ function CustomerDash() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Chart />
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ pt: 4 }} />
+            {/* {currentPage === "Dashboard" && <DashboardPage />}
+            {currentPage === "NewRequest" && <NewRequestPage />}
+            {currentPage === "CurrentRequests" && <CurrentRequestPage />}
+            {currentPage === "PastRequest" && <PastRequestsPage />}
+            {currentPage === "Account" && <AccountPage />} */}
+            {props.children}
           </Container>
         </Box>
       </Box>

@@ -1,14 +1,12 @@
 // import statements
 import * as React from "react";
-import NewRequest from "../../../components/Requests/NewRequest";
+import CurrentRequest from "../../../components/Requests/CurrentRequest";
 import CustomerDash from "../index";
 
-
-
-export default function NewRequestScreen() {
+export default function CurrentRequestScreen() {
   return (
     <CustomerDash>
-      <NewRequest />
+      <CurrentRequest />
     </CustomerDash>
   );
 }

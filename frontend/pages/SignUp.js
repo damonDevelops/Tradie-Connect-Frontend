@@ -1,7 +1,7 @@
 //import statements
 import { useEffect, useState } from "react";
-import ServiceProviderSignUp from "../components/ServiceProviderSignUp";
-import CustomerSignUp from "../components/CustomerSignUp";
+import ServiceProviderSignUp from "../components/SignUp/ServiceProviderSignUp";
+import CustomerSignUp from "../components/SignUp/CustomerSignUp";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import CssBaseline from "@mui/material/CssBaseline";

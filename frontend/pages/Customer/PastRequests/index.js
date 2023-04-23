@@ -1,14 +1,13 @@
 // import statements
 import * as React from "react";
-import NewRequest from "../../../components/Requests/NewRequest";
+import PastRequest from "../../../components/Requests/PastRequests";
 import CustomerDash from "../index";
 
 
-
-export default function NewRequestScreen() {
+export default function PastRequestScreen() {
   return (
     <CustomerDash>
-      <NewRequest />
+      <PastRequest />
     </CustomerDash>
   );
 }
