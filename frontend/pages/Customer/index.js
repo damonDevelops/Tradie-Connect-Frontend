@@ -8,7 +8,8 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";``
+import Divider from "@mui/material/Divider";
+``;
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
@@ -41,11 +42,12 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
 import withAuth from "../../components/router/withAuth";
 import HomeIcon from "@mui/icons-material/Home";
+
 import NewRequestPage from "./NewRequest/index";
 import CurrentRequestPage from "./CurrentRequest/index";
 import PastRequestsPage from "./PastRequests/index";
 import AccountPage from "../../components/Account";
-
+import DashboardPage from "./Dashboard/index";
 
 const drawerWidth = 240;
 
@@ -95,7 +97,7 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
-function CustomerDash() {
+function CustomerDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -141,12 +143,14 @@ function CustomerDash() {
               Dashboard
             </Typography>
             <IconButton color="inherit">
-              {
-                <AccountCircleRoundedIcon
-                  onClick={() => setCurrentPage("Account")}
-                  fontSize="large"
-                />
-              }
+              <Link href="/Customer/account" color="inherit">
+                {
+                  <AccountCircleRoundedIcon
+                    // onClick={() => setCurrentPage("Account")}
+                    fontSize="large"
+                  />
+                }
+              </Link>
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -166,7 +170,7 @@ function CustomerDash() {
           <Divider />
           <List component="nav">
             <React.Fragment>
-              <ListItemButton onClick={() => setCurrentPage("Dashboard")}>
+              <ListItemButton onClick={() => setCurrentPage(" ")}>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
@@ -271,26 +275,15 @@ function CustomerDash() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            {/* {currentPage === "Dashboard" && <DashboardPage />}
             {currentPage === "NewRequest" && <NewRequestPage />}
             {currentPage === "CurrentRequests" && <CurrentRequestPage />}
             {currentPage === "PastRequest" && <PastRequestsPage />}
-            {currentPage === "Account" && <AccountPage />}
+            {currentPage === "Account" && <AccountPage />} */}
+            {props.children}
           </Container>
         </Box>
       </Box>
-      <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 700,
-                  }}
-                >
-        <Typography variant="h4" gutterBottom>
-          Home Page - Dashboard
-        </Typography>
-
-      </Paper>
     </ThemeProvider>
   );
 }

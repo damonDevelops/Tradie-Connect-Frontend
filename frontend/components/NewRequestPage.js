@@ -82,7 +82,6 @@ export default function NewRequest() {
       alert("Start Date cannot be after or the same as End Date");
     } else {
       try {
-
         //post request
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
