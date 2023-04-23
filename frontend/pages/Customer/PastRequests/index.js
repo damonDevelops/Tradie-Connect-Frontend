@@ -1,30 +1,13 @@
+// import statements
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import PastRequest from "../../../components/Requests/PastRequests";
+import CustomerDash from "../index";
 
 
-
-const theme = createTheme();
-
-export default function PastRequest() {
+export default function PastRequestScreen() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 700,
-                  }}
-                >
-        <Typography variant="h4" gutterBottom>
-          Past Requests
-        </Typography>
-
-      </Paper>
-    </ThemeProvider>
+    <CustomerDash>
+      <PastRequest />
+    </CustomerDash>
   );
 }

@@ -109,8 +109,6 @@ function CustomerDash(props) {
     setnewOpen(!newOpen);
   };
 
-  const [currentPage, setCurrentPage] = React.useState("Dashboard");
-
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -146,17 +144,7 @@ function CustomerDash(props) {
               <Link href="/Customer/account" color="inherit">
                 {
                   <AccountCircleRoundedIcon
-                    // onClick={() => setCurrentPage("Account")}
                     fontSize="large"
-                  />
-                }
-              </Link>
-            </IconButton>
-            <IconButton color="inherit">
-              <Link href="/Customer/NewRequest" color="inherit">
-                {
-                  <AccountCircleRoundedIcon
-                    fontSize="small"
                   />
                 }
               </Link>
@@ -179,8 +167,8 @@ function CustomerDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
-              <Link href="./" color="inherit">
-              <ListItemButton onClick={() => setCurrentPage(" ")}>
+              <Link href="./" passHref legacyBehavior color="inherit">
+              <ListItemButton>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
@@ -196,7 +184,7 @@ function CustomerDash(props) {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                <Link href="/Customer/account" color="inherit">
+                <Link href="/Customer/NewRequest" passHref legacyBehavior color="inherit">
                   <ListItemButton
                     sx={{ pl: 4 }}
                   >
@@ -210,36 +198,40 @@ function CustomerDash(props) {
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
+                  <Link href="/Customer/CurrentRequest" passHref legacyBehavior color="inherit">
                   <ListItemButton
                     sx={{ pl: 4 }}
-                    onClick={() => setCurrentPage("CurrentRequests")}
                   >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
                     <ListItemText primary="Current Requests" />
                   </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
+                  <Link href="/Customer/PastRequests" passHref legacyBehavior color="inherit">
                   <ListItemButton
                     sx={{ pl: 4 }}
-                    onClick={() => setCurrentPage("PastRequest")}
                   >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
                     <ListItemText primary="Past Requests" />
                   </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
+              <Link href="/Customer/account" passHref legacyBehavior color="inherit">
               <ListItemButton>
                 <ListItemIcon>
                   <ShoppingCartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Account Details" />
               </ListItemButton>
+              </Link>
               <ListItemButton>
                 <ListItemIcon>
                   <BarChartIcon />

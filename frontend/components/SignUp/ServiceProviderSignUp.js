@@ -1,4 +1,4 @@
-//import statements
+//import statements for mui components
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
@@ -6,12 +6,12 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Autocomplete } from "@mui/material";
+import PropTypes from "prop-types";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -19,7 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
-import postCodeToState from "./postcodeToState";
+import postCodeToState from "../functional_components/postcodeToState";
 import axios from "axios";
 
 //Alert component
@@ -30,40 +30,19 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 //default function for the customer sign up page
 export default function CustomerSignUp() {
   //state variables for the alerts
-  const [postCodeAlertOpen, setPostCodeOpen] = React.useState(false);
-  const [emailAlertOpen, setEmailOpen] = React.useState(false);
-  const [successfulSignUpDialogOpen, setSuccessfulSignUp] =
-    React.useState(false);
-  const [passwordAlertOpen, setPasswordOpen] = React.useState(false);
-  const [failedSignUpOpen, setFailedSignUp] = React.useState(false);
-  const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
-
-  const timer = React.useRef();
+  const [postCodeOpen, setPostCodeOpen] = React.useState(false);
+  const [emailOpen, setEmailOpen] = React.useState(false);
+  const [ABNOpen, setABNOpen] = React.useState(false);
+  const [successfulSignUp, setSuccessfulSignUp] = React.useState(false);
+  const [passwordOpen, setPasswordOpen] = React.useState(false);
+  const [failedSignUp, setFailedSignUp] = React.useState(false);
+  const [finalOpen, setFinalOpen] = React.useState(false);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
-  const [paymentDialogOpen, setPaymentOpen] = React.useState(false);
 
-  //Card Information
-  const [cardNumber, setCardNumber] = React.useState("");
-  const [cardName, setCardName] = React.useState("");
+  //state variable for the timer
+  const timer = React.useRef();
 
-  const [expiryDate, setExpiryDate] = React.useState("");
-  //const [expiryDate, setExpiryDate] = React.useState(dayjs());
-  const [cvv, setCVV] = React.useState("");
-  const [flag, setFlag] = React.useState(true);
-  const [noPayment, setNoPaymentOpen] = React.useState(false);
-  const [hasCustomerPaid, setHasCustomerPaid] = React.useState(false);
-
-  //function to close the add payment method dialog
-  const closeCard = () => {
-    //check if all the fields are filled
-    if (cardName && cardNumber && expiryDate && cvv) {
-      setPaymentOpen(false);
-      setFlag(!flag);
-      setHasCustomerPaid(true);
-    }
-  };
-
-  //function to handle the alerts
+  //function to handle the timer
   React.useEffect(() => {
     return () => {
       clearTimeout(timer.current);
@@ -72,7 +51,9 @@ export default function CustomerSignUp() {
 
   //function to handle the alerts
   const handleAlert = (warning_type) => {
-    if (warning_type == "email") {
+    if (warning_type == "abn") {
+      setABNOpen(true);
+    } else if (warning_type == "email") {
       setEmailOpen(true);
     } else if (warning_type == "postcode") {
       setPostCodeOpen(true);
@@ -84,16 +65,10 @@ export default function CustomerSignUp() {
       setFailedSignUp(true);
     } else if (warning_type == "final") {
       setFinalOpen(true);
-    } else if (warning_type == "noPayment") {
-      setNoPaymentOpen(true);
     }
   };
 
-  const handlePaymentOpen = () => {
-    setPaymentOpen(true);
-  };
-
-  //function to handle the sign up
+  //function to handle the backdrop redirect
   const redirect = () => {
     window.location.href = "../SignIn";
   };
@@ -103,56 +78,35 @@ export default function CustomerSignUp() {
     if (reason === "clickaway") {
       return;
     }
-
     setBackdropOpen(false);
+    setABNOpen(false);
     setPostCodeOpen(false);
     setEmailOpen(false);
     setSuccessfulSignUp(false);
     setPasswordOpen(false);
     setFailedSignUp(false);
-    setPaymentOpen(false);
-  };
-
-  //function to handle the payment dialog
-  const handlePaymentClose = (event, reason) => {
-    if (reason && reason == "backdropClick") return;
-    setPaymentOpen(false);
-  };
-
-  //function to check if the card information is valid
-  const validateCardInfo = () => {
-    if (cardName && cardNumber && expiryDate && cvv) {
-      return true;
-    }
-  };
-
-  //function to check if the customer has paid
-  const paymentPending = () => {
-    if (hasCustomerPaid) {
-      return true;
-    }
   };
 
   //state variables for the form
-  const [returnMemberType, setMembershipType] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [returnMembership, setMembership] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [abn, setABN] = useState("");
   const [email, setEmail] = useState("");
-  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postcode, setPostcode] = useState("");
   const [returnState, setState] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [returnTrade, setTradeType] = useState("");
 
   //regex for the postcode validation
   const postcodeRegex = new RegExp("^(0[289][0-9]{2})|([1-9][0-9]{3})");
+  const abnRegex = new RegExp("^[0-9]{11}$");
 
   //limit the number of characters in the postcode field
   const postcodeLimitChar = 4;
-  const cardNumberLimit = 16;
-  const cvvLimit = 3;
 
   //function to handle the postcode change
   const handlePostcodeChange = (event) => {
@@ -162,24 +116,30 @@ export default function CustomerSignUp() {
     }
   };
 
-  //function to handle the card number change to make sure it's less than 16 characters
-  const handleCardNumberChange = (event) => {
-    if (event.target.value.toString().length <= cardNumberLimit) {
-      setCardNumber(event.target.value);
-    }
-  };
+  // const to hold the state options
+  const stateOptions = [
+    { value: "NSW", label: "NSW" },
+    { value: "VIC", label: "VIC" },
+    { value: "QLD", label: "QLD" },
+    { value: "WA", label: "WA" },
+    { value: "SA", label: "SA" },
+    { value: "TAS", label: "TAS" },
+    { value: "NT", label: "NT" },
+  ];
 
-  //function to handle the cvv change to make sure it's less than 3 characters
-  const handleCVVChange = (event) => {
-    if (event.target.value.toString().length <= cvvLimit) {
-      setCVV(event.target.value);
-    }
-  };
-
-  //const to hold the trade options
+  //const to hold the membership options
   const membershipOptions = [
     { value: "Subscription", label: "Subscription" },
-    { value: "Pay on Demand", label: "Pay on Demand" },
+    { value: "Commission", label: "Commission" },
+  ];
+
+  //const to hold the trade options
+  const serviceAreas = [
+    { value: "TREE_REMOVAL", label: "Tree Removal" },
+    { value: "ROOF_CLEANING", label: "Roof Cleaning" },
+    { value: "FENCE_INSTALLATION", label: "Fence Installation" },
+    { value: "OVEN_REPAIRS", label: "Oven Repair" },
+    { value: "POOL_CLEANING", label: "Pool Cleaning" },
   ];
 
   //function to handle the form submission
@@ -188,7 +148,9 @@ export default function CustomerSignUp() {
     event.preventDefault();
 
     // data validation checks for alert popups
-    if (validator.isEmail(event.target.email.value) == false) {
+    if (!abnRegex.test(event.target.abn.value)) {
+      handleAlert("abn");
+    } else if (validator.isEmail(event.target.email.value) == false) {
       handleAlert("email");
     } else if (!postcodeRegex.test(event.target.postcode.value)) {
       handleAlert("postcode");
@@ -196,43 +158,32 @@ export default function CustomerSignUp() {
       event.target.password.value != event.target.confirmPassword.value
     ) {
       handleAlert("password");
-    } else if (cardNumber.length == 0) {
-      handleAlert("noPayment");
     } else {
       event.preventDefault();
 
       // Get data from the form.
       const returnData = {
-        //given data
-        firstName: event.target.firstName.value,
-        lastName: event.target.lastName.value,
-
+        companyName: event.target.companyName.value,
         email: event.target.email.value,
         password: event.target.password.value,
-        phoneNumber: newPhoneNumber,
+        phoneNumber: phoneNumber.textmask,
         streetAddress: event.target.address.value,
         city: event.target.city.value,
         state: returnState,
-        postCode: event.target.postcode.value.toString(),
+        postcode: event.target.postcode.value,
+        serviceArea: returnTrade,
+        abn: event.target.abn.value,
         membership: {
           membershipType: "ACC_CREATED",
-          description: returnMemberType,
+          description: returnMembership,
         },
-
-        //CARD INFORMATION
-        // cardNumber: cardNumber,
-        // cardName: cardName,
-        // expiryDate: dayjs(expiryDate).format("MM/YY"),
-        // cvv: cvv,
       };
-      // console.log(JSON.stringify(returnData));
-      // alert(JSON.stringify(returnData));
 
       // Send the data to the server in JSON format.
       const JSONdata = JSON.stringify(returnData);
 
       // API endpoint where we send form data.
-      const endpoint = `http://localhost:8080/api/customers`;
+      const endpoint = `http://localhost:8080/api/auth/SignUp`;
 
       // Form the request for sending data to the server.
       const options = {
@@ -266,9 +217,6 @@ export default function CustomerSignUp() {
     }
   };
 
-  // handler for axios
-  // note: still throws error when accessing through event.target.xx.value
-  // Error: (Cannot read properties of undefined (reading 'value'))
   const handleRegister = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
@@ -286,9 +234,9 @@ export default function CustomerSignUp() {
           {
             email: email,
             password: password,
-            role: "ROLE_CUSTOMER",
-            firstName: firstName,
-            lastName: lastName,
+            role: "ROLE_SERVICE_PROVIDER",
+            companyName: companyName,
+            abn: abn,
             phoneNumber: newPhoneNumber,
             streetAddress: address,
             suburb: {
@@ -323,43 +271,61 @@ export default function CustomerSignUp() {
             isOptionEqualToValue={(option, value) =>
               option.value === value.value
             }
-            onInputChange={(event, newInputValue) => {
-              setMembershipType(newInputValue);
-            }}
             disablePortal
             id="combo-box-demo"
+            onInputChange={(event, newMembership) => {
+              setMembership(newMembership);
+            }}
             options={membershipOptions}
             renderInput={(params) => (
               <TextField required {...params} label="Membership Type" />
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
+          <Autocomplete
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
+            disablePortal
+            id="combo-box-demo"
+            onInputChange={(event, newTrade) => {
+              setTradeType(newTrade);
+            }}
+            options={serviceAreas}
+            renderInput={(params) => (
+              <TextField required {...params} label="Service Area " />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12}>
           <TextField
             autoComplete="given-name"
-            name="firstName"
-            onChange={(event) => setFirstName(event.target.value)}
-            value={firstName}
+            name="companyName"
+            onChange={(event) => setCompanyName(event.target.value)}
+            value={companyName}
             required
             fullWidth
-            id="firstName"
-            label="First Name"
+            id="companyName"
+            label="Company  Name"
             autoFocus
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <TextField
             required
+            type={"number"}
             fullWidth
-            id="lastName"
-            label="Last Name"
-            name="lastName"
-            onChange={(event) => setLastName(event.target.value)}
-            value={lastName}
+            id="abn"
+            helperText="Eleven Digit"
+            label="ABN"
+            name="abn"
+            onChange={(event) => setABN(event.target.value)}
+            value={abn}
             autoComplete="family-name"
           />
         </Grid>
-        <Grid item sm={7}>
+        <Grid item xs={12} sm={7.5}>
           <TextField
             required
             fullWidth
@@ -371,7 +337,7 @@ export default function CustomerSignUp() {
             autoComplete="email"
           />
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={4.5}>
           <TextField
             required
             fullWidth
@@ -460,102 +426,18 @@ export default function CustomerSignUp() {
             autoComplete="confirmPassword"
           />
         </Grid>
-        <Grid item xs={12}>
-          <Button
-            onClick={handlePaymentOpen}
-            disabled={!flag}
-            fullWidth
-            variant="contained"
-            color={flag ? "primary" : "success"}
-            sx={{
-              "&.Mui-disabled": {
-                background: "#CEEAD0",
-                color: "white",
-              },
-            }}
-          >
-            {flag ? "Add Payment Method" : "Payment Method Added"}
-          </Button>
-        </Grid>
-        <Dialog open={paymentDialogOpen} onClose={handlePaymentClose}>
-          <DialogTitle>Payment Method</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  id="cardName"
-                  label="Name on Card"
-                  onChange={(event) => setCardName(event.target.value)}
-                  value={cardName}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  type="number"
-                  fullWidth
-                  id="cardNumber"
-                  label="Card Number"
-                  value={cardNumber}
-                  onChange={(event) => handleCardNumberChange(event)}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  id="expiryDate"
-                  label="Expiry Date"
-                  onChange={(event) => setExpiryDate(event.target.value)}
-                  value={expiryDate}
-                  required
-                />
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker", "DatePicker"]}>
-                    <DatePicker
-                      label={"Expiry Date"}
-                      views={["month", "year"]}
-                      value={expiryDate}
-                      minDate={dayjs()}
-                      onChange={(event) => setExpiryDate(event)}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider> */}
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  type="number"
-                  fullWidth
-                  id="cvv"
-                  label="CVV"
-                  value={cvv}
-                  onChange={(event) => handleCVVChange(event)}
-                  required
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeCard} disabled={!validateCardInfo()}>
-              Add Payment Method
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Grid item xs={6}>
+        <Grid item>
           <Button
             //type="submit"
             onClick={handleRegister}
+            fullWidth
             variant="contained"
-            disabled={!paymentPending()}
+            sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
           </Button>
         </Grid>
+
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={backdropOpen}
@@ -566,7 +448,7 @@ export default function CustomerSignUp() {
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
-            open={emailAlertOpen}
+            open={emailOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -579,7 +461,7 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
           <Snackbar
-            open={postCodeAlertOpen}
+            open={postCodeOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -591,22 +473,21 @@ export default function CustomerSignUp() {
               Invalid Postcode, please try again
             </Alert>
           </Snackbar>
-
           <Snackbar
-            open={successfulSignUpDialogOpen}
+            open={ABNOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
             <Alert
               onClose={handleClose}
-              severity="success"
+              severity="warning"
               sx={{ width: "100%" }}
             >
-              Sign Up Successful! Redirecting to Sign In Page.
+              Invalid ABN Format, please try again
             </Alert>
           </Snackbar>
           <Snackbar
-            open={passwordAlertOpen}
+            open={passwordOpen}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -619,20 +500,20 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
           <Snackbar
-            open={noPayment}
+            open={successfulSignUp}
             autoHideDuration={6000}
             onClose={handleClose}
           >
             <Alert
               onClose={handleClose}
-              severity="warning"
+              severity="success"
               sx={{ width: "100%" }}
             >
-              No Payment Method Entered, please enter one and try again.
+              Sign Up Successful! Redirecting to Sign In Page.
             </Alert>
           </Snackbar>
           <Snackbar
-            open={failedSignUpOpen}
+            open={failedSignUp}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -645,7 +526,6 @@ export default function CustomerSignUp() {
             </Alert>
           </Snackbar>
         </Stack>
-
         <Grid container justifyContent="flex-end">
           <Grid item>
             <Link href="/SignIn" variant="body2">
@@ -653,57 +533,56 @@ export default function CustomerSignUp() {
             </Link>
           </Grid>
         </Grid>
-
-        <Dialog
-          open={finalAlertDialogOpen}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+      </Grid>
+      <Dialog
+        open={finalOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            backgroundColor: "#4caf50",
+            color: "white",
+          }}
+          id="alert-dialog-title"
         >
-          <DialogTitle
+          {" Success!"} <TaskAltIcon />
+        </DialogTitle>
+        <DialogContent
+          style={{
+            backgroundColor: "#4caf50",
+          }}
+        >
+          <DialogContentText
             style={{
               backgroundColor: "#4caf50",
               color: "white",
             }}
-            id="alert-dialog-title"
+            id="alert-dialog-description"
           >
-            {" Success!"} <TaskAltIcon />
-          </DialogTitle>
-          <DialogContent
+            Your account was successfully created, you will be redirected to the
+            sign in page now where you can enter your details to log in. Thanks
+            for joining us {companyName}!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{
+            backgroundColor: "#4caf50",
+          }}
+        >
+          <Button
             style={{
               backgroundColor: "#4caf50",
+              color: "white",
             }}
+            onClick={redirect}
+            autoFocus
           >
-            <DialogContentText
-              style={{
-                backgroundColor: "#4caf50",
-                color: "white",
-              }}
-              id="alert-dialog-description"
-            >
-              Your account was successfully created, you will be redirected to
-              the sign in page now where you can enter your details to log in.
-              Thanks for joining us {firstName}!
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            style={{
-              backgroundColor: "#4caf50",
-            }}
-          >
-            <Button
-              style={{
-                backgroundColor: "#4caf50",
-                color: "white",
-              }}
-              onClick={redirect}
-              autoFocus
-            >
-              Sign In
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Grid>
+            Sign In
+          </Button>
+        </DialogActions>
+      </Dialog>
     </form>
   );
 }
