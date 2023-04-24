@@ -1,6 +1,3 @@
-//TODO: Move Dashboard to a component at some point
-
-
 // import statements
 import * as React from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
@@ -23,7 +20,7 @@ import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 
 //import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
@@ -47,6 +44,8 @@ import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
 import withAuth from "../../components/router/withAuth";
 import HomeIcon from "@mui/icons-material/Home";
 import { blue } from "@mui/material/colors";
+
+import Home from "./CustomerHome";
 
 const drawerWidth = 240;
 
@@ -151,13 +150,8 @@ function CustomerDash(props) {
             </IconButton>
             <IconButton color="inherit">
               {/* TODO: add logout functionality to this link */}
-              <Link href="/Customer" color="inherit">
-                {
-                  <LogoutIcon
-                    style={{ color: "#FFFFFF" }}
-                    fontSize="large"
-                  />
-                }
+              <Link href="/" color="inherit">
+                {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
               </Link>
             </IconButton>
           </Toolbar>
@@ -178,7 +172,7 @@ function CustomerDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
-              <Link href="./" passHref legacyBehavior color="inherit">
+              <Link href="/Customer" passHref legacyBehavior color="inherit">
                 <ListItemButton>
                   <ListItemIcon>
                     <HomeIcon />
@@ -289,7 +283,7 @@ function CustomerDash(props) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {props.children}
+            {props.children ? props.children : <Home />}
           </Container>
         </Box>
       </Box>
