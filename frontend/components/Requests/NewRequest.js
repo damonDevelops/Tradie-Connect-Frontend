@@ -184,7 +184,7 @@ export default function NewRequest() {
         //post request
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
-            cost: 1000.0,
+            cost: diffDays * multiplier + 1000,
             description: description,
             dateTimeRange: {
               startDate: submitStartDateFormat,
@@ -280,7 +280,7 @@ export default function NewRequest() {
           <br />
           {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
           {membershipType == "PAY_ON_DEMAND" && (
-            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: ${diffDays * multiplier}</Typography>
+            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: ${diffDays * multiplier + 1000}</Typography>
           )}
           {membershipType == "CLIENT_SUBSCRIPTION" && (
             <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: $0, you're a loyal subscriber!</Typography>
