@@ -1,3 +1,6 @@
+//TODO: Move Dashboard to a component at some point
+
+
 // import statements
 import * as React from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
@@ -148,7 +151,7 @@ function CustomerDash(props) {
             </IconButton>
             <IconButton color="inherit">
               {/* TODO: add logout functionality to this link */}
-              <Link href="/" color="inherit">
+              <Link href="/Customer" color="inherit">
                 {
                   <LogoutIcon
                     style={{ color: "#FFFFFF" }}

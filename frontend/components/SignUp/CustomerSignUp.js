@@ -1,4 +1,5 @@
 //import statements
+//TODO: Change the alert system to a single alert, see NewRequest for implementation example
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
@@ -183,94 +184,10 @@ export default function CustomerSignUp() {
     { value: "Pay on Demand", label: "Pay on Demand" },
   ];
 
-  //function to handle the form submission
-  const handleSubmit = async (event) => {
-    // Prevent the default form submission (reload)
-    event.preventDefault();
-
-    // data validation checks for alert popups
-    if (validator.isEmail(event.target.email.value) == false) {
-      handleAlert("email");
-    } else if (!postcodeRegex.test(event.target.postcode.value)) {
-      handleAlert("postcode");
-    } else if (
-      event.target.password.value != event.target.confirmPassword.value
-    ) {
-      handleAlert("password");
-    } else if (cardNumber.length == 0) {
-      handleAlert("noPayment");
-    } else {
-      event.preventDefault();
-
-      // Get data from the form.
-      const returnData = {
-        //given data
-        firstName: event.target.firstName.value,
-        lastName: event.target.lastName.value,
-
-        email: event.target.email.value,
-        password: event.target.password.value,
-        phoneNumber: newPhoneNumber,
-        streetAddress: event.target.address.value,
-        city: event.target.city.value,
-        state: returnState,
-        postCode: event.target.postcode.value.toString(),
-        membership: {
-          membershipType: "ACC_CREATED",
-          description: returnMemberType,
-        },
-
-        //CARD INFORMATION
-        // cardNumber: cardNumber,
-        // cardName: cardName,
-        // expiryDate: dayjs(expiryDate).format("MM/YY"),
-        // cvv: cvv,
-      };
-      // console.log(JSON.stringify(returnData));
-      // alert(JSON.stringify(returnData));
-
-      // Send the data to the server in JSON format.
-      const JSONdata = JSON.stringify(returnData);
-
-      // API endpoint where we send form data.
-      const endpoint = `http://localhost:8080/api/customers`;
-
-      // Form the request for sending data to the server.
-      const options = {
-        // The method is POST because we are sending data.
-        method: "POST",
-        // Tell the server we're sending JSON.
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Body of the request is the JSON data we created above.
-        body: JSONdata,
-      };
-
-      // Send the form data to our forms API on Vercel and get a response.
-      const response = await fetch(endpoint, options);
-
-      // If the response is good, show the success message,
-      //A loading symbol will go for 5 seconds (can be reduced)
-      //and then the user will be redirected to the sign in page
-      if (response.status == 200) {
-        setBackdropOpen(true);
-        timer.current = window.setTimeout(() => {
-          setBackdropOpen(false);
-          handleAlert("final");
-        }, 3000);
-
-        // Redirect to the sign in page
-      } else {
-        handleAlert("error");
-      }
-    }
-  };
-
   // handler for axios
   // note: still throws error when accessing through event.target.xx.value
   // Error: (Cannot read properties of undefined (reading 'value'))
-  const handleRegister = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
       handleAlert("email");
@@ -297,6 +214,11 @@ export default function CustomerSignUp() {
               state: returnState,
             },
             postCode: postcode,
+            membership: {
+              membershipType: returnMemberType,
+              "price": 49.99,
+              "description": "Yearly customer membership"
+            }
           }
         );
         setBackdropOpen(true);
@@ -325,7 +247,16 @@ export default function CustomerSignUp() {
               option.value === value.value
             }
             onInputChange={(event, newInputValue) => {
-              setMembershipType(newInputValue);
+              if(newInputValue == "Subscription"){
+                setMembershipType("CLIENT_SUBSCRIPTION");
+              }
+              else if (newInputValue == "Pay on Demand"){
+                setMembershipType("PAY_ON_DEMAND");
+              }
+              else{
+                setMembershipType("ACC_CREATED");
+              }
+              
             }}
             disablePortal
             id="combo-box-demo"
@@ -549,8 +480,7 @@ export default function CustomerSignUp() {
         </Dialog>
         <Grid item xs={6}>
           <Button
-            //type="submit"
-            onClick={handleRegister}
+            type="submit"
             variant="contained"
             disabled={!paymentPending()}
           >
