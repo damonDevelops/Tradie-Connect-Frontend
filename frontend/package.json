@@ -33,7 +33,6 @@
     "react-jwt": "^1.1.8",
     "react-number-format": "^5.1.4",
     "react-router-dom": "^6.10.0",
-    "rechart": "^0.0.1",
     "recharts": "^2.5.0",
     "validator": "^13.9.0"
   },
