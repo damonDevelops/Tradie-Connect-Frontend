@@ -21,38 +21,113 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import jwt_decode from "jwt-decode";
+import { useEffect } from "react";
+import Link from "next/link";
+import {Stack} from "@mui/material";
+import {Snackbar} from "@mui/material";
+import {Alert} from "@mui/material";
+
+
 const theme = createTheme();
 
+function returnCost() {
+  <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
+    Work Description
+  </Typography>;
+}
+
 export default function NewRequest() {
-  const redirect = () => {
-    window.location.href = "../Customer/Dashboard";
-  };
 
   const instance = axios.create({
     withCredentials: true,
   });
 
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const redirect = () => {
+    window.location.href = "../Customer/Dashboard";
+  };
+
+  
+
   var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
   var token = Cookies.get("JWT");
+  var customer_type = jwt_decode(token).role;
+
+  const [multiplier, setMultiplier] = React.useState(0);
 
   const [firstName, setFirstName] = React.useState("");
 
   const [WorkType, setWorkType] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [cost, setCost] = React.useState(0);
+  const [membershipType, setMembershipType] = React.useState("");
+
+
+  const [dateAlertOpen, setDateAlertOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  
 
   const [startDate, setStartDate] = React.useState(
     new Date().toLocaleDateString("en-GB")
   );
+
   //make a const variable which returns the day after startDate in the same format
   const [endDate, setEndDate] = React.useState(
     new Date().toLocaleDateString("en-GB")
   );
 
+  var startDateParts = startDate.split("/");
+  var endDateParts = endDate.split("/");
+
+  var submitStartDateFormat =
+    startDateParts[startDateParts.length - 1] +
+    "-" +
+    startDateParts[startDateParts.length - 2] +
+    "-" +
+    startDateParts[startDateParts.length - 3];
+
+  var submitEndDateFormat =
+    endDateParts[endDateParts.length - 1] +
+    "-" +
+    endDateParts[endDateParts.length - 2] +
+    "-" +
+    endDateParts[endDateParts.length - 3];
+
+  var splitStartDate = new Date(
+    startDate.split("/")[2],
+    startDate.split("/")[1] - 1,
+    startDate.split("/")[0]
+  );
+  var splitEndDate = new Date(
+    endDate.split("/")[2],
+    endDate.split("/")[1] - 1,
+    endDate.split("/")[0]
+  );
+
+  var timeDiff = Math.abs(splitEndDate.getTime() - splitStartDate.getTime());
+  var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
   const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
 
   const handleChange = (event) => {
     setWorkType(event.target.value);
+
+    if (event.target.value == "TREE_REMOVAL") {
+      setMultiplier(300);
+    } else if (event.target.value == "ROOF_CLEANING") {
+      setMultiplier(700);
+    } else if (event.target.value == "FENCE_INSTALLATION") {
+      setMultiplier(800);
+    } else if (event.target.value == "OVEN_REPAIRS") {
+      setMultiplier(400);
+    } else if (event.target.value == "POOL_CLEANING") {
+      setMultiplier(600);
+    }
   };
 
   const [checked, setChecked] = React.useState(true);
@@ -64,8 +139,32 @@ export default function NewRequest() {
 
   const [newOpen, setnewOpen] = React.useState(true);
 
+  const fetchData = async () => {
+    try {
+      const response = await instance.get(
+        "http://localhost:8080/api/customers"
+      );
+
+      response.data.map((data) => {
+        setMembershipType(data.membership.membershipType);
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleClick = () => {
     setnewOpen(!newOpen);
+  };
+
+  const handleClose = () => {
+    setDateAlertOpen(false);
+  };
+
+  const handleDateAlert = (message) => {
+    setDateAlertOpen(true);
+    setAlertMessage(message);
   };
 
   const handleSubmit = (event) => {
@@ -77,33 +176,23 @@ export default function NewRequest() {
 
     //validation for start and end date
     if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
-      alert("invalid date");
+      handleDateAlert("Invalid Date Format, please use DD/MM/YYYY");
     } else if (startDate > endDate || startDate == endDate) {
-      alert("Start Date cannot be after or the same as End Date");
+      handleDateAlert("Start date must be before end date");
     } else {
       try {
-
         //post request
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
-            // serviceType: WorkType.toUpperCase(),
-            // //scheduledStartDate: startDate.replaceAll("/", "-"),
-            // //scheduledEndDate: endDate.replaceAll("/", "-"),
-            // scheduledStartDate: [2023, 11, 20],
-            // scheduledEndDate: [2023, 11, 20],
-            // cost: 10000.00,
-            // description: description,
-
-            serviceType: "POOL_CLEANING",
-            requestedDate: [2023, 4, 22],
-            requestedTime: [16, 54, 14, 240405300],
-            scheduledStartDate: [2023, 11, 20],
-            scheduledStartTime: [9, 0],
-            scheduledEndDate: [2023, 11, 22],
-            scheduledEndTime: [17, 0],
-            status: "CREATED",
-            cost: 10000.0,
-            description: "Poo poo",
+            cost: 1000.0,
+            description: description,
+            dateTimeRange: {
+              startDate: submitStartDateFormat,
+              startTime: "9:00am",
+              endDate: submitEndDateFormat,
+              endTime: "5:00pm",
+              serviceType: WorkType.toUpperCase(),
+            },
           })
           .then((res) => {
             setFinalOpen(true);
@@ -116,8 +205,6 @@ export default function NewRequest() {
 
   return (
     <React.Fragment>
-
-    
       <Paper
         sx={{
           p: 2,
@@ -160,6 +247,7 @@ export default function NewRequest() {
             fullWidth
             id="outlined-m<form onSubmit={handleSubmit}>ultiline-static"
             label="Description"
+            required
             multiline
             rows={4}
             value={description}
@@ -190,12 +278,20 @@ export default function NewRequest() {
             InputLabelProps={{ shrink: true }}
           />
           <br />
-          <br />
+          {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
+          {membershipType == "PAY_ON_DEMAND" && (
+            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: ${diffDays * multiplier}</Typography>
+          )}
+          {membershipType == "CLIENT_SUBSCRIPTION" && (
+            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: $0, you're a loyal subscriber!</Typography>
+          )}
           <Button color="success" fullWidth type="submit" variant="contained">
             Submit New Work Request
           </Button>
+          
           <br />
           <br />
+
           <Button
             color="primary"
             fullWidth
@@ -205,6 +301,21 @@ export default function NewRequest() {
             Back to Dashboard
           </Button>
         </form>
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar
+            open={dateAlertOpen}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {alertMessage}
+            </Alert>
+          </Snackbar>
+        </Stack>
         <Dialog
           open={finalAlertDialogOpen}
           //onClose={handleClose}
@@ -245,16 +356,19 @@ export default function NewRequest() {
               backgroundColor: "#4caf50",
             }}
           >
+            <Link href="./" passHref legacyBehavior color="inherit">
             <Button
               style={{
                 backgroundColor: "#4caf50",
                 color: "white",
               }}
-              onClick={redirect}
+              
               autoFocus
             >
               Back to Dashboard
             </Button>
+            </Link>
+            
           </DialogActions>
         </Dialog>
       </Paper>
