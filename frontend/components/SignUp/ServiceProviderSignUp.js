@@ -88,6 +88,7 @@ export default function CustomerSignUp() {
   };
 
   //state variables for the form
+  const [returnMemberType, setMembershipType] = useState("");
   const [returnMembership, setMembership] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [abn, setABN] = useState("");
@@ -127,11 +128,6 @@ export default function CustomerSignUp() {
     { value: "NT", label: "NT" },
   ];
 
-  //const to hold the membership options
-  const membershipOptions = [
-    { value: "Subscription", label: "Subscription" },
-    { value: "Commission", label: "Commission" },
-  ];
 
   //const to hold the trade options
   const serviceAreas = [
@@ -142,82 +138,8 @@ export default function CustomerSignUp() {
     { value: "POOL_CLEANING", label: "Pool Cleaning" },
   ];
 
-  //function to handle the form submission
-  const handleSubmit = async (event) => {
-    // Prevent the default form submission (reload)
-    event.preventDefault();
 
-    // data validation checks for alert popups
-    if (!abnRegex.test(event.target.abn.value)) {
-      handleAlert("abn");
-    } else if (validator.isEmail(event.target.email.value) == false) {
-      handleAlert("email");
-    } else if (!postcodeRegex.test(event.target.postcode.value)) {
-      handleAlert("postcode");
-    } else if (
-      event.target.password.value != event.target.confirmPassword.value
-    ) {
-      handleAlert("password");
-    } else {
-      event.preventDefault();
-
-      // Get data from the form.
-      const returnData = {
-        companyName: event.target.companyName.value,
-        email: event.target.email.value,
-        password: event.target.password.value,
-        phoneNumber: phoneNumber.textmask,
-        streetAddress: event.target.address.value,
-        city: event.target.city.value,
-        state: returnState,
-        postcode: event.target.postcode.value,
-        serviceArea: returnTrade,
-        abn: event.target.abn.value,
-        membership: {
-          membershipType: "ACC_CREATED",
-          description: returnMembership,
-        },
-      };
-
-      // Send the data to the server in JSON format.
-      const JSONdata = JSON.stringify(returnData);
-
-      // API endpoint where we send form data.
-      const endpoint = `http://localhost:8080/api/auth/SignUp`;
-
-      // Form the request for sending data to the server.
-      const options = {
-        // The method is POST because we are sending data.
-        method: "POST",
-        // Tell the server we're sending JSON.
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Body of the request is the JSON data we created above.
-        body: JSONdata,
-      };
-
-      // Send the form data to our forms API on Vercel and get a response.
-      const response = await fetch(endpoint, options);
-
-      // If the response is good, show the success message,
-      //A loading symbol will go for 5 seconds (can be reduced)
-      //and then the user will be redirected to the sign in page
-      if (response.status == 200) {
-        setBackdropOpen(true);
-        timer.current = window.setTimeout(() => {
-          setBackdropOpen(false);
-          handleAlert("final");
-        }, 3000);
-
-        // Redirect to the sign in page
-      } else {
-        handleAlert("error");
-      }
-    }
-  };
-
-  const handleRegister = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
       handleAlert("email");
@@ -243,6 +165,12 @@ export default function CustomerSignUp() {
               name: city,
               state: returnState,
             },
+
+            membership: {
+              membershipType: "COMMISSION",
+              "price": 49.99,
+              "description": "Commission Membership"
+            },
             postCode: postcode,
           }
         );
@@ -266,22 +194,6 @@ export default function CustomerSignUp() {
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Autocomplete
-            isOptionEqualToValue={(option, value) =>
-              option.value === value.value
-            }
-            disablePortal
-            id="combo-box-demo"
-            onInputChange={(event, newMembership) => {
-              setMembership(newMembership);
-            }}
-            options={membershipOptions}
-            renderInput={(params) => (
-              <TextField required {...params} label="Membership Type" />
-            )}
-          />
-        </Grid>
         <Grid item xs={12}>
           <Autocomplete
             isOptionEqualToValue={(option, value) =>
@@ -428,8 +340,7 @@ export default function CustomerSignUp() {
         </Grid>
         <Grid item>
           <Button
-            //type="submit"
-            onClick={handleRegister}
+            type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
