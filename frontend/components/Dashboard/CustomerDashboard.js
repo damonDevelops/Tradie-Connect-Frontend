@@ -45,6 +45,8 @@ import withAuth from "../../components/router/withAuth";
 import HomeIcon from "@mui/icons-material/Home";
 import { blue } from "@mui/material/colors";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Home from "./CustomerHome";
 
 const drawerWidth = 240;
@@ -106,6 +108,14 @@ function CustomerDash(props) {
   const handleClick = () => {
     setnewOpen(!newOpen);
   };
+
+  const [home, setHomeWindow] = React.useState(false);
+  const router = useRouter();
+  const homePath = "/Customer";
+
+  useEffect(() => {
+    if (homePath === router.pathname) setHomeWindow(true);
+  }, []);
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -283,6 +293,7 @@ function CustomerDash(props) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            {/* {home ? <Home /> : props.children} */}
             {props.children ? props.children : <Home />}
           </Container>
         </Box>
