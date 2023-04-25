@@ -105,6 +105,18 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
+const newTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#D27519",
+    },
+    secondary: {
+      main: "#fa5c0c",
+    },
+  },
+});
+
+
 function ServiceDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
@@ -118,7 +130,7 @@ function ServiceDash(props) {
   };
 
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider theme={newTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -146,7 +158,7 @@ function ServiceDash(props) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              Service Provider Dashboard
             </Typography>
             <IconButton color="inherit">
               <Link href="/" color="inherit">

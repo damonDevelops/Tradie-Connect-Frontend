@@ -186,12 +186,12 @@ export default function NewRequest() {
           .post(`http://localhost:8080/api/service-requests/create`, {
             cost: 1000.0,
             description: description,
+            serviceType: WorkType.toUpperCase(),
             dateTimeRange: {
               startDate: submitStartDateFormat,
               startTime: "9:00am",
               endDate: submitEndDateFormat,
               endTime: "5:00pm",
-              serviceType: WorkType.toUpperCase(),
             },
           })
           .then((res) => {
