@@ -38,6 +38,17 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import withAuth from "../../components/router/withAuth";
 
 import Home from "./ServiceProviderHome";
+import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
+import { Dialog } from "@mui/material";
+import { DialogTitle } from "@mui/material";
+import { DialogContent } from "@mui/material";
+import { DialogContentText } from "@mui/material";
+import { DialogActions } from "@mui/material";
+import { Button } from "@mui/material";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 function Copyright(props) {
   return (
@@ -105,7 +116,20 @@ const Drawer = styled(MuiDrawer, {
 
 const mdTheme = createTheme();
 
+const newTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#D27519",
+    },
+    secondary: {
+      main: "#fa5c0c",
+    },
+  },
+});
+
 function ServiceDash(props) {
+
+  const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -117,8 +141,24 @@ function ServiceDash(props) {
     setnewOpen(!newOpen);
   };
 
+  const openDialog = async () => {
+    setConfirmLogout(true);
+  };
+
+  const handleClose = () => {
+    setConfirmLogout(false);
+  };
+
+  const router = useRouter();
+  const homePath = "/Service-Provider";
+
+  const logoutUser = async () => {
+    Cookies.remove("JWT");
+    router.push("/SignIn");
+  };
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider theme={newTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -146,12 +186,20 @@ function ServiceDash(props) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              Service Provider Dashboard
             </Typography>
             <IconButton color="inherit">
-              <Link href="/" color="inherit">
-                {<AccountCircleRoundedIcon fontSize="large" />}
+              <Link href="/Service-Provider/account" color="inherit">
+                {
+                  <AccountCircleRoundedIcon
+                    style={{ color: "#FFFFFF" }}
+                    fontSize="large"
+                  />
+                }
               </Link>
+            </IconButton>
+            <IconButton color="inherit" onClick={openDialog}>
+              {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -171,6 +219,19 @@ function ServiceDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
+              <Link
+                href="/Service-Provider"
+                passHref
+                legacyBehavior
+                color="inherit"
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItemButton>
+              </Link>
               <ListItemButton onClick={handleClick}>
                 <ListItemIcon>
                   <InboxIcon />
@@ -184,7 +245,7 @@ function ServiceDash(props) {
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
-                    <ListItemText primary="New Request" />
+                    <ListItemText primary="Available Requests" />
                   </ListItemButton>
                 </List>
               </Collapse>
@@ -204,13 +265,13 @@ function ServiceDash(props) {
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
-                    <ListItemText primary="Past Requests" />
+                    <ListItemText primary="Finished Requests" />
                   </ListItemButton>
                 </List>
               </Collapse>
               <ListItemButton>
                 <ListItemIcon>
-                  <ShoppingCartIcon />
+                  <AccountCircleRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary="Account Details" />
               </ListItemButton>
@@ -219,30 +280,6 @@ function ServiceDash(props) {
                   <BarChartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Reports" />
-              </ListItemButton>
-            </React.Fragment>
-            <Divider sx={{ my: 1 }} />
-            <React.Fragment>
-              <ListSubheader component="div" inset>
-                Saved reports
-              </ListSubheader>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Current month" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Last quarter" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Year-end sale" />
               </ListItemButton>
             </React.Fragment>
           </List>
@@ -262,18 +299,65 @@ function ServiceDash(props) {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {props.children ? props.children : <Home />}
-            <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
       </Box>
+      <Dialog
+          open={confirmLogout}
+          //onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              backgroundColor: "inherit",
+              color: "inherit",
+            }}
+            id="alert-dialog-title"
+          >
+            {"Are you sure you want to log out?"} 
+          </DialogTitle>
+          <DialogContent
+            style={{
+              backgroundColor: "inherit",
+            }}
+          >
+            <DialogContentText
+              style={{
+                backgroundColor: "inherit",
+                color: "inherit",
+              }}
+              id="alert-dialog-description"
+            >
+              Logging out will end your session and you will be required to log back in. Are you sure you want to log out?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions
+            style={{
+              backgroundColor: "inherit",
+            }}
+          >
+            <Button
+              autoFocus
+              onClick={logoutUser}
+            >
+              Logout
+            </Button>
+            <Button
+              autoFocus
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+
+            
+          </DialogActions>
+        </Dialog>
     </ThemeProvider>
   );
 }
 
-export default withAuth(ServiceDash, [
-  "ROLE_SERVICE_PROVIDER",
-  "ROLE_CUSTOMER",
-]); // make sure to remove customer
+export default withAuth(ServiceDash, ["ROLE_SERVICE_PROVIDER"]); // make sure to remove customer
 // export default function Dashboard() {
 //   return <ServiceDash />;
 // }

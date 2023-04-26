@@ -48,6 +48,16 @@ import { blue } from "@mui/material/colors";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Home from "./CustomerHome";
+import axios from "axios";
+
+import { Dialog } from "@mui/material";
+import { DialogTitle } from "@mui/material";
+import { DialogContent } from "@mui/material";
+import { DialogContentText } from "@mui/material";
+import { DialogActions } from "@mui/material";
+import { Button } from "@mui/material";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import Cookies from "js-cookie";
 
 const drawerWidth = 240;
 
@@ -109,6 +119,7 @@ function CustomerDash(props) {
     setnewOpen(!newOpen);
   };
 
+  const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [home, setHomeWindow] = React.useState(false);
   const router = useRouter();
   const homePath = "/Customer";
@@ -116,6 +127,19 @@ function CustomerDash(props) {
   useEffect(() => {
     if (homePath === router.pathname) setHomeWindow(true);
   }, []);
+
+  const openDialog = async () => {
+    setConfirmLogout(true);
+  };
+
+  const handleClose = () => {
+    setConfirmLogout(false);
+  };
+
+  const logoutUser = async () => {
+    Cookies.remove("JWT");
+    router.push("/SignIn");
+  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -158,11 +182,10 @@ function CustomerDash(props) {
                 }
               </Link>
             </IconButton>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={openDialog}>
               {/* TODO: add logout functionality to this link */}
-              <Link href="/" color="inherit">
                 {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
-              </Link>
+
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -298,6 +321,57 @@ function CustomerDash(props) {
           </Container>
         </Box>
       </Box>
+      <Dialog
+          open={confirmLogout}
+          //onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              backgroundColor: "inherit",
+              color: "inherit",
+            }}
+            id="alert-dialog-title"
+          >
+            {"Are you sure you want to log out?"} 
+          </DialogTitle>
+          <DialogContent
+            style={{
+              backgroundColor: "inherit",
+            }}
+          >
+            <DialogContentText
+              style={{
+                backgroundColor: "inherit",
+                color: "inherit",
+              }}
+              id="alert-dialog-description"
+            >
+              Logging out will end your session and you will be required to log back in. Are you sure you want to log out?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions
+            style={{
+              backgroundColor: "inherit",
+            }}
+          >
+            <Button
+              autoFocus
+              onClick={logoutUser}
+            >
+              Logout
+            </Button>
+            <Button
+              autoFocus
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+
+            
+          </DialogActions>
+        </Dialog>
     </ThemeProvider>
   );
 }
