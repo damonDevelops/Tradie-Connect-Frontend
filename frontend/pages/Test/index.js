@@ -32,10 +32,11 @@ export default function ButtonAppBar() {
               variant="extended"
               sx={{
                 boxShadow: "none",
+                display: "flex",
                 backgroundColor: "#000007",
                 color: "white",
-                width: 150,
-                fontSize: "20px",
+                width: "10%",
+                fontSize: "15px",
                 ":hover": {
                   bgcolor: "#092c4e",
                   color: "white"
@@ -57,7 +58,7 @@ export default function ButtonAppBar() {
           style={{ minHeight: "100vh" }}
         >
           <Grid item xs={3}>
-            <Typography variant="h2" component="div" sx={{ flexGrow: 1, color: "white" }}>
+            <Typography variant="h2" component="div" sx={{marginLeft: 5, marginRight: 5, flexGrow: 1, color: "white" }}>
               TradieConnect. The fastest, easiest way to find a tradie.
             </Typography>
           </Grid>
