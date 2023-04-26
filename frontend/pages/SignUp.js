@@ -102,7 +102,7 @@ export default function SignUp() {
                   required
                 >
                   <MenuItem value={"Customer"}>Customer</MenuItem>
-                  <MenuItem value={"Tradie"}>Tradie</MenuItem>
+                  <MenuItem value={"Tradie"}>Service Provider</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

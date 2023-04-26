@@ -21,6 +21,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import postCodeToState from "../functional_components/postcodeToState";
 import axios from "axios";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {

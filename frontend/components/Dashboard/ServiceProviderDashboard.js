@@ -38,6 +38,8 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import withAuth from "../../components/router/withAuth";
 
 import Home from "./ServiceProviderHome";
+import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
 
 function Copyright(props) {
   return (
@@ -161,8 +163,19 @@ function ServiceDash(props) {
               Service Provider Dashboard
             </Typography>
             <IconButton color="inherit">
+            <Link href="/Service-Provider/account" color="inherit">
+                {
+                  <AccountCircleRoundedIcon
+                    style={{ color: "#FFFFFF" }}
+                    fontSize="large"
+                  />
+                }
+              </Link>
+            </IconButton>
+            <IconButton color="inherit">
+              {/* TODO: add logout functionality to this link */}
               <Link href="/" color="inherit">
-                {<AccountCircleRoundedIcon fontSize="large" />}
+                {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
               </Link>
             </IconButton>
           </Toolbar>
@@ -183,6 +196,14 @@ function ServiceDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
+            <Link href="/Service-Provider" passHref legacyBehavior color="inherit">
+                <ListItemButton>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItemButton>
+              </Link>
               <ListItemButton onClick={handleClick}>
                 <ListItemIcon>
                   <InboxIcon />
@@ -196,7 +217,7 @@ function ServiceDash(props) {
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
-                    <ListItemText primary="New Request" />
+                    <ListItemText primary="Available Requests" />
                   </ListItemButton>
                 </List>
               </Collapse>
@@ -216,13 +237,13 @@ function ServiceDash(props) {
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
-                    <ListItemText primary="Past Requests" />
+                    <ListItemText primary="Finished Requests" />
                   </ListItemButton>
                 </List>
               </Collapse>
               <ListItemButton>
                 <ListItemIcon>
-                  <ShoppingCartIcon />
+                  <AccountCircleRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary="Account Details" />
               </ListItemButton>
@@ -231,30 +252,6 @@ function ServiceDash(props) {
                   <BarChartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Reports" />
-              </ListItemButton>
-            </React.Fragment>
-            <Divider sx={{ my: 1 }} />
-            <React.Fragment>
-              <ListSubheader component="div" inset>
-                Saved reports
-              </ListSubheader>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Current month" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Last quarter" />
-              </ListItemButton>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Year-end sale" />
               </ListItemButton>
             </React.Fragment>
           </List>
@@ -274,7 +271,6 @@ function ServiceDash(props) {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {props.children ? props.children : <Home />}
-            <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
       </Box>
@@ -283,8 +279,7 @@ function ServiceDash(props) {
 }
 
 export default withAuth(ServiceDash, [
-  "ROLE_SERVICE_PROVIDER",
-  "ROLE_CUSTOMER",
+  "ROLE_SERVICE_PROVIDER"
 ]); // make sure to remove customer
 // export default function Dashboard() {
 //   return <ServiceDash />;
