@@ -40,6 +40,15 @@ import withAuth from "../../components/router/withAuth";
 import Home from "./ServiceProviderHome";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
+import { Dialog } from "@mui/material";
+import { DialogTitle } from "@mui/material";
+import { DialogContent } from "@mui/material";
+import { DialogContentText } from "@mui/material";
+import { DialogActions } from "@mui/material";
+import { Button } from "@mui/material";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 function Copyright(props) {
   return (
@@ -118,8 +127,9 @@ const newTheme = createTheme({
   },
 });
 
-
 function ServiceDash(props) {
+
+  const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -129,6 +139,22 @@ function ServiceDash(props) {
 
   const handleClick = () => {
     setnewOpen(!newOpen);
+  };
+
+  const openDialog = async () => {
+    setConfirmLogout(true);
+  };
+
+  const handleClose = () => {
+    setConfirmLogout(false);
+  };
+
+  const router = useRouter();
+  const homePath = "/Service-Provider";
+
+  const logoutUser = async () => {
+    Cookies.remove("JWT");
+    router.push("/SignIn");
   };
 
   return (
@@ -163,7 +189,7 @@ function ServiceDash(props) {
               Service Provider Dashboard
             </Typography>
             <IconButton color="inherit">
-            <Link href="/Service-Provider/account" color="inherit">
+              <Link href="/Service-Provider/account" color="inherit">
                 {
                   <AccountCircleRoundedIcon
                     style={{ color: "#FFFFFF" }}
@@ -172,11 +198,8 @@ function ServiceDash(props) {
                 }
               </Link>
             </IconButton>
-            <IconButton color="inherit">
-              {/* TODO: add logout functionality to this link */}
-              <Link href="/" color="inherit">
-                {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
-              </Link>
+            <IconButton color="inherit" onClick={openDialog}>
+              {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -196,7 +219,12 @@ function ServiceDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
-            <Link href="/Service-Provider" passHref legacyBehavior color="inherit">
+              <Link
+                href="/Service-Provider"
+                passHref
+                legacyBehavior
+                color="inherit"
+              >
                 <ListItemButton>
                   <ListItemIcon>
                     <HomeIcon />
@@ -274,13 +302,62 @@ function ServiceDash(props) {
           </Container>
         </Box>
       </Box>
+      <Dialog
+          open={confirmLogout}
+          //onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              backgroundColor: "inherit",
+              color: "inherit",
+            }}
+            id="alert-dialog-title"
+          >
+            {"Are you sure you want to log out?"} 
+          </DialogTitle>
+          <DialogContent
+            style={{
+              backgroundColor: "inherit",
+            }}
+          >
+            <DialogContentText
+              style={{
+                backgroundColor: "inherit",
+                color: "inherit",
+              }}
+              id="alert-dialog-description"
+            >
+              Logging out will end your session and you will be required to log back in. Are you sure you want to log out?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions
+            style={{
+              backgroundColor: "inherit",
+            }}
+          >
+            <Button
+              autoFocus
+              onClick={logoutUser}
+            >
+              Logout
+            </Button>
+            <Button
+              autoFocus
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+
+            
+          </DialogActions>
+        </Dialog>
     </ThemeProvider>
   );
 }
 
-export default withAuth(ServiceDash, [
-  "ROLE_SERVICE_PROVIDER"
-]); // make sure to remove customer
+export default withAuth(ServiceDash, ["ROLE_SERVICE_PROVIDER"]); // make sure to remove customer
 // export default function Dashboard() {
 //   return <ServiceDash />;
 // }
