@@ -135,9 +135,9 @@ const Developer = () => {
                 <Button
                   variant="contained"
                   align="center"
-                  href="../Common-Pages/testFeatures"
+                  href="./Test"
                 >
-                  Phone
+                  Test Page
                 </Button>
               </Paper>
             </Grid>
