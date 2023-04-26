@@ -6,9 +6,14 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
-import { Link, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
+
+import Link from "next/link";
+
+import Button from "@mui/material/Button";
+import { useRouter } from "next/router";
 
 // for displaying data:
 import Box from "@mui/material/Box";
@@ -29,24 +34,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 const theme = createTheme();
 
 export default function CurrentRequest() {
-  const [keyword, setKeyword] = useState("productInventory");
   const [data, setData] = useState([]);
-  const [sortModel, setSortModel] = React.useState([
-    {
-      field: "id",
-      sort: "desc",
-    },
-  ]);
-
-  const [requests, setRequests] = useState("");
-
-  const [requestID, setRequestID] = useState("");
-  const [requestType, setRequestType] = useState("");
-  const [requestStatus, setRequestStatus] = useState("");
-  const [requestStartDate, setRequestStartDate] = useState("");
-  const [requestEndDate, setRequestEndDate] = useState("");
-  const [requestCost, setRequestCost] = useState("");
-  const [requestDescription, setRequestDescription] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -66,41 +54,10 @@ export default function CurrentRequest() {
       );
       setData(response.data);
       console.log(response.data);
-
-      response.data.map((data) => {
-        setRequestID(data.id);
-        setRequestType(data.serviceType);
-        setRequestStatus(data.status);
-        setRequestStartDate(data.scheduledStartDate);
-        setRequestEndDate(data.scheduledEndDate);
-        setRequestCost(data.cost);
-        setRequestDescription(data.description);
-      });
     } catch (error) {
       console.error(error);
     }
   };
-
-  // const columns = [
-  //   { field: "id", headerName: "Request ID", width: 125, minWidth: 150, maxWidth: 200 },
-  //   { field: "serviceType", headerName: "Service Type", width: 125, minWidth: 150, maxWidth: 200 },
-  //   { field: "scheduledStartDate", headerName: "Start Date", width: 250, minWidth: 150, maxWidth: 250},
-  //   { field: "scheduledEndDate", headerName: "Scheduled End Date", width: 500, minWidth: 150, maxWidth: 500},
-  //   { field: "status", headerName: "Request Status", width: 300, minWidth: 150, maxWidth: 300},
-  //   { field: "cost", headerName: "Cost", width: 125, minWidth: 150, maxWidth: 200},
-  //   { field: "description", headerName: "Description", width: 125, minWidth: 150, maxWidth: 200},
-  // ];
-
-  // const rows = [];
-  // function createData(id, serviceType, scheduledStartDate, scheduledEndDate, status, cost, description) {
-  //   return {id, serviceType, scheduledStartDate, scheduledEndDate, status, cost, description};
-  // }
-
-  // data.map((product) =>
-  //     rows.push(
-  //       createData(product.id, product.name, product.price, product.description, product.quantity, product.parts.length)
-  //     )
-  // );
 
   // maps the data from the request into a rows array with only the data required to be shown
   const rows = data.map(
@@ -126,17 +83,36 @@ export default function CurrentRequest() {
         }}
       >
         <Typography variant="h4" gutterBottom>
-        Current Requests
-      </Typography>
-      <RequestTable data={rows} />
-
+          Current Requests
+        </Typography>
+        <RequestTable data={rows} />
       </Paper>
-      
     </ThemeProvider>
   );
 }
 
 function RequestTable({ data }) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const Router = useRouter();
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleViewClick = (id) => {
+    // Navigate to the dynamic route page with a query parameter
+    Router.push({
+      pathname: `/Customer/ViewRequest/${id}`,
+      query: { fromRequests: true },
+    });
+  };
+
   // styles for the header row
   const headerStyles = {
     textAlign: "center",
@@ -146,18 +122,6 @@ function RequestTable({ data }) {
   // styles for cell content
   const cellStyles = {
     textAlign: "center",
-  };
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const rowsToDisplay = data.slice(
@@ -176,6 +140,7 @@ function RequestTable({ data }) {
             <TableCell sx={headerStyles}>Start Date</TableCell>
             <TableCell sx={headerStyles}>Finish Date</TableCell>
             <TableCell sx={headerStyles}>Cost ($)</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -189,6 +154,21 @@ function RequestTable({ data }) {
               <TableCell sx={cellStyles}>{row.requestedDate}</TableCell>
               <TableCell sx={cellStyles}>{row.scheduledEndDate}</TableCell>
               <TableCell sx={cellStyles}>{row.cost}</TableCell>
+              <TableCell>
+                <Link
+                  href={{
+                    pathname: `/Customer/ViewRequest/[id]`,
+                    query: { fromRequests: true },
+                  }}
+                  as={`/Customer/ViewRequest/${row.id}`}
+                  passHref
+                  legacyBehavior
+                >
+                  <Button component="a" variant="outlined">
+                    View
+                  </Button>
+                </Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
