@@ -1,6 +1,6 @@
-import Developer from "../../pages/DevDashboard";
 import SignIn from "../../pages/SignIn";
 import SignUp from "../../pages/SignUp";
+
 
 const routes = [
   {
@@ -12,10 +12,5 @@ const routes = [
     path: "/SignIn",
     component: SignIn,
     allowedRoles: ["Admin", "CUSTOMER", "SERVICE_PROVIDER"],
-  },
-  {
-    path: "/DevDashboard",
-    component: Developer,
-    allowedRoles: ["Admin"],
   },
 ];

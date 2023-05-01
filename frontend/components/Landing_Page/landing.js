@@ -9,6 +9,7 @@ import { Fab } from "@mui/material";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { Grid } from "@mui/material";
+import Link from "next/link";
 
 export default function ButtonAppBar() {
   const mdTheme = createTheme();
@@ -28,23 +29,25 @@ export default function ButtonAppBar() {
             <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
               TradieConnect
             </Typography>
-            <Fab
-              variant="extended"
-              sx={{
-                boxShadow: "none",
-                display: "flex",
-                backgroundColor: "#000007",
-                color: "white",
-                width: "10%",
-                fontSize: "15px",
-                ":hover": {
-                  bgcolor: "#092c4e",
-                  color: "white"
+
+            <Link href="/Developer-Dashboard">
+                {
+                  <Button variant="contained" color="secondary" 
+                    sx={{
+                        mr: 2,
+                    }}
+                  >Developer</Button>
                 }
-              }}
-            >
-              Sign In
-            </Fab>
+            </Link>
+            <Link href="/SignIn">
+                {
+                  <Button variant="contained" color="secondary" 
+                    sx={{
+                        mr: 2,
+                    }}
+                  >Sign In</Button>
+                }
+            </Link>
           </Toolbar>
         </AppBar>
         <Grid
@@ -63,8 +66,10 @@ export default function ButtonAppBar() {
             </Typography>
           </Grid>
           <Grid item xs={3}>
+          <Link href="/SignUp">
             <Fab
               variant="extended"
+
               sx={{
                 boxShadow: "none",
                 backgroundColor: "#1976d2",
@@ -79,6 +84,7 @@ export default function ButtonAppBar() {
             >
               Get Started
             </Fab>
+            </Link>
           </Grid>
         </Grid>
 
