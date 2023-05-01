@@ -1,14 +1,6 @@
 import * as React from "react";
-import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
-import {
-  useTheme,
-  ThemeProvider,
-  createTheme,
-  styled,
-} from "@mui/material/styles";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { styled } from "@mui/material/styles";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -18,34 +10,29 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-
-import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+
 //import Link from "@mui/material/Link";
 import Link from "next/link";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import LogoutIcon from "@mui/icons-material/Logout";
+
 
 //import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import Collapse from "@mui/material/Collapse";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import LogoutIcon from "@mui/icons-material/Logout";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import IconButton from "@mui/material/IconButton";
 
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PeopleIcon from "@mui/icons-material/People";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -123,18 +110,21 @@ function ModeToggle() {
   const { mode, setMode } = useColorScheme();
   return (
     <IconButton
-
       onClick={() => {
         setMode(mode === "light" ? "dark" : "light");
       }}
       color="inherit"
     >
-      {mode === "dark" ? <Brightness7Icon fontSize="large" /> : <Brightness4Icon fontSize="large" />}
+      {mode === "dark" ? (
+        <Brightness7Icon fontSize="large" />
+      ) : (
+        <Brightness4Icon fontSize="large" />
+      )}
     </IconButton>
   );
 }
 
-export default function CustomerDashboard(props) {
+export default function CustomerDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -167,8 +157,6 @@ export default function CustomerDashboard(props) {
     Cookies.remove("JWT");
     router.push("/SignIn");
   };
-
-  
 
   return (
     <CssVarsProvider>
@@ -397,3 +385,6 @@ export default function CustomerDashboard(props) {
     </CssVarsProvider>
   );
 }
+
+//TODO: figure out why using withAuth causes flickering
+//export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
