@@ -1,16 +1,24 @@
-// import statements
 import * as React from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import {
+  useTheme,
+  ThemeProvider,
+  createTheme,
+  styled,
+} from "@mui/material/styles";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
+
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-``;
-import IconButton from "@mui/material/IconButton";
+
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -24,6 +32,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 //import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -58,6 +67,11 @@ import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import Cookies from "js-cookie";
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  experimental_extendTheme as extendTheme,
+  useColorScheme,
+} from "@mui/material/styles";
 
 const drawerWidth = 240;
 
@@ -105,9 +119,22 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-const mdTheme = createTheme();
+function ModeToggle() {
+  const { mode, setMode } = useColorScheme();
+  return (
+    <IconButton
 
-function CustomerDash(props) {
+      onClick={() => {
+        setMode(mode === "light" ? "dark" : "light");
+      }}
+      color="inherit"
+    >
+      {mode === "dark" ? <Brightness7Icon fontSize="large" /> : <Brightness4Icon fontSize="large" />}
+    </IconButton>
+  );
+}
+
+export default function CustomerDashboard(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -141,8 +168,10 @@ function CustomerDash(props) {
     router.push("/SignIn");
   };
 
+  
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <CssVarsProvider>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -172,6 +201,7 @@ function CustomerDash(props) {
             >
               Dashboard
             </Typography>
+            <ModeToggle />
             <IconButton color="inherit">
               <Link href="/Customer/account" color="inherit">
                 {
@@ -184,8 +214,7 @@ function CustomerDash(props) {
             </IconButton>
             <IconButton color="inherit" onClick={openDialog}>
               {/* TODO: add logout functionality to this link */}
-                {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
-
+              {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -322,61 +351,49 @@ function CustomerDash(props) {
         </Box>
       </Box>
       <Dialog
-          open={confirmLogout}
-          //onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+        open={confirmLogout}
+        //onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            backgroundColor: "inherit",
+            color: "inherit",
+          }}
+          id="alert-dialog-title"
         >
-          <DialogTitle
+          {"Are you sure you want to log out?"}
+        </DialogTitle>
+        <DialogContent
+          style={{
+            backgroundColor: "inherit",
+          }}
+        >
+          <DialogContentText
             style={{
               backgroundColor: "inherit",
               color: "inherit",
             }}
-            id="alert-dialog-title"
+            id="alert-dialog-description"
           >
-            {"Are you sure you want to log out?"} 
-          </DialogTitle>
-          <DialogContent
-            style={{
-              backgroundColor: "inherit",
-            }}
-          >
-            <DialogContentText
-              style={{
-                backgroundColor: "inherit",
-                color: "inherit",
-              }}
-              id="alert-dialog-description"
-            >
-              Logging out will end your session and you will be required to log back in. Are you sure you want to log out?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            style={{
-              backgroundColor: "inherit",
-            }}
-          >
-            <Button
-              autoFocus
-              onClick={logoutUser}
-            >
-              Logout
-            </Button>
-            <Button
-              autoFocus
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-
-            
-          </DialogActions>
-        </Dialog>
-    </ThemeProvider>
+            Logging out will end your session and you will be required to log
+            back in. Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{
+            backgroundColor: "inherit",
+          }}
+        >
+          <Button autoFocus onClick={logoutUser}>
+            Logout
+          </Button>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </CssVarsProvider>
   );
 }
-
-export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
-// export default function Dashboard() {
-//   return <CustomerDash />;
-// }
