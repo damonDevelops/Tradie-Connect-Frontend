@@ -1,10 +1,9 @@
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
-
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
@@ -14,7 +13,6 @@ import Container from "@mui/material/Container";
 
 //import Link from "@mui/material/Link";
 import Link from "next/link";
-
 
 //import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
@@ -28,18 +26,16 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import IconButton from "@mui/material/IconButton";
-
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+import HomeIcon from "@mui/icons-material/Home";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import LayersIcon from "@mui/icons-material/Layers";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+
+import IconButton from "@mui/material/IconButton";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+
 import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
 import withAuth from "../../components/router/withAuth";
-import HomeIcon from "@mui/icons-material/Home";
-import { blue } from "@mui/material/colors";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -52,7 +48,8 @@ import { DialogContent } from "@mui/material";
 import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
+
+
 import Cookies from "js-cookie";
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
@@ -106,6 +103,7 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+//function that returns the light/dark mode button and edits the pages current theme
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
   return (
