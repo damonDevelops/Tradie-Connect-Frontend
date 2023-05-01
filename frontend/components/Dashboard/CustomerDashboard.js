@@ -1,26 +1,18 @@
-// import statements
+
 import * as React from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-``;
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+
 //import Link from "@mui/material/Link";
 import Link from "next/link";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import LogoutIcon from "@mui/icons-material/Logout";
 
 //import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
@@ -29,21 +21,21 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import Collapse from "@mui/material/Collapse";
-
-import ListItemButton from "@mui/material/ListItemButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import LogoutIcon from "@mui/icons-material/Logout";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PeopleIcon from "@mui/icons-material/People";
+import HomeIcon from "@mui/icons-material/Home";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import LayersIcon from "@mui/icons-material/Layers";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+
+import IconButton from "@mui/material/IconButton";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+
 import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
 import withAuth from "../../components/router/withAuth";
-import HomeIcon from "@mui/icons-material/Home";
-import { blue } from "@mui/material/colors";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -56,8 +48,14 @@ import { DialogContent } from "@mui/material";
 import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
+
+
 import Cookies from "js-cookie";
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  experimental_extendTheme as extendTheme,
+  useColorScheme,
+} from "@mui/material/styles";
 
 const drawerWidth = 240;
 
@@ -105,9 +103,26 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-const mdTheme = createTheme();
+//function that returns the light/dark mode button and edits the pages current theme
+function ModeToggle() {
+  const { mode, setMode } = useColorScheme();
+  return (
+    <IconButton
+      onClick={() => {
+        setMode(mode === "light" ? "dark" : "light");
+      }}
+      color="inherit"
+    >
+      {mode === "dark" ? (
+        <Brightness7Icon fontSize="large" />
+      ) : (
+        <Brightness4Icon fontSize="large" />
+      )}
+    </IconButton>
+  );
+}
 
-function CustomerDash(props) {
+export default function CustomerDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -142,7 +157,7 @@ function CustomerDash(props) {
   };
 
   return (
-    <ThemeProvider theme={mdTheme}>
+    <CssVarsProvider>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -172,6 +187,7 @@ function CustomerDash(props) {
             >
               Dashboard
             </Typography>
+            <ModeToggle />
             <IconButton color="inherit">
               <Link href="/Customer/account" color="inherit">
                 {
@@ -184,8 +200,7 @@ function CustomerDash(props) {
             </IconButton>
             <IconButton color="inherit" onClick={openDialog}>
               {/* TODO: add logout functionality to this link */}
-                {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
-
+              {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -322,61 +337,52 @@ function CustomerDash(props) {
         </Box>
       </Box>
       <Dialog
-          open={confirmLogout}
-          //onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+        open={confirmLogout}
+        //onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            backgroundColor: "inherit",
+            color: "inherit",
+          }}
+          id="alert-dialog-title"
         >
-          <DialogTitle
+          {"Are you sure you want to log out?"}
+        </DialogTitle>
+        <DialogContent
+          style={{
+            backgroundColor: "inherit",
+          }}
+        >
+          <DialogContentText
             style={{
               backgroundColor: "inherit",
               color: "inherit",
             }}
-            id="alert-dialog-title"
+            id="alert-dialog-description"
           >
-            {"Are you sure you want to log out?"} 
-          </DialogTitle>
-          <DialogContent
-            style={{
-              backgroundColor: "inherit",
-            }}
-          >
-            <DialogContentText
-              style={{
-                backgroundColor: "inherit",
-                color: "inherit",
-              }}
-              id="alert-dialog-description"
-            >
-              Logging out will end your session and you will be required to log back in. Are you sure you want to log out?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            style={{
-              backgroundColor: "inherit",
-            }}
-          >
-            <Button
-              autoFocus
-              onClick={logoutUser}
-            >
-              Logout
-            </Button>
-            <Button
-              autoFocus
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-
-            
-          </DialogActions>
-        </Dialog>
-    </ThemeProvider>
+            Logging out will end your session and you will be required to log
+            back in. Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{
+            backgroundColor: "inherit",
+          }}
+        >
+          <Button autoFocus onClick={logoutUser}>
+            Logout
+          </Button>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </CssVarsProvider>
   );
 }
 
-export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
-// export default function Dashboard() {
-//   return <CustomerDash />;
-// }
+//TODO: figure out why using withAuth causes flickering
+//export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);

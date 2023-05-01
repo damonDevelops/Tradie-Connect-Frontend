@@ -10,10 +10,7 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -28,13 +25,7 @@ import Collapse from "@mui/material/Collapse";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PeopleIcon from "@mui/icons-material/People";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import LayersIcon from "@mui/icons-material/Layers";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import withAuth from "../../components/router/withAuth";
 
 import Home from "./ServiceProviderHome";
@@ -46,27 +37,19 @@ import { DialogContent } from "@mui/material";
 import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Test The New Dashboard © "}
-      <Link color="inherit" href="/NewDashboad">
-        New Dashboard
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  experimental_extendTheme as extendTheme,
+  useColorScheme,
+} from "@mui/material/styles";
+
+
 
 const drawerWidth = 240;
 
@@ -114,9 +97,7 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-const mdTheme = createTheme();
-
-const newTheme = createTheme({
+const theme = extendTheme({
   palette: {
     primary: {
       main: "#D27519",
@@ -127,8 +108,26 @@ const newTheme = createTheme({
   },
 });
 
-function ServiceDash(props) {
+//function that returns the light/dark mode button and edits the pages current theme
+function ModeToggle() {
+  const { mode, setMode } = useColorScheme();
+  return (
+    <IconButton
+      onClick={() => {
+        setMode(mode === "light" ? "dark" : "light");
+      }}
+      color="inherit"
+    >
+      {mode === "dark" ? (
+        <Brightness7Icon fontSize="large" />
+      ) : (
+        <Brightness4Icon fontSize="large" />
+      )}
+    </IconButton>
+  );
+}
 
+function ServiceDash(props) {
   const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
@@ -158,7 +157,7 @@ function ServiceDash(props) {
   };
 
   return (
-    <ThemeProvider theme={newTheme}>
+    <CssVarsProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -188,6 +187,7 @@ function ServiceDash(props) {
             >
               Service Provider Dashboard
             </Typography>
+            <ModeToggle />
             <IconButton color="inherit">
               <Link href="/Service-Provider/account" color="inherit">
                 {
@@ -303,57 +303,50 @@ function ServiceDash(props) {
         </Box>
       </Box>
       <Dialog
-          open={confirmLogout}
-          //onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+        open={confirmLogout}
+        //onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            backgroundColor: "inherit",
+            color: "inherit",
+          }}
+          id="alert-dialog-title"
         >
-          <DialogTitle
+          {"Are you sure you want to log out?"}
+        </DialogTitle>
+        <DialogContent
+          style={{
+            backgroundColor: "inherit",
+          }}
+        >
+          <DialogContentText
             style={{
               backgroundColor: "inherit",
               color: "inherit",
             }}
-            id="alert-dialog-title"
+            id="alert-dialog-description"
           >
-            {"Are you sure you want to log out?"} 
-          </DialogTitle>
-          <DialogContent
-            style={{
-              backgroundColor: "inherit",
-            }}
-          >
-            <DialogContentText
-              style={{
-                backgroundColor: "inherit",
-                color: "inherit",
-              }}
-              id="alert-dialog-description"
-            >
-              Logging out will end your session and you will be required to log back in. Are you sure you want to log out?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions
-            style={{
-              backgroundColor: "inherit",
-            }}
-          >
-            <Button
-              autoFocus
-              onClick={logoutUser}
-            >
-              Logout
-            </Button>
-            <Button
-              autoFocus
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-
-            
-          </DialogActions>
-        </Dialog>
-    </ThemeProvider>
+            Logging out will end your session and you will be required to log
+            back in. Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{
+            backgroundColor: "inherit",
+          }}
+        >
+          <Button autoFocus onClick={logoutUser}>
+            Logout
+          </Button>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </CssVarsProvider>
   );
 }
 

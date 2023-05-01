@@ -11,7 +11,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper } from "@mui/material";
 import { useRouter } from "next/router";
-import withAuth from "../components/router/withAuth";
+import withAuth from "../router/withAuth";
 
 const theme = createTheme();
 
@@ -135,9 +135,9 @@ const Developer = () => {
                 <Button
                   variant="contained"
                   align="center"
-                  href="../Common-Pages/testFeatures"
+                  href="./Test"
                 >
-                  Phone
+                  Test Page
                 </Button>
               </Paper>
             </Grid>
