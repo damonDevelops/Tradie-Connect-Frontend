@@ -24,11 +24,27 @@ import { Stack } from "@mui/material";
 import { useCurrentUser } from "../components/hooks/CurrentUserContext";
 import { useRouter } from "next/router";
 
-import { checkLogin, checkRole } from "../components/hooks/checkUser";
+import { checkRole } from "../components/hooks/checkUser";
 
 const theme = createTheme();
 
+
+
 export default function SignIn() {
+  useEffect(() => {
+
+      if (checkRole() == "ROLE_CUSTOMER") {
+        router.push("/Customer");
+      } 
+      else if (checkRole() == "ROLE_SERVICE_PROVIDER") {
+  
+        router.push("/Service-Provider");
+      }
+      else return;
+    
+  }, []);
+
+
   //time for loading backdrop
   const timer = React.useRef();
 
@@ -39,6 +55,8 @@ export default function SignIn() {
   //state variables for alerts
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [loginFailAlert, setLoginFailAlert] = useState(false);
+
+  const [checked, setChecked] = React.useState(true);
 
   //variable for fetching current user to store in current user context
   //const { fetchCurrentUser } = useCurrentUser(); // part of current user context, maybe delete
@@ -59,6 +77,10 @@ export default function SignIn() {
     };
   }, []);
 
+  const handleCheckboxChange = (e) => {
+    setChecked(e.target.checked);
+  }
+
   //function to handle the authentication
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,6 +99,8 @@ export default function SignIn() {
         }
       );
 
+
+
       //if the response is successful, open the wheel for a bit
       if (response.status === 200) {
         setBackdropOpen(true);
@@ -86,8 +110,14 @@ export default function SignIn() {
         }, 10000);
       }
 
-      //set the JWT cookie and redirect to the dashboard
-      Cookies.set("JWT", response.data.token);
+      if(checked){
+        //set the JWT cookie and redirect to the dashboard with an expiration of 30 days
+        Cookies.set("JWT", response.data.token, { expires: 31 });
+      }
+      else{
+        //set the JWT cookie and redirect to the dashboard
+        Cookies.set("JWT", response.data.token);
+      }
 
       if (checkRole() == "ROLE_CUSTOMER") {
         router.push("/Customer");
@@ -158,9 +188,9 @@ export default function SignIn() {
               <CircularProgress color="inherit" />
             </Backdrop>
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+      control={<Checkbox checked={checked} onChange={handleCheckboxChange} />}
+      label="Remember me"
+    />
             <Button
               type="submit"
               fullWidth
