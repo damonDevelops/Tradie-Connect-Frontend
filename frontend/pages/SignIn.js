@@ -56,7 +56,7 @@ export default function SignIn() {
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [loginFailAlert, setLoginFailAlert] = useState(false);
 
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
 
   //variable for fetching current user to store in current user context
   //const { fetchCurrentUser } = useCurrentUser(); // part of current user context, maybe delete
@@ -201,11 +201,6 @@ export default function SignIn() {
             </Button>
 
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href="./SignUp" variant="body2">
                   {"Don't have an account? Sign Up"}
