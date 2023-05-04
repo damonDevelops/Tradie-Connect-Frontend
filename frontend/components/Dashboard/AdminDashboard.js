@@ -15,6 +15,7 @@ import Container from "@mui/material/Container";
 import Link from "next/link";
 
 //import Account from "../../../components/Account";
+import BuildIcon from '@mui/icons-material/Build';
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -39,7 +40,7 @@ import withAuth from "../../components/router/withAuth";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Home from "./CustomerHome";
+import AdminHome from './AdminHome';
 import axios from "axios";
 
 import { Dialog } from "@mui/material";
@@ -122,7 +123,7 @@ function ModeToggle() {
   );
 }
 
-export function CustomerDash(props) {
+export function AdminDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -185,19 +186,9 @@ export function CustomerDash(props) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              Admin Dashboard
             </Typography>
             <ModeToggle />
-            <IconButton color="inherit">
-              <Link href="/Customer/account" color="inherit">
-                {
-                  <AccountCircleRoundedIcon
-                    style={{ color: "#FFFFFF" }}
-                    fontSize="large"
-                  />
-                }
-              </Link>
-            </IconButton>
             <IconButton color="inherit" onClick={openDialog}>
               {/* TODO: add logout functionality to this link */}
               {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
@@ -220,7 +211,7 @@ export function CustomerDash(props) {
           <Divider />
           <List component="nav">
             <React.Fragment>
-              <Link href="/Customer" passHref legacyBehavior color="inherit">
+              <Link href="/Admin" passHref legacyBehavior color="inherit">
                 <ListItemButton>
                   <ListItemIcon>
                     <HomeIcon />
@@ -229,66 +220,8 @@ export function CustomerDash(props) {
                 </ListItemButton>
               </Link>
               <Divider sx={{ my: 1 }} />
-              <ListItemButton onClick={handleClick}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Requests" />
-                {newOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={newOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <Link
-                    href="/Customer/NewRequest"
-                    passHref
-                    legacyBehavior
-                    color="inherit"
-                  >
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText primary="New Request" />
-                    </ListItemButton>
-                  </Link>
-                </List>
-              </Collapse>
-              <Collapse in={newOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <Link
-                    href="/Customer/CurrentRequest"
-                    passHref
-                    legacyBehavior
-                    color="inherit"
-                  >
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText primary="Current Requests" />
-                    </ListItemButton>
-                  </Link>
-                </List>
-              </Collapse>
-              <Collapse in={newOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <Link
-                    href="/Customer/PastRequests"
-                    passHref
-                    legacyBehavior
-                    color="inherit"
-                  >
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText primary="Past Requests" />
-                    </ListItemButton>
-                  </Link>
-                </List>
-              </Collapse>
               <Link
-                href="/Customer/account"
+                href="/Admin/Customers"
                 passHref
                 legacyBehavior
                 color="inherit"
@@ -297,11 +230,37 @@ export function CustomerDash(props) {
                   <ListItemIcon>
                     <AccountCircleRoundedIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Account Details" />
+                  <ListItemText primary="Customers" />
                 </ListItemButton>
               </Link>
               <Link
-                href="/Customer/Report"
+                href="/Admin/ServiceProviders"
+                passHref
+                legacyBehavior
+                color="inherit"
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <BuildIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Service Providers" />
+                </ListItemButton>
+              </Link>
+              <Link
+                href="/Admin/Requests"
+                passHref
+                legacyBehavior
+                color="inherit"
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Requests" />
+                </ListItemButton>
+              </Link>
+              <Link
+                href="/Admin/Reports"
                 passHref
                 legacyBehavior
                 color="inherit"
@@ -332,7 +291,7 @@ export function CustomerDash(props) {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {/* {home ? <Home /> : props.children} */}
-            {props.children ? props.children : <Home />}
+            {props.children ? props.children : <AdminHome />}
           </Container>
         </Box>
       </Box>
@@ -385,4 +344,5 @@ export function CustomerDash(props) {
 }
 
 //TODO: figure out why using withAuth causes flickering
-export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
+//export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
+export default withAuth(AdminDash, ["ROLE_SYSTEM_ADMIN"]);
