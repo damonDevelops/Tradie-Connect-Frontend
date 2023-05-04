@@ -1,17 +1,16 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
+
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CustomersTable from "../Admin/CustomersTable";
-import ServiceProvidersTable from "../Admin/ServiceProvidersTable";
-import RequestsTable from "../Admin/RequestsTable";
-import { Divider } from "@mui/material";
+import ServiceProvidersTable from "./ServiceProvidersTable";
 
+//import { DataGrid } from "@mui/x-data-grid";
 
 const theme = createTheme();
 
-export default function Home() {
+export default function ServiceProviders() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -23,11 +22,10 @@ export default function Home() {
           height: 'auto',
         }}
       >
-        
         <Typography variant="h4" gutterBottom>
-          Home
+          Service Providers
         </Typography>
-       
+        <ServiceProvidersTable />
       </Paper>
     </ThemeProvider>
   );

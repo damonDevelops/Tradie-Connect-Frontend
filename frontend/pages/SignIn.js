@@ -25,6 +25,7 @@ import { useCurrentUser } from "../components/hooks/CurrentUserContext";
 import { useRouter } from "next/router";
 
 import { checkRole } from "../components/hooks/checkUser";
+import jwtDecode from "jwt-decode";
 
 const theme = createTheme();
 
@@ -99,6 +100,9 @@ export default function SignIn() {
         }
       );
 
+      //set the JWT cookie and redirect to the dashboard
+      Cookies.set("JWT", response.data.token);
+
 
 
       //if the response is successful, open the wheel for a bit
@@ -114,12 +118,9 @@ export default function SignIn() {
         //set the JWT cookie and redirect to the dashboard with an expiration of 30 days
         Cookies.set("JWT", response.data.token, { expires: 31 });
       }
-      else{
-        //set the JWT cookie and redirect to the dashboard
-        Cookies.set("JWT", response.data.token);
-      }
-
-      if (checkRole() == "ROLE_CUSTOMER") {
+      else if(checkRole() == "ROLE_SYSTEM_ADMIN"){
+        router.push("/Admin");
+      } else if (checkRole() == "ROLE_CUSTOMER") {
         router.push("/Customer");
       } else router.push("/Service-Provider");
 
