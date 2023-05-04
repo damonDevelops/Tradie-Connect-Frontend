@@ -14,6 +14,7 @@ import { useState } from "react";
 
 // for displaying data:
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
@@ -39,8 +40,9 @@ export default function ViewRequest() {
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
 
+  
   const { data: responseData } = useFetchData(fetchURL);
-  const [displayData, setDisplayData] = editDisplayData(responseData);
+  
 
   useEffect(() => {
     if (!fromRequests) {
@@ -50,8 +52,20 @@ export default function ViewRequest() {
 
   console.log(requestId);
   console.log(fromRequests);
+  console.log("original response data:")
   console.log(responseData);
-  console.log(displayData);
+  //console.log(displayData);
+
+  //const displayData = editDisplayData(responseData);
+  console.log("After data format: ")
+  //console.log(displayData)
+
+  const disabledStyle = {
+    "&.MuiInputBase-disabled": {
+      bgcolor: "#CEEAD0",
+      color: "green",
+    },
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -66,8 +80,8 @@ export default function ViewRequest() {
       >
         <Typography variant="h4" gutterBottom>
           View Request: {requestId}
-          {/* <Box sx={{ p: 2 }}>
-            {displayData ? (
+           <Box sx={{ p: 2 }}>
+            {responseData ? (
               <>
                 <Typography variant="h4" sx={{ mb: 2 }}>
                   Service Request Details
@@ -75,51 +89,57 @@ export default function ViewRequest() {
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <TextField
                     label="Request ID"
-                    value={displayData.id}
+                    value={responseData.id}
                     disabled
+                    InputLabelProps={{ shrink: true }}
                     sx={{ mb: 2 }}
                   />
                   <TextField
                     label="Date Submitted"
-                    value={displayData.requestedDate}
+                    value={responseData.requestedDate}
                     disabled
+                    InputLabelProps={{ shrink: true }}
                     sx={{ mb: 2 }}
                   />
                   <TextField
                     label="Scheduled Date"
-                    value={displayData.scheduledStartDate}
+                    value={responseData.scheduledStartDate}
                     disabled
+                    InputLabelProps={{ shrink: true }}
                     sx={{ mb: 2 }}
                   />
                   <TextField
                     label="Scheduled Finish"
-                    value={displayData.scheduledStartDate}
+                    value={responseData.scheduledStartDate}
                     disabled
+                    InputLabelProps={{ shrink: true }}
                     sx={{ mb: 2 }}
                   />
                   <TextField
                     label="Status: "
-                    value={displayData.status}
+                    value={responseData.status}
                     disabled
+                    InputLabelProps={{ shrink: true }}
                     sx={{ mb: 2 }}
                   />
                   <TextField
                     label="Description"
-                    value={displayData.description}
+                    value={responseData.description}
                     disabled
+                    InputLabelProps={{ shrink: true }}
                     sx={{ mb: 2 }}
                   />
-                  <Box
+                  {/* <Box
                     sx={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <Button onClick={handleBackButtonClick}>Back</Button>
-                  </Box>
+                  </Box> */}
                 </Box>
               </>
             ) : (
               <Typography variant="h6">Loading...</Typography>
             )}
-          </Box> */}
+          </Box> 
           {/* {fromRequests ? (
             <Typography>
               you came here from the current requests page
@@ -135,45 +155,49 @@ export default function ViewRequest() {
   );
 }
 
-export function editDisplayData(data) {
-  const [displayData, setDisplayData] = useState({
-    serviceType: "",
-    requestedDate: "",
-    requestedTime: "",
-    scheduledStartDate: "",
-    scheduledStartTime: "",
-    scheduledEndDate: "",
-    scheduledEndTime: "",
-    cost: "",
-    description: "",
-  });
+// export function editDisplayData(data) {
+//   const [displayData, setDisplayData] = useState({
+//     serviceType: "",
+//     requestedDate: "",
+//     requestedTime: "",
+//     scheduledStartDate: "",
+//     scheduledStartTime: "",
+//     scheduledEndDate: "",
+//     scheduledEndTime: "",
+//     cost: "",
+//     description: "",
+//   });
 
-  useEffect(() => {
-    const capitaliseWords = (str) => {
-      return str
-        .toLowerCase()
-        .split("_")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-    };
+//   useEffect(() => {
+//     const capitaliseWords = (str) => {
+//       return str
+//         .toLowerCase()
+//         .split("_")
+//         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+//         .join(" ");
+//     };
 
-    const formatDate = (date) => {
-      return date[2] + "/" + date[1] + "/" + date[0];
-    };
+//     const formatDate = (date) => {
+//       return date[2] + "/" + date[1] + "/" + date[0];
+//     };
 
-    setDisplayData({
-      serviceType: capitaliseWords(data.serviceType),
-      requestedDate: formatDate(data.requestedDate),
-      requestedTime: data.requestedTime,
-      scheduledStartDate: formatDate(data.scheduledStartDate),
-      scheduledStartTime: data.scheduledStartTime,
-      scheduledEndDate: formatDate(data.scheduledEndDate),
-      scheduledEndTime: data.scheduledEndTime,
-      cost: data.cost,
-      description: data.description,
-      status: capitaliseWords(data.status),
-    });
-  }, [data]);
+//     if (data) {
+//       setDisplayData({
+//         serviceType: capitaliseWords(data.serviceType),
+//         requestedDate: formatDate(data.requestedDate),
+//         requestedTime: data.requestedTime,
+//         scheduledStartDate: formatDate(data.scheduledStartDate),
+//         scheduledStartTime: data.scheduledStartTime,
+//         scheduledEndDate: formatDate(data.scheduledEndDate),
+//         scheduledEndTime: data.scheduledEndTime,
+//         cost: data.cost,
+//         description: data.description,
+//         status: capitaliseWords(data.status),
+//       });
+//     }
 
-  return [displayData, setDisplayData];
-}
+
+//   }, [data]);
+
+//   return displayData;
+// }
