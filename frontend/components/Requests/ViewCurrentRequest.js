@@ -16,6 +16,9 @@ import { Grid, Link, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 
 import useFetchData from "../hooks/fetchData";
+import axios from "axios";
+
+import usePostData from "../hooks/postData";
 
 const theme = createTheme();
 
@@ -179,26 +182,55 @@ function CustomerView() {
 // function returns the serrvice provider view of the current request
 function ServiceProviderView() {
   const router = useRouter();
+  // for the get request
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
+
+  // to get user id
   const userInfo = jwtDecode(Cookies.get("JWT"));
 
-  const [canApply, setCanApply] = useState(true);
+  // for the post request
+  const instance = axios.create({
+    withCredentials: true,
+  });
 
   console.log(responseData);
   console.log(userInfo);
 
-  useEffect(() => {
-    if (responseData.status != "CREATED" && responseData.status != "PENDING") {
-      setCanApply(false);
-    } else {
-      if (responseData.applicants.includes(userInfo.id)) setCanApply(false);
-      else setCanApply(true);
-    }
-  }, [responseData]);
+  // to determine whether appy button should show
+  const [canApply, setCanApply] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
-  // const handleOnApply = ()
+  // use effect checks if it's created or pending, then checks if current user as already applied
+  useEffect(() => {
+    if (responseData.status == "CREATED" || responseData.status !== "PENDING") {
+      setCanApply(true);
+    } else {
+      try {
+        const applicantIds = responseData.applicants.map(
+          (applicant) => applicant.id
+        );
+        console.log(applicantIds);
+        if (applicantIds.includes(userInfo.userId)) setHasApplied(true);
+        else setHasApplied(false);
+      } catch (error) {
+        setCanApply(false);
+      }
+    }
+  }, [responseData.status]);
+
+  const handleOnApply = async () => {
+    try {
+      const postURL =
+        "http://localhost:8080/api/service-requests/" +
+        userInfo.userId +
+        "/apply";
+      console.log(instance.post(postURL));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box sx={{ p: 2 }}>
@@ -289,18 +321,57 @@ function ServiceProviderView() {
                 fullWidth
               />
             </Grid>
-            {canApply ? (
+            {canApply && !hasApplied && (
               <Grid item xs={12}>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOnApply}
+                >
                   Apply
                 </Button>
               </Grid>
-            ) : null}
+            )}
+            {canApply && hasApplied && (
+              <Grid item xs={12}>
+                <Button variant="contained" color="primary" disabled>
+                  Applied
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </>
       ) : (
         <Typography variant="h6">Loading...</Typography>
       )}
     </Box>
+  );
+}
+
+// apply function for service providers
+function ApplyButton({ userId }) {
+  const [isApplying, setIsApplying] = useState(false);
+  const postURL = `http://localhost:8080/api/service-requests/${userId}/apply`;
+  const { postData, isLoading, isError, post } = usePostData(postURL);
+
+  const handleOnClick = () => {
+    setIsApplying(true);
+    post();
+  };
+
+  if (isApplying) {
+    if (isLoading) {
+      return <div>Applying...</div>;
+    } else if (isError) {
+      return <div>Error applying</div>;
+    } else {
+      return <div>Applied!</div>;
+    }
+  }
+
+  return (
+    <Button onClick={handleOnClick}>
+      {isLoading ? "Loading..." : "Apply"}
+    </Button>
   );
 }

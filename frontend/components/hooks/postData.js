@@ -1,29 +1,32 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const usePostData = (url, postData) => {
-  const [response, setResponse] = useState(null);
+const usePostData = (url, postData = null) => {
+  const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const postDataAsync = async () => {
       try {
         const response = await axios.post(url, postData, {
-          responseType: "json",
           withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-        setResponse(response.data);
+        setData(response.data);
       } catch (error) {
         setError(error);
         console.log(error);
       }
     };
-    postDataAsync();
+
+    if (postData) {
+      postDataAsync();
+    }
   }, [url, postData]);
 
-  // console.log(response);
-
-  return { response, error };
+  return { data, error };
 };
 
 export default usePostData;
