@@ -149,11 +149,25 @@ function RequestTable({ data }) {
               <TableCell sx={{ width: "20%", textAlign: "center" }}>
                 {row.id}
               </TableCell>
-              <TableCell sx={cellStyles}>{row.serviceType}</TableCell>
-              <TableCell sx={cellStyles}>{row.status}</TableCell>
-              <TableCell sx={cellStyles}>{row.requestedDate}</TableCell>
-              <TableCell sx={cellStyles}>{row.scheduledEndDate}</TableCell>
-              <TableCell sx={cellStyles}>{row.cost}</TableCell>
+              <TableCell sx={cellStyles}>
+                {row.serviceType
+                  ? capitaliseWords(row.serviceType)
+                  : row.serviceType}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.status ? capitaliseWords(row.status) : row.status}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.requestedDate
+                  ? formatDate(row.requestedDate)
+                  : row.requestedDate}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.scheduledEndDate
+                  ? formatDate(row.scheduledEndDate)
+                  : row.scheduledEndDate}
+              </TableCell>
+              <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
               <TableCell>
                 <Link
                   href={{
@@ -184,4 +198,16 @@ function RequestTable({ data }) {
       />
     </TableContainer>
   );
+}
+
+function capitaliseWords(str) {
+  return str
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function formatDate(date) {
+  return date[2] + "/" + date[1] + "/" + date[0];
 }

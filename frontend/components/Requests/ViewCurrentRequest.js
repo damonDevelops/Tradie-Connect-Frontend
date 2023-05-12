@@ -1,10 +1,13 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 
 import { useRouter } from "next/router";
 
@@ -27,7 +30,7 @@ export default function ViewRequest() {
 
   useEffect(() => {
     if (!fromRequests) {
-      router.replace("/Customer/CurrentRequest");
+      router.back();
     }
   }, [fromRequests, router]);
 
@@ -179,6 +182,23 @@ function ServiceProviderView() {
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
+  const userInfo = jwtDecode(Cookies.get("JWT"));
+
+  const [canApply, setCanApply] = useState(true);
+
+  console.log(responseData);
+  console.log(userInfo);
+
+  useEffect(() => {
+    if (responseData.status != "CREATED" && responseData.status != "PENDING") {
+      setCanApply(false);
+    } else {
+      if (responseData.applicants.includes(userInfo.id)) setCanApply(false);
+      else setCanApply(true);
+    }
+  }, [responseData]);
+
+  // const handleOnApply = ()
 
   return (
     <Box sx={{ p: 2 }}>
@@ -269,6 +289,13 @@ function ServiceProviderView() {
                 fullWidth
               />
             </Grid>
+            {canApply ? (
+              <Grid item xs={12}>
+                <Button variant="contained" color="primary">
+                  Apply
+                </Button>
+              </Grid>
+            ) : null}
           </Grid>
         </>
       ) : (
