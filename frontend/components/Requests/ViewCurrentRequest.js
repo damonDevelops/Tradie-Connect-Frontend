@@ -44,86 +44,16 @@ export default function ViewRequest() {
       >
         <Typography variant="h4" gutterBottom>
           Service Request Details
-          <Box sx={{ p: 2 }}>
-            {responseData ? (
-              <>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Request ID"
-                      value={responseData.id}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 2 }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Status: "
-                      value={capitaliseWords(responseData.status)}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 2 }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Type: "
-                      value={capitaliseWords(responseData.serviceType)}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 2 }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Date Submitted"
-                      value={formatDate(responseData.requestedDate)}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 2 }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Scheduled Date"
-                      value={formatDate(responseData.scheduledStartDate)}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 2 }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Scheduled Finish"
-                      value={formatDate(responseData.scheduledStartDate)}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ mb: 2 }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label="Description"
-                      value={responseData.description}
-                      disabled
-                      InputLabelProps={{ shrink: true }}
-                      multiline={true}
-                      fullWidth
-                    />
-                  </Grid>
-                </Grid>
-              </>
-            ) : (
-              <Typography variant="h6">Loading...</Typography>
-            )}
-          </Box>
         </Typography>
+
+        {router.query.customer ? <CustomerView /> : null}
+        {router.query.serviceProvider ? <ServiceProviderView /> : null}
       </Paper>
     </ThemeProvider>
   );
 }
 
+// takes a string and capitalises the first letter of each word. Makes every other letter lower case.
 function capitaliseWords(str) {
   return str
     .toLowerCase()
@@ -132,6 +62,218 @@ function capitaliseWords(str) {
     .join(" ");
 }
 
+// formats date specific to how it is held in the date array
+// date[0] = year, date[1] = month, date[2] = day
 function formatDate(date) {
   return date[2] + "/" + date[1] + "/" + date[0];
+}
+
+// this function returns the customer view of the current request
+function CustomerView() {
+  const router = useRouter();
+  const fetchURL =
+    "http://localhost:8080/api/service-requests/" + router.query.id;
+  const { data: responseData } = useFetchData(fetchURL);
+
+  return (
+    <Box sx={{ p: 2 }}>
+      {responseData ? (
+        <>
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Request ID"
+                value={responseData.id}
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Status: "
+                value={
+                  responseData.status
+                    ? capitaliseWords(responseData.status)
+                    : responseData.status
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Type: "
+                value={
+                  responseData.serviceType
+                    ? capitaliseWords(responseData.serviceType)
+                    : responseData.serviceType
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Date Submitted"
+                value={
+                  responseData.requestedDate
+                    ? formatDate(responseData.requestedDate)
+                    : responseData.requestedDate
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Scheduled Date"
+                value={
+                  responseData.scheduledStartDate
+                    ? formatDate(responseData.scheduledStartDate)
+                    : responseData.scheduledStartDate
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Scheduled Finish"
+                value={
+                  responseData.scheduledEndDate
+                    ? formatDate(responseData.scheduledEndDate)
+                    : responseData.scheduledEndDate
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                value={responseData.description}
+                disabled
+                InputLabelProps={{ shrink: true }}
+                multiline={true}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+        </>
+      ) : (
+        <Typography variant="h6">Loading...</Typography>
+      )}
+    </Box>
+  );
+}
+
+// function returns the serrvice provider view of the current request
+function ServiceProviderView() {
+  const router = useRouter();
+  const fetchURL =
+    "http://localhost:8080/api/service-requests/" + router.query.id;
+  const { data: responseData } = useFetchData(fetchURL);
+
+  return (
+    <Box sx={{ p: 2 }}>
+      {responseData ? (
+        <>
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Request ID"
+                value={responseData.id}
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Status: "
+                value={
+                  responseData.status
+                    ? capitaliseWords(responseData.status)
+                    : responseData.status
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Type: "
+                value={
+                  responseData.serviceType
+                    ? capitaliseWords(responseData.serviceType)
+                    : responseData.serviceType
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Date Submitted"
+                value={
+                  responseData.requestedDate
+                    ? formatDate(responseData.requestedDate)
+                    : responseData.requestedDate
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Scheduled Date"
+                value={
+                  responseData.scheduledStartDate
+                    ? formatDate(responseData.scheduledStartDate)
+                    : responseData.scheduledStartDate
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                label="Scheduled Finish"
+                value={
+                  responseData.scheduledEndDate
+                    ? formatDate(responseData.scheduledEndDate)
+                    : responseData.scheduledEndDate
+                }
+                disabled
+                InputLabelProps={{ shrink: true }}
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                value={responseData.description}
+                disabled
+                InputLabelProps={{ shrink: true }}
+                multiline={true}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+        </>
+      ) : (
+        <Typography variant="h6">Loading...</Typography>
+      )}
+    </Box>
+  );
 }

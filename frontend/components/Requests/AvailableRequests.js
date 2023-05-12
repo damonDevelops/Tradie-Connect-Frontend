@@ -4,7 +4,6 @@ import Paper from "@mui/material/Paper";
 
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios";
 
 import { TextField } from "@mui/material";
 import { useState } from "react";
@@ -14,6 +13,8 @@ import Link from "next/link";
 
 import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
+import useFetchData from "../hooks/fetchData";
+import axios from "axios";
 
 // for displaying data:
 import Box from "@mui/material/Box";
@@ -28,46 +29,59 @@ import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import {} from "../functional_components/formattingUtil";
 
 //import { DataGrid } from "@mui/x-data-grid";
 
 const theme = createTheme();
 
-export default function CurrentRequest() {
-  const [data, setData] = useState([]);
+export default function AvailableRequest() {
+  const fetchURL = "http://localhost:8080/api/service-providers";
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data: responseData } = useFetchData(fetchURL);
+  const [serviceRequests, setRequests] = useState([]);
+
+  console.log(responseData);
 
   const instance = axios.create({
     withCredentials: true,
   });
 
-  const fetchData = async () => {
-    try {
-      const response = await instance.get(
-        "http://localhost:8080/api/service-requests/user-requests",
-        {
-          responseType: "json",
-        }
-      );
-      setData(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (responseData && responseData.qualifiedServiceRequests) {
+        const objectPromise = responseData.qualifiedServiceRequests.map((id) =>
+          instance.get("http://localhost:8080/api/service-requests/" + id)
+        );
+        const requests = await Promise.all(objectPromise);
+        setRequests(requests.map((response) => response.data));
+      }
+    };
 
-  // maps the data from the request into a rows array with only the data required to be shown
-  const rows = data.map(
-    ({ id, serviceType, status, requestedDate, scheduledEndDate, cost }) => ({
+    fetchData();
+  }, [responseData]);
+
+  console.log(serviceRequests);
+
+  const rows = serviceRequests.map(
+    ({
       id,
       serviceType,
       status,
       requestedDate,
       scheduledEndDate,
       cost,
+      customer: {
+        suburb: { name: suburbName },
+      },
+    }) => ({
+      id,
+      serviceType,
+      status,
+      requestedDate,
+      scheduledEndDate,
+      cost,
+      customer: { suburbName },
     })
   );
 
@@ -83,7 +97,7 @@ export default function CurrentRequest() {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          Current Requests
+          Available Requests
         </Typography>
         <RequestTable data={rows} />
       </Paper>
@@ -108,8 +122,8 @@ function RequestTable({ data }) {
   const handleViewClick = (id) => {
     // Navigate to the dynamic route page with a query parameter
     Router.push({
-      pathname: `/Customer/ViewRequest/${id}`,
-      query: { fromRequests: true, customer: true },
+      pathname: `/Service-Provider/ViewRequest/${id}`,
+      query: { fromRequests: true },
     });
   };
 
@@ -134,33 +148,47 @@ function RequestTable({ data }) {
       <Table sx={{ minwidth: 650 }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={headerStyles}>Service Request (ID)</TableCell>
             <TableCell sx={headerStyles}>Work Type</TableCell>
-            <TableCell sx={headerStyles}>Work Status</TableCell>
+            {/* <TableCell sx={headerStyles}>Work Status</TableCell> */}
             <TableCell sx={headerStyles}>Start Date</TableCell>
             <TableCell sx={headerStyles}>Finish Date</TableCell>
-            <TableCell sx={headerStyles}>Cost ($)</TableCell>
+            <TableCell sx={headerStyles}>Location (Suburb)</TableCell>
+            <TableCell sx={headerStyles}>Pays ($)</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rowsToDisplay.map((row, index) => (
             <TableRow key={index}>
-              <TableCell sx={{ width: "20%", textAlign: "center" }}>
-                {row.id}
+              <TableCell sx={cellStyles}>
+                {row.serviceType
+                  ? capitaliseWords(row.serviceType)
+                  : row.serviceType}
               </TableCell>
-              <TableCell sx={cellStyles}>{row.serviceType}</TableCell>
-              <TableCell sx={cellStyles}>{row.status}</TableCell>
-              <TableCell sx={cellStyles}>{row.requestedDate}</TableCell>
-              <TableCell sx={cellStyles}>{row.scheduledEndDate}</TableCell>
-              <TableCell sx={cellStyles}>{row.cost}</TableCell>
+              {/* <TableCell sx={cellStyles}>
+                {row.status ? capitaliseWords(row.status) : row.status}
+              </TableCell> */}
+              <TableCell sx={cellStyles}>
+                {row.requestedDate
+                  ? formatDate(row.requestedDate)
+                  : row.requestedDate}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.scheduledEndDate
+                  ? formatDate(row.scheduledEndDate)
+                  : row.scheduledEndDate}
+              </TableCell>
+              <TableCell sx={{ width: "20%", textAlign: "center" }}>
+                {row.customer.suburbName}
+              </TableCell>
+              <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
               <TableCell>
                 <Link
                   href={{
-                    pathname: `/Customer/ViewRequest/[id]`,
-                    query: { fromRequests: true, customer: true },
+                    pathname: `/Service-Provider/ViewRequest/[id]`,
+                    query: { fromRequests: true, serviceProvider: true },
                   }}
-                  as={`/Customer/ViewRequest/${row.id}`}
+                  as={`/Service-Provider/ViewRequest/${row.id}`}
                   passHref
                   legacyBehavior
                 >
@@ -184,4 +212,16 @@ function RequestTable({ data }) {
       />
     </TableContainer>
   );
+}
+
+function capitaliseWords(str) {
+  return str
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function formatDate(date) {
+  return date[2] + "/" + date[1] + "/" + date[0];
 }
