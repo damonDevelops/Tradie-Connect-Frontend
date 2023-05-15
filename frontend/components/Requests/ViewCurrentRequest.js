@@ -18,7 +18,16 @@ import Box from "@mui/material/Box";
 import useFetchData from "../hooks/fetchData";
 import axios from "axios";
 
-import usePostData from "../hooks/postData";
+import Rating from "@mui/material/Rating";
+import { styled } from "@mui/system";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TablePagination from "@mui/material/TablePagination";
 
 const theme = createTheme();
 
@@ -170,12 +179,90 @@ function CustomerView() {
                 fullWidth
               />
             </Grid>
+            {/*maybe nest grid inside the tradie table function*/}
+            <Grid item xs={12}>
+              {responseData.status == "PENDING" ? (
+                <TradieTable data={responseData} />
+              ) : null}
+            </Grid>
           </Grid>
         </>
       ) : (
         <Typography variant="h6">Loading...</Typography>
       )}
     </Box>
+  );
+}
+
+function TradieTable({ data }) {
+  const rows = data.applicants.map((applicant) => applicant.serviceProvider);
+  console.log(rows);
+
+  const SmallerRating = styled(Rating)(({ theme }) => ({
+    "& .MuiRating-icon": {
+      fontSize: theme.typography.fontSize - 2,
+    },
+  }));
+
+  // for the post request
+  const instance = axios.create({
+    withCredentials: true,
+  });
+
+  const handleOnAccept = async (id) => {
+    try {
+      const postURL =
+        "http://localhost:8080/api/service-requests/" +
+        data.id +
+        "/accept-service-provider/" +
+        id;
+      console.log(postURL);
+      const response = instance.post(postURL);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <TableContainer component={Paper} style={{ maxHeight: 400 }}>
+      <Table stickyHeader>
+        <TableRow>
+          <TableCell>Service Provider ID</TableCell>
+          <TableCell>Company Name</TableCell>
+          <TableCell>Rating</TableCell>
+          <TableCell></TableCell>
+        </TableRow>
+        <TableBody>
+          {rows.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell>{row.id}</TableCell>
+              <TableCell>{row.companyName}</TableCell>
+              <TableCell>
+                {
+                  <SmallerRating
+                    name="rating"
+                    value={row.Rating}
+                    precision={0.5}
+                    readOnly
+                  />
+                }
+              </TableCell>
+              <TableCell>
+                <Button
+                  component="a"
+                  variant="outlined"
+                  onClick={() => handleOnAccept(row.id)}
+                >
+                  ACCEPT
+                </Button>
+              </TableCell>
+              {/*Add more TableCell components for additional columns*/}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
@@ -224,7 +311,6 @@ function ServiceProviderView() {
       const postURL =
         "http://localhost:8080/api/service-requests/" +
         responseData.id +
-        //userInfo.userId +
         "/apply";
       const response = instance.post(postURL);
       console.log(response);
@@ -347,33 +433,5 @@ function ServiceProviderView() {
         <Typography variant="h6">Loading...</Typography>
       )}
     </Box>
-  );
-}
-
-// apply function for service providers
-function ApplyButton({ userId }) {
-  const [isApplying, setIsApplying] = useState(false);
-  const postURL = `http://localhost:8080/api/service-requests/${userId}/apply`;
-  const { postData, isLoading, isError, post } = usePostData(postURL);
-
-  const handleOnClick = () => {
-    setIsApplying(true);
-    post();
-  };
-
-  if (isApplying) {
-    if (isLoading) {
-      return <div>Applying...</div>;
-    } else if (isError) {
-      return <div>Error applying</div>;
-    } else {
-      return <div>Applied!</div>;
-    }
-  }
-
-  return (
-    <Button onClick={handleOnClick}>
-      {isLoading ? "Loading..." : "Apply"}
-    </Button>
   );
 }
