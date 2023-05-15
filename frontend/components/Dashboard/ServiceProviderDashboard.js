@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
+import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -48,8 +48,6 @@ import {
   experimental_extendTheme as extendTheme,
   useColorScheme,
 } from "@mui/material/styles";
-
-
 
 const drawerWidth = 240;
 
@@ -241,12 +239,19 @@ function ServiceDash(props) {
               </ListItemButton>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Available Requests" />
-                  </ListItemButton>
+                  <Link
+                    href="/Service-Provider/Available-Requests"
+                    passHref
+                    legacyBehavior
+                    color="inherit"
+                  >
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText primary="Available Requests" />
+                    </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>

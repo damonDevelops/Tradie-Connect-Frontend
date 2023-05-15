@@ -29,22 +29,14 @@ import jwtDecode from "jwt-decode";
 
 const theme = createTheme();
 
-
-
 export default function SignIn() {
   useEffect(() => {
-
-      if (checkRole() == "ROLE_CUSTOMER") {
-        router.push("/Customer");
-      } 
-      else if (checkRole() == "ROLE_SERVICE_PROVIDER") {
-  
-        router.push("/Service-Provider");
-      }
-      else return;
-    
+    if (checkRole() == "ROLE_CUSTOMER") {
+      router.push("/Customer");
+    } else if (checkRole() == "ROLE_SERVICE_PROVIDER") {
+      router.push("/Service-Provider");
+    } else return;
   }, []);
-
 
   //time for loading backdrop
   const timer = React.useRef();
@@ -80,7 +72,7 @@ export default function SignIn() {
 
   const handleCheckboxChange = (e) => {
     setChecked(e.target.checked);
-  }
+  };
 
   //function to handle the authentication
   const handleSubmit = async (e) => {
@@ -103,8 +95,6 @@ export default function SignIn() {
       //set the JWT cookie and redirect to the dashboard
       Cookies.set("JWT", response.data.token);
 
-
-
       //if the response is successful, open the wheel for a bit
       if (response.status === 200) {
         setBackdropOpen(true);
@@ -114,11 +104,10 @@ export default function SignIn() {
         }, 10000);
       }
 
-      if(checked){
+      if (checked) {
         //set the JWT cookie and redirect to the dashboard with an expiration of 30 days
         Cookies.set("JWT", response.data.token, { expires: 31 });
-      }
-      else if(checkRole() == "ROLE_SYSTEM_ADMIN"){
+      } else if (checkRole() == "ROLE_SYSTEM_ADMIN") {
         router.push("/Admin");
       } else if (checkRole() == "ROLE_CUSTOMER") {
         router.push("/Customer");
@@ -189,9 +178,11 @@ export default function SignIn() {
               <CircularProgress color="inherit" />
             </Backdrop>
             <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleCheckboxChange} />}
-      label="Remember me"
-    />
+              control={
+                <Checkbox checked={checked} onChange={handleCheckboxChange} />
+              }
+              label="Remember me"
+            />
             <Button
               type="submit"
               fullWidth

@@ -129,7 +129,6 @@ export default function CustomerSignUp() {
     { value: "NT", label: "NT" },
   ];
 
-
   //const to hold the trade options
   const serviceAreas = [
     { value: "TREE_REMOVAL", label: "Tree Removal" },
@@ -138,7 +137,6 @@ export default function CustomerSignUp() {
     { value: "OVEN_REPAIRS", label: "Oven Repair" },
     { value: "POOL_CLEANING", label: "Pool Cleaning" },
   ];
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -162,6 +160,7 @@ export default function CustomerSignUp() {
             abn: abn,
             phoneNumber: newPhoneNumber,
             streetAddress: address,
+            skills: ["TREE_REMOVAL"], // this needs to be updated since returnTrade returns "Tree Removal" and not the capitalised version
             suburb: {
               name: city,
               state: returnState,
@@ -169,8 +168,8 @@ export default function CustomerSignUp() {
 
             membership: {
               membershipType: "COMMISSION",
-              "price": 49.99,
-              "description": "Commission Membership"
+              price: 49.99,
+              description: "Commission Membership",
             },
             postCode: postcode,
           }
