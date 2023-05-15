@@ -125,7 +125,9 @@ function CustomersTable({ data }) {
               </TableCell>
               <TableCell sx={cellStyles}>{row.email}</TableCell>
               <TableCell sx={cellStyles}>{row.firstName}</TableCell>
-              <TableCell sx={cellStyles}>{row.membership.membershipType}</TableCell>
+              <TableCell sx={cellStyles}>{row.membership.membershipType
+                  ? capitaliseWords(row.membership.membershipType)
+                  : row.membership.membershipType}</TableCell>
               <TableCell sx={cellStyles}>{row.postCode}</TableCell>
             </TableRow>
           ))}
@@ -142,4 +144,16 @@ function CustomersTable({ data }) {
       />
     </TableContainer>
   );
+}
+
+function capitaliseWords(str) {
+  return str
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function formatDate(date) {
+  return date[2] + "/" + date[1] + "/" + date[0];
 }
