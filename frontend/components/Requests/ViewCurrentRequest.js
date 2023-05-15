@@ -204,19 +204,18 @@ function ServiceProviderView() {
 
   // use effect checks if it's created or pending, then checks if current user as already applied
   useEffect(() => {
-    if (responseData.status == "CREATED" || responseData.status !== "PENDING") {
+    if (responseData.status == "CREATED" || responseData.status == "PENDING") {
       setCanApply(true);
-    } else {
-      try {
-        const applicantIds = responseData.applicants.map(
-          (applicant) => applicant.id
-        );
-        console.log(applicantIds);
-        if (applicantIds.includes(userInfo.userId)) setHasApplied(true);
-        else setHasApplied(false);
-      } catch (error) {
-        setCanApply(false);
-      }
+    }
+    try {
+      const applicantIds = responseData.applicants.map(
+        (applicant) => applicant.serviceProvider.id
+      );
+      console.log(applicantIds);
+      if (applicantIds.includes(userInfo.userId)) setHasApplied(true);
+      else setHasApplied(false);
+    } catch (error) {
+      setCanApply(false);
     }
   }, [responseData.status]);
 
@@ -224,9 +223,12 @@ function ServiceProviderView() {
     try {
       const postURL =
         "http://localhost:8080/api/service-requests/" +
-        userInfo.userId +
+        responseData.id +
+        //userInfo.userId +
         "/apply";
-      console.log(instance.post(postURL));
+      const response = instance.post(postURL);
+      console.log(response);
+      setHasApplied(true);
     } catch (error) {
       console.log(error);
     }
