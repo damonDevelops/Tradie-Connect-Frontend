@@ -79,15 +79,14 @@ export default function Account() {
         "http://localhost:8080/api/customers"
       );
 
-      response.data.map((data) => {
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setPhone(data.phoneNumber);
-        setAddress(data.streetAddress);
-        setCity(data.suburb.name);
-        setPostcode(data.postCode);
-        setState(data.suburb.state);
-      });
+      setFirstName(response.data.firstName);
+      setLastName(response.data.lastName);
+      setPhone(response.data.phoneNumber);
+      setAddress(response.data.streetAddress);
+      setCity(response.data.suburb.name);
+      setPostcode(response.data.postCode);
+      setState(response.data.suburb.state);
+
     } catch (error) {
       console.error(error);
     }
