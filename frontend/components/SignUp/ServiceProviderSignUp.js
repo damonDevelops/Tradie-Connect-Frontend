@@ -134,7 +134,7 @@ export default function CustomerSignUp() {
     { value: "TREE_REMOVAL", label: "Tree Removal" },
     { value: "ROOF_CLEANING", label: "Roof Cleaning" },
     { value: "FENCE_INSTALLATION", label: "Fence Installation" },
-    { value: "OVEN_REPAIRS", label: "Oven Repair" },
+    { value: "OVEN_REPAIRS", label: "Oven Repairs" },
     { value: "POOL_CLEANING", label: "Pool Cleaning" },
   ];
 
@@ -160,7 +160,7 @@ export default function CustomerSignUp() {
             abn: abn,
             phoneNumber: newPhoneNumber,
             streetAddress: address,
-            skills: ["TREE_REMOVAL"], // this needs to be updated since returnTrade returns "Tree Removal" and not the capitalised version
+            skills: [returnTrade], // this needs to be updated since returnTrade returns "Tree Removal" and not the capitalised version
             suburb: {
               name: city,
               state: returnState,
@@ -202,6 +202,17 @@ export default function CustomerSignUp() {
             disablePortal
             id="combo-box-demo"
             onInputChange={(event, newTrade) => {
+              if (newTrade === "Pool Cleaning") {
+                newTrade = "POOL_CLEANING";
+              } else if (newTrade === "Tree Removal") {
+                newTrade = "TREE_REMOVAL";
+              } else if (newTrade === "Roof Cleaning") {
+                newTrade = "ROOF_CLEANING";
+              } else if (newTrade === "Fence Installation") {
+                newTrade = "FENCE_INSTALLATION";
+              } else if (newTrade === "Oven Repairs") {
+                newTrade = "OVEN_REPAIRS";
+              }
               setTradeType(newTrade);
             }}
             options={serviceAreas}
