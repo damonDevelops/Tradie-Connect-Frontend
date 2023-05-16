@@ -22,6 +22,6 @@ export function checkRole() {
 
   const token = Cookies.get("JWT");
   const decoded = jwtDecode(token);
-
+  
   return decoded.role;
 }
