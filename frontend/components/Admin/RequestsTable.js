@@ -22,6 +22,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 
+
 export default function ServiceProviders() {
   const [data, setData] = useState([]);
   const [sortModel, setSortModel] = React.useState([
@@ -30,7 +31,6 @@ export default function ServiceProviders() {
       sort: "desc",
     },
   ]);
-
 
   useEffect(() => {
     fetchData();
@@ -50,16 +50,21 @@ export default function ServiceProviders() {
       );
       setData(response.data);
       console.log(response.data);
-
     } catch (error) {
       console.error(error);
     }
   };
 
-
   // maps the data from the request into a rows array with only the data required to be shown
   const rows = data.map(
-    ({ id, serviceType, status, cost, scheduledStartDate, scheduledEndDate }) => ({
+    ({
+      id,
+      serviceType,
+      status,
+      cost,
+      scheduledStartDate,
+      scheduledEndDate,
+    }) => ({
       id,
       status,
       serviceType,
@@ -69,9 +74,7 @@ export default function ServiceProviders() {
     })
   );
 
-  return (
-      <RequestTable data={rows} />
-  );
+  return <RequestTable data={rows} />;
 }
 
 function RequestTable({ data }) {
@@ -109,9 +112,9 @@ function RequestTable({ data }) {
         <TableHead>
           <TableRow>
             <TableCell sx={headerStyles}>Request (ID)</TableCell>
-            <TableCell sx={headerStyles}>serviceType</TableCell>
-            <TableCell sx={headerStyles}>Business Name</TableCell>
-            <TableCell sx={headerStyles}>Cost Type</TableCell>
+            <TableCell sx={headerStyles}>Service Type</TableCell>
+            <TableCell sx={headerStyles}>Status</TableCell>
+            <TableCell sx={headerStyles}>Cost</TableCell>
             <TableCell sx={headerStyles}>Start Date</TableCell>
             <TableCell sx={headerStyles}>End Date</TableCell>
           </TableRow>
@@ -122,11 +125,25 @@ function RequestTable({ data }) {
               <TableCell sx={{ width: "20%", textAlign: "center" }}>
                 {row.id}
               </TableCell>
-              <TableCell sx={cellStyles}>{row.serviceType}</TableCell>
-              <TableCell sx={cellStyles}>{row.status}</TableCell>
+              <TableCell sx={cellStyles}>
+                {row.serviceType
+                  ? capitaliseWords(row.serviceType)
+                  : row.serviceType}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.status ? capitaliseWords(row.status) : row.status}
+              </TableCell>
               <TableCell sx={cellStyles}>{row.cost}</TableCell>
-              <TableCell sx={cellStyles}>{row.scheduledStartDate}</TableCell>
-              <TableCell sx={cellStyles}>{row.scheduledEndDate}</TableCell>
+              <TableCell sx={cellStyles}>
+                {row.scheduledStartDate
+                  ? formatDate(row.scheduledStartDate)
+                  : row.scheduledStartDate}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.scheduledEndDate
+                  ? formatDate(row.scheduledEndDate)
+                  : row.scheduledEndDate}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -142,4 +159,16 @@ function RequestTable({ data }) {
       />
     </TableContainer>
   );
+}
+
+function formatDate(date) {
+  return date[2] + "/" + date[1] + "/" + date[0];
+}
+
+function capitaliseWords(str) {
+  return str
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }

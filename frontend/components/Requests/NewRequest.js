@@ -64,7 +64,7 @@ export default function NewRequest() {
 
   const [WorkType, setWorkType] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [cost, setCost] = React.useState(0);
+  const [cost, setCost] = React.useState(200);
   const [membershipType, setMembershipType] = React.useState("");
 
 
@@ -145,9 +145,7 @@ export default function NewRequest() {
         "http://localhost:8080/api/customers"
       );
 
-      response.data.map((data) => {
-        setMembershipType(data.membership.membershipType);
-      });
+      setMembershipType(response.data.membership.membershipType);
 
     } catch (error) {
       console.error(error);
@@ -280,7 +278,7 @@ export default function NewRequest() {
           <br />
           {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
           {membershipType == "PAY_ON_DEMAND" && (
-            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: ${diffDays * multiplier}</Typography>
+            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: ${diffDays * multiplier + 200}</Typography>
           )}
           {membershipType == "CLIENT_SUBSCRIPTION" && (
             <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: $0, you're a loyal subscriber!</Typography>

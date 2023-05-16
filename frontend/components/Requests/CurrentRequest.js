@@ -72,22 +72,7 @@ export default function CurrentRequest() {
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Paper
-        sx={{
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          height: 700,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Current Requests
-        </Typography>
-        <RequestTable data={rows} />
-      </Paper>
-    </ThemeProvider>
+    <RequestTable data={rows} />
   );
 }
 

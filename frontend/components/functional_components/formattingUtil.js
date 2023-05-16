@@ -9,3 +9,5 @@ function capitaliseWords(str) {
 function formatDate(date) {
   return date[2] + "/" + date[1] + "/" + date[0];
 }
+
+export default capitaliseWords;
