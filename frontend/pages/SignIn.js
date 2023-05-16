@@ -49,7 +49,6 @@ export default function SignIn() {
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [loginFailAlert, setLoginFailAlert] = useState(false);
 
-  const [checked, setChecked] = React.useState(false);
 
   //variable for fetching current user to store in current user context
   //const { fetchCurrentUser } = useCurrentUser(); // part of current user context, maybe delete
@@ -70,9 +69,7 @@ export default function SignIn() {
     };
   }, []);
 
-  const handleCheckboxChange = (e) => {
-    setChecked(e.target.checked);
-  };
+
 
   //function to handle the authentication
   const handleSubmit = async (e) => {
@@ -104,10 +101,7 @@ export default function SignIn() {
         }, 10000);
       }
 
-      if (checked) {
-        //set the JWT cookie and redirect to the dashboard with an expiration of 30 days
-        Cookies.set("JWT", response.data.token, { expires: 31 });
-      } else if (checkRole() == "ROLE_SYSTEM_ADMIN") {
+      if (checkRole() == "ROLE_SYSTEM_ADMIN") {
         router.push("/Admin");
       } else if (checkRole() == "ROLE_CUSTOMER") {
         router.push("/Customer");
@@ -177,12 +171,7 @@ export default function SignIn() {
             >
               <CircularProgress color="inherit" />
             </Backdrop>
-            <FormControlLabel
-              control={
-                <Checkbox checked={checked} onChange={handleCheckboxChange} />
-              }
-              label="Remember me"
-            />
+
             <Button
               type="submit"
               fullWidth
