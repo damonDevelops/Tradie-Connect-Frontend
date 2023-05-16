@@ -10,6 +10,7 @@ import { Button, Divider } from "@mui/material";
 import CurrentRequest from "../Requests/CurrentRequest";
 import Grid from "@mui/material/Grid";
 import Item from "@mui/material/Grid";
+import Link from "next/link";
 
 const theme = createTheme();
 
@@ -34,13 +35,15 @@ export default function Home() {
               Make a New Request{" "}
             </Typography>
             <br />
+            <Link href="/Customer/NewRequest" passHref legacyBehavior color="inherit">
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              href="/customer/new-request"
             >
               New Request{" "}
             </Button>
+            </Link>
+            
           </Paper>
         </Grid>
         <Grid item xs={4}>
@@ -58,13 +61,15 @@ export default function Home() {
               Past Requests{" "}
             </Typography>
             <br />
+            <Link href="/Customer/PastRequests" passHref legacyBehavior color="inherit">
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              href="/customer/new-request"
             >
               Past Requests{" "}
             </Button>
+            </Link>
+            
           </Paper>
         </Grid>
         <Grid item xs={4}>
@@ -82,13 +87,15 @@ export default function Home() {
               Reports{" "}
             </Typography>
             <br />
+            <Link href="/Customer/Reports" passHref legacyBehavior color="inherit">
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              href="/customer/new-request"
+              href="/Customer/NewRequest"
             >
               Reports{" "}
             </Button>
+            </Link>
           </Paper>
         </Grid>
         <Grid item xs={12} sx={{mt: 3}}>
