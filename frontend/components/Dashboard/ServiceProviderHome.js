@@ -3,6 +3,14 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CustomersTable from "../Admin/CustomersTable";
+import ServiceProvidersTable from "../Admin/ServiceProvidersTable";
+import RequestsTable from "../Admin/RequestsTable";
+import { Button, Divider } from "@mui/material";
+import AvailableRequest from "../Requests/AvailableRequests";
+import Grid from "@mui/material/Grid";
+import Item from "@mui/material/Grid";
+import Link from "next/link";
 
 const theme = createTheme();
 
@@ -10,18 +18,90 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Paper
-        sx={{
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          height: 700,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Home
-        </Typography>
-      </Paper>
+
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <Paper
+            sx={{
+              p: 2,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              height: "auto",
+              marginTop: 2,
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Current Requests{" "}
+            </Typography>
+            <br />
+            <Link href="/ServiceProvider/CurrentRequests" passHref legacyBehavior color="inherit">
+            <Button
+              variant="contained"
+              sx={{ width: "100%" }}
+            >
+              Current Requests{" "}
+            </Button>
+            </Link>
+            
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper
+            sx={{
+              p: 2,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              height: "auto",
+              marginTop: 2,
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Finished Requests{" "}
+            </Typography>
+            <br />
+            <Link href="/Customer/FinishedRequests" passHref legacyBehavior color="inherit">
+            <Button
+              variant="contained"
+              sx={{ width: "100%" }}
+            >
+              Finished Requests{" "}
+            </Button>
+            </Link>
+            
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper
+            sx={{
+              p: 2,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              height: "auto",
+              marginTop: 2,
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Reports{" "}
+            </Typography>
+            <br />
+            <Link href="/Customer/Reports" passHref legacyBehavior color="inherit">
+            <Button
+              variant="contained"
+              sx={{ width: "100%" }}
+              href="/Customer/NewRequest"
+            >
+              Reports{" "}
+            </Button>
+            </Link>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sx={{mt: 3}}>
+        <AvailableRequest />
+        </Grid>
+      </Grid>
     </ThemeProvider>
   );
 }
