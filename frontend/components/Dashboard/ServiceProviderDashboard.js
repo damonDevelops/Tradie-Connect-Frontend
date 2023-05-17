@@ -274,12 +274,19 @@ function ServiceDash(props) {
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Finished Requests" />
-                  </ListItemButton>
+                  <Link
+                    href="/Service-Provider/Finished-Requests"
+                    passHref
+                    legacyBehavior
+                    color="inherit"
+                  >
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText primary="Finished Requests" />
+                    </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <ListItemButton>

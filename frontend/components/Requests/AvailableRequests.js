@@ -29,7 +29,10 @@ import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import {} from "../functional_components/formattingUtil";
+import jwtDecode from "jwt-decode";
+import Cookies from "js-cookie";
+
+import DoneIcon from "@mui/icons-material/Done";
 
 //import { DataGrid } from "@mui/x-data-grid";
 
@@ -63,6 +66,28 @@ export default function AvailableRequest() {
 
   console.log(serviceRequests);
 
+  // const rows = serviceRequests.map(
+  //   ({
+  //     id,
+  //     serviceType,
+  //     status,
+  //     requestedDate,
+  //     scheduledEndDate,
+  //     cost,
+  //     customer: {
+  //       suburb: { name: suburbName },
+  //     },
+  //   }) => ({
+  //     id,
+  //     serviceType,
+  //     status,
+  //     requestedDate,
+  //     scheduledEndDate,
+  //     cost,
+  //     customer: { suburbName },
+  //   })
+  // );
+
   const rows = serviceRequests.map(
     ({
       id,
@@ -74,6 +99,7 @@ export default function AvailableRequest() {
       customer: {
         suburb: { name: suburbName },
       },
+      applicants,
     }) => ({
       id,
       serviceType,
@@ -82,6 +108,9 @@ export default function AvailableRequest() {
       scheduledEndDate,
       cost,
       customer: { suburbName },
+      serviceProviderIds: applicants.map(
+        (applicant) => applicant.serviceProvider.id
+      ),
     })
   );
 
@@ -114,18 +143,17 @@ function RequestTable({ data }) {
     setPage(newPage);
   };
 
+  console.log(data);
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const handleViewClick = (id) => {
-    // Navigate to the dynamic route page with a query parameter
-    Router.push({
-      pathname: `/Service-Provider/ViewRequest/${id}`,
-      query: { fromRequests: true },
-    });
-  };
+  // to get user id
+  const userInfo = jwtDecode(Cookies.get("JWT"));
+
+  console.log(userInfo);
 
   // styles for the header row
   const headerStyles = {
@@ -154,6 +182,7 @@ function RequestTable({ data }) {
             <TableCell sx={headerStyles}>Finish Date</TableCell>
             <TableCell sx={headerStyles}>Location (Suburb)</TableCell>
             <TableCell sx={headerStyles}>Pays ($)</TableCell>
+            <TableCell sx={headerStyles}>Applied?</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -182,6 +211,11 @@ function RequestTable({ data }) {
                 {row.customer.suburbName}
               </TableCell>
               <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
+              <TableCell sx={cellStyles}>
+                {row.serviceProviderIds.includes(userInfo.userId) ? (
+                  <DoneIcon style={{ color: "green" }} />
+                ) : null}
+              </TableCell>
               <TableCell>
                 <Link
                   href={{
