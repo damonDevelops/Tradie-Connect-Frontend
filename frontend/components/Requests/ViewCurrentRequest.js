@@ -61,7 +61,7 @@ export default function ViewRequest() {
           p: 2,
           display: "flex",
           flexDirection: "column",
-          height: 700,
+          height: "auto",
         }}
       >
         <Typography variant="h4" gutterBottom>
@@ -96,6 +96,7 @@ function CustomerView() {
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
+  console.log(responseData);
 
   return (
     <Box sx={{ p: 2 }}>

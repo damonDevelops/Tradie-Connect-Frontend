@@ -79,7 +79,7 @@ export default function CurrentRequest() {
           p: 2,
           display: "flex",
           flexDirection: "column",
-          height: 700,
+          height: "auto",
         }}
       >
         <Typography variant="h4" gutterBottom>

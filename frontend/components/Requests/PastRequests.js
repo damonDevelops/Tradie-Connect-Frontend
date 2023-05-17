@@ -4,8 +4,6 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-
-
 const theme = createTheme();
 
 export default function PastRequest() {
@@ -13,17 +11,16 @@ export default function PastRequest() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 700,
-                  }}
-                >
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: "auto",
+        }}
+      >
         <Typography variant="h4" gutterBottom>
           Past Requests
         </Typography>
-
       </Paper>
     </ThemeProvider>
   );
