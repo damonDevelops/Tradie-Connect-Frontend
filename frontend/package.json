@@ -28,6 +28,7 @@
     "npm": "^9.6.4",
     "prop-types": "latest",
     "react": "latest",
+    "react-csv": "^2.2.2",
     "react-dom": "latest",
     "react-imask": "^6.5.0-alpha.0",
     "react-jwt": "^1.1.8",

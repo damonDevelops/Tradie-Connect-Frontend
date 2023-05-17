@@ -7,107 +7,83 @@ import axios from "axios";
 
 import { useState } from "react";
 import { useEffect } from "react";
+import { CSVLink, CSVDownload } from "react-csv";
+import useFetchData from "../../components/hooks/fetchData";
+import { Divider } from "@mui/material";
 
-import { PDFDownloadLink, Document, Page } from "@react-pdf/renderer";
-import { Text, View, StyleSheet } from '@react-pdf/renderer';
+export default function Report() {
+  const today = new Date();
+  const fileName = "Tradie_Connect_Report_" + today.toLocaleDateString("en-AU");
+  //URLs for fetching data
+  const customerURL = "http://localhost:8080/api/customers";
+  const requestURL = "http://localhost:8080/api/service-requests/user-requests";
 
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'row',
-    backgroundColor: '#E4E4E4'
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1
-  }
-});
+  //assiging data using hook
+  const { data: customerData } = useFetchData(customerURL);
+  const { data: requestData } = useFetchData(requestURL);
 
-// Create styles
-const MyDoc = () => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text>TradieConnect Requests Report</Text>
-      </View>
+  //empty requests array for mapping
+  const requests = [];
 
-    </Page>
-  </Document>
-);
-
-export default function Account() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [postcode, setPostcode] = useState("");
-  const [state, setState] = useState("");
-
-  const [confirmationOpen, setConfirmationOpen] = React.useState(false);
-
-  //open variables for alerts
-  const [postCodeAlertOpen, setPostCodeAlertOpen] = useState(false);
-
-  const postcodeRegex = new RegExp("^(0[289][0-9]{2})|([1-9][0-9]{3})");
-  const postcodeLimitChar = 4;
-
-  const suburbHandler = (event) => {
-    setSuburb(event.target.value.toLowerCase());
-  };
-
-  const handlePostcodeChange = (event) => {
-    if (event.target.value.toString().length <= postcodeLimitChar) {
-      setPostcode(event.target.value);
-      setState(postCodeToState(event.target.value));
-    }
-  };
-
-  const handleAlert = (warning_type) => {
-    if (warning_type == "postcode") {
-      setPostCodeAlertOpen(true);
-    }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setPostCodeAlertOpen(false);
-    setConfirmationOpen(false);
-  };
-
-  const handleConfirmOpen = () => {
-    setConfirmationOpen(true);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const instance = axios.create({
-    withCredentials: true,
+  //pushing data to the array
+  requestData.map((request) => {
+    requests.push([
+      request.id,
+      request.serviceType,
+      request.requestedDate,
+      request.status,
+      request.cost,
+      request.applicants.map((applicant) => {
+        return applicant.serviceProvider.companyName + '('+ applicant.serviceProvider.suburb.name +')' + ",";
+      }),
+    ]);
   });
 
-  const fetchData = async () => {
-    try {
-      const response = await instance.get(
-        "http://localhost:8080/api/customers"
-      );
+  console.log(requestData)
 
-      response.data.map((data) => {
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setPhone(data.phoneNumber);
-        setAddress(data.streetAddress);
-        setCity(data.suburb.name);
-        setPostcode(data.postCode);
-        setState(data.suburb.state);
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const csvData = [
+    ["CUSTOMER INFORMATION"],
+
+    [
+      "Subscription Type",
+      "First Name",
+      "Last Name",
+      "Email",
+      "Phone Number",
+      "Address",
+      "Suburb",
+      "Postcode",
+      "State",
+    ],
+    [
+      customerData.membership.membershipType,
+      customerData.firstName,
+      customerData.lastName,
+      customerData.email,
+      customerData.phoneNumber,
+      customerData.streetAddress,
+      customerData.suburb.name,
+      customerData.postCode,
+      customerData.suburb.state,
+    ],
+    [],
+    ["REQUESTS"],
+    [
+      "Request ID",
+      "Service Type",
+      "Requested Date",
+      "Status",
+      "Cost",
+      "Applicants",
+    ],
+  ];
+
+  //pushing data to the CSV
+  csvData.push(...requests);
+
+  //map the objects from the requestData into an array
+
+  console.log(requests);
 
   return (
     <React.Fragment>
@@ -116,18 +92,22 @@ export default function Account() {
           p: 2,
           display: "flex",
           flexDirection: "column",
-          height: 750,
+          height: 'auto',
         }}
       >
         <Typography variant="h4" gutterBottom>
           Reports
         </Typography>
-
-        <PDFDownloadLink document={<MyDoc />} fileName="report.pdf">
-          {({ blob, url, loading, error }) =>
-            loading ? "Loading document..." : "Download PDF"
-          }
-        </PDFDownloadLink>
+        <Divider />
+        <br />
+        <Typography variant="h6" gutterBottom>
+          To generate a CSV file of your requests, payment information and more,
+          click the button below.
+        </Typography>
+        <br />
+        <CSVLink data={csvData} filename={fileName}>
+          <Button variant="contained">Download CSV</Button>
+        </CSVLink>
       </Paper>
     </React.Fragment>
   );
