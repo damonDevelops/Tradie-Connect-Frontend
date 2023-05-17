@@ -1,6 +1,6 @@
 // import statements
 import * as React from "react";
-import CurrentRequest from "../../../components/Requests/CurrentRequest";
+import CurrentRequest from "../../../components/Requests/CustomerCurrentRequest";
 import CustomerDash from "../../../components/Dashboard/CustomerDashboard";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
