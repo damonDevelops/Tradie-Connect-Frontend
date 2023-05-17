@@ -125,6 +125,7 @@ function ModeToggle() {
   );
 }
 
+// function to show service dashboard
 function ServiceDash(props) {
   const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [open, setOpen] = React.useState(true);
@@ -256,12 +257,19 @@ function ServiceDash(props) {
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Current Requests" />
-                  </ListItemButton>
+                  <Link
+                    href="/Service-Provider/Current-Requests"
+                    passHref
+                    legacyBehavior
+                    color="inherit"
+                  >
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText primary="Current Requests" />
+                    </ListItemButton>
+                  </Link>
                 </List>
               </Collapse>
               <Collapse in={newOpen} timeout="auto" unmountOnExit>

@@ -29,6 +29,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+
 const theme = createTheme();
 
 export default function ViewRequest() {
@@ -194,10 +201,17 @@ function CustomerView() {
   );
 }
 
+// function takes service request object then maps applicants (service providers who have applied for the job)
+// then displays them in a list for the customer
 function TradieTable({ data }) {
+  // rows variable holds list of applicants
   const rows = data.applicants.map((applicant) => applicant.serviceProvider);
   console.log(rows);
 
+  // useState for the final alert diaglog
+  const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
+
+  // style to make the rating stars smaller
   const SmallerRating = styled(Rating)(({ theme }) => ({
     "& .MuiRating-icon": {
       fontSize: theme.typography.fontSize - 2,
@@ -209,6 +223,7 @@ function TradieTable({ data }) {
     withCredentials: true,
   });
 
+  // async function to submit post request for accepting tradie
   const handleOnAccept = async (id) => {
     try {
       const postURL =
@@ -219,6 +234,7 @@ function TradieTable({ data }) {
       console.log(postURL);
       const response = instance.post(postURL);
       console.log(response);
+      setFinalOpen(true);
     } catch (error) {
       console.log(error);
     }
@@ -257,6 +273,59 @@ function TradieTable({ data }) {
                   ACCEPT
                 </Button>
               </TableCell>
+              <Dialog
+                open={finalAlertDialogOpen}
+                //onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle
+                  style={{
+                    backgroundColor: "#4caf50",
+                    color: "white",
+                  }}
+                  id="alert-dialog-title"
+                >
+                  {"Success!"} <TaskAltIcon />
+                </DialogTitle>
+                <DialogContent
+                  style={{
+                    backgroundColor: "#4caf50",
+                  }}
+                >
+                  <DialogContentText
+                    style={{
+                      backgroundColor: "#4caf50",
+                      color: "white",
+                    }}
+                    id="alert-dialog-description"
+                  >
+                    You have successfully accepted {row.companyName} for the
+                    job! The Service Provider will complete the job in the set
+                    timeframe. Once they have finished they will mark the job as
+                    completed. To see the progress of this service request,
+                    visit the Current Requests tabs on the siderbar or view them
+                    from the dashboard menu.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions
+                  style={{
+                    backgroundColor: "#4caf50",
+                  }}
+                >
+                  <Link href="../" passHref legacyBehavior color="inherit">
+                    <Button
+                      style={{
+                        backgroundColor: "#4caf50",
+                        color: "white",
+                      }}
+                      autoFocus
+                    >
+                      Back to Dashboard
+                    </Button>
+                  </Link>
+                </DialogActions>
+              </Dialog>
               {/*Add more TableCell components for additional columns*/}
             </TableRow>
           ))}
@@ -289,7 +358,7 @@ function ServiceProviderView() {
   const [canApply, setCanApply] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
 
-  // use effect checks if it's created or pending, then checks if current user as already applied
+  // use effect checks if it's created or pending, then checks if current user has already applied
   useEffect(() => {
     if (responseData.status == "CREATED" || responseData.status == "PENDING") {
       setCanApply(true);
@@ -306,6 +375,7 @@ function ServiceProviderView() {
     }
   }, [responseData.status]);
 
+  // function for service-provider to apply for a job
   const handleOnApply = async () => {
     try {
       const postURL =
