@@ -79,15 +79,15 @@ export default function Account() {
         "http://localhost:8080/api/service-providers"
       );
 
-      response.data.map((data) => {
-        setCompanyName(data.companyName);
-        setABN(data.abn);
-        setPhone(data.phoneNumber);
-        setAddress(data.streetAddress);
-        setCity(data.suburb.name);
-        setPostcode(data.postCode);
-        setState(data.suburb.state);
-      });
+      setCompanyName(response.data.companyName);
+      setABN(response.data.abn);
+      setPhone(response.data.phoneNumber);
+      setAddress(response.data.streetAddress);
+      setCity(response.data.suburb.name);
+      setPostcode(response.data.postCode);
+      setState(response.data.suburb.state);
+
+
     } catch (error) {
       console.error(error);
     }

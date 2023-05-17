@@ -122,7 +122,7 @@ function ModeToggle() {
   );
 }
 
-export function CustomerDash(props) {
+export default function CustomerDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -385,4 +385,4 @@ export function CustomerDash(props) {
 }
 
 //TODO: figure out why using withAuth causes flickering
-export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
+//export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);

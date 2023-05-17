@@ -1,57 +1,49 @@
-
+// import statements
 import * as React from "react";
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
+import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
-
-//import Link from "@mui/material/Link";
 import Link from "next/link";
-
-//import Account from "../../../components/Account";
-import BuildIcon from '@mui/icons-material/Build';
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import Collapse from "@mui/material/Collapse";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import LogoutIcon from "@mui/icons-material/Logout";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import HomeIcon from "@mui/icons-material/Home";
-import BarChartIcon from "@mui/icons-material/BarChart";
-
-import IconButton from "@mui/material/IconButton";
+import BuildIcon from "@mui/icons-material/Build";
+import AdminHome from "./AdminHome";
 import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-
-import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import withAuth from "../../components/router/withAuth";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import AdminHome from './AdminHome';
-import axios from "axios";
-
+import Home from "./ServiceProviderHome";
+import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { DialogContent } from "@mui/material";
 import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
-
-
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   experimental_extendTheme as extendTheme,
@@ -104,6 +96,17 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+const theme = extendTheme({
+  palette: {
+    primary: {
+      main: "#43a047",
+    },
+    secondary: {
+      main: "#c5e1a5",
+    },
+  },
+});
+
 //function that returns the light/dark mode button and edits the pages current theme
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -123,7 +126,8 @@ function ModeToggle() {
   );
 }
 
-export function AdminDash(props) {
+function AdminDash(props) {
+  const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -135,15 +139,6 @@ export function AdminDash(props) {
     setnewOpen(!newOpen);
   };
 
-  const [confirmLogout, setConfirmLogout] = React.useState(false);
-  const [home, setHomeWindow] = React.useState(false);
-  const router = useRouter();
-  const homePath = "/Customer";
-
-  useEffect(() => {
-    if (homePath === router.pathname) setHomeWindow(true);
-  }, []);
-
   const openDialog = async () => {
     setConfirmLogout(true);
   };
@@ -152,13 +147,16 @@ export function AdminDash(props) {
     setConfirmLogout(false);
   };
 
+  const router = useRouter();
+  const homePath = "/Service-Provider";
+
   const logoutUser = async () => {
     Cookies.remove("JWT");
     router.push("/SignIn");
   };
 
   return (
-    <CssVarsProvider>
+    <CssVarsProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -343,6 +341,9 @@ export function AdminDash(props) {
   );
 }
 
-//TODO: figure out why using withAuth causes flickering
-//export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);
-export default withAuth(AdminDash, ["ROLE_SYSTEM_ADMIN"]);
+export default withAuth(AdminDash, ["ROLE_SYSTEM_ADMIN"]); // make sure to remove customer
+// export default function Dashboard() {
+//   return <AdminDash />;
+// }
+
+
