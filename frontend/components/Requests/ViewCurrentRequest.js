@@ -391,6 +391,33 @@ function ServiceProviderView() {
     }
   };
 
+  const [canComplete, setCanComplete] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
+  useEffect(() => {
+    if (responseData.status == "ACCEPTED") {
+      setCanComplete(true);
+    }
+  });
+
+  // useState for the final alert diaglog
+  const [finalAlertDialogOpen, setFinalOpen] = useState(false);
+  //
+  // handles mark as completed button
+  const handleOnCompleted = async () => {
+    try {
+      const postURL =
+        "http://localhost:8080/api/service-requests/" +
+        responseData.id +
+        "/complete";
+      const response = instance.post(postURL);
+      console.log(response);
+      setHasCompleted(true);
+      setFinalOpen(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box sx={{ p: 2 }}>
       {responseData ? (
@@ -493,11 +520,95 @@ function ServiceProviderView() {
             )}
             {canApply && hasApplied && (
               <Grid item xs={12}>
-                <Button variant="contained" color="primary" disabled>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled
+                  style={{ backgroundColor: "lightgreen", color: "black" }}
+                >
                   Applied
                 </Button>
               </Grid>
             )}
+            {canComplete && !hasCompleted && (
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOnCompleted}
+                >
+                  Mark job as completed
+                </Button>
+              </Grid>
+            )}
+            {canComplete && hasCompleted && (
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ backgroundColor: "lightgreen", color: "black" }}
+                  onClick={handleOnCompleted}
+                  disabled
+                >
+                  Completed
+                </Button>
+              </Grid>
+            )}
+            <Dialog
+              open={finalAlertDialogOpen}
+              //onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle
+                style={{
+                  backgroundColor: "#4caf50",
+                  color: "white",
+                }}
+                id="alert-dialog-title"
+              >
+                {"Success!"} <TaskAltIcon />
+              </DialogTitle>
+              <DialogContent
+                style={{
+                  backgroundColor: "#4caf50",
+                }}
+              >
+                <DialogContentText
+                  style={{
+                    backgroundColor: "#4caf50",
+                    color: "white",
+                  }}
+                  id="alert-dialog-description"
+                >
+                  You have successfully completed the job! The customers payment
+                  will be paid into your account shortly. To see the history of
+                  your completed jobs, check out the Finished Requests page.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions
+                style={{
+                  backgroundColor: "#4caf50",
+                }}
+              >
+                <Link
+                  href="../Current-Requests"
+                  passHref
+                  legacyBehavior
+                  color="inherit"
+                >
+                  <Button
+                    style={{
+                      backgroundColor: "#4caf50",
+                      color: "white",
+                    }}
+                    autoFocus
+                  >
+                    Back to Current Requests
+                  </Button>
+                </Link>
+              </DialogActions>
+            </Dialog>
           </Grid>
         </>
       ) : (

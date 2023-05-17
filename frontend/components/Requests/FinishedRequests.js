@@ -22,7 +22,7 @@ import TablePagination from "@mui/material/TablePagination";
 
 const theme = createTheme();
 
-export default function PastRequests() {
+export default function FinishedRequests() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -59,6 +59,7 @@ export default function PastRequests() {
       cost,
     })
   );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -71,7 +72,7 @@ export default function PastRequests() {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          Past Requests
+          Finished Requests
         </Typography>
         <RequestTable data={rows} />
       </Paper>
@@ -125,7 +126,7 @@ function RequestTable({ data }) {
         </TableHead>
         <TableBody>
           {rowsToDisplay
-            .filter((row) => row.status == "COMPLETED") // uses filter to filter the rows we need
+            .filter((row) => row.status == "COMPLETED")
             .map((row, index) => (
               <TableRow key={index}>
                 <TableCell sx={{ width: "20%", textAlign: "center" }}>
@@ -153,10 +154,10 @@ function RequestTable({ data }) {
                 <TableCell>
                   <Link
                     href={{
-                      pathname: `/Customer/ViewRequest/[id]`,
-                      query: { fromRequests: true, customer: true },
+                      pathname: `/Service-Provider/ViewRequest/[id]`,
+                      query: { fromRequests: true, serviceProvider: true },
                     }}
-                    as={`/Customer/ViewRequest/${row.id}`}
+                    as={`/Service-Provider/ViewRequest/${row.id}`}
                     passHref
                     legacyBehavior
                   >

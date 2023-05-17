@@ -105,14 +105,6 @@ function RequestTable({ data }) {
     setPage(0);
   };
 
-  const handleViewClick = (id) => {
-    // Navigate to the dynamic route page with a query parameter
-    Router.push({
-      pathname: `/Customer/ViewRequest/${id}`,
-      query: { fromRequests: true, customer: true },
-    });
-  };
-
   // styles for the header row
   const headerStyles = {
     textAlign: "center",
@@ -144,47 +136,49 @@ function RequestTable({ data }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rowsToDisplay.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell sx={{ width: "20%", textAlign: "center" }}>
-                {row.id}
-              </TableCell>
-              <TableCell sx={cellStyles}>
-                {row.serviceType
-                  ? capitaliseWords(row.serviceType)
-                  : row.serviceType}
-              </TableCell>
-              <TableCell sx={cellStyles}>
-                {row.status ? capitaliseWords(row.status) : row.status}
-              </TableCell>
-              <TableCell sx={cellStyles}>
-                {row.requestedDate
-                  ? formatDate(row.requestedDate)
-                  : row.requestedDate}
-              </TableCell>
-              <TableCell sx={cellStyles}>
-                {row.scheduledEndDate
-                  ? formatDate(row.scheduledEndDate)
-                  : row.scheduledEndDate}
-              </TableCell>
-              <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
-              <TableCell>
-                <Link
-                  href={{
-                    pathname: `/Service-Provider/ViewRequest/[id]`,
-                    query: { fromRequests: true, customer: true },
-                  }}
-                  as={`/Service-Provider/ViewRequest/${row.id}`}
-                  passHref
-                  legacyBehavior
-                >
-                  <Button component="a" variant="outlined">
-                    View
-                  </Button>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
+          {rowsToDisplay
+            .filter((row) => row.status == "ACCEPTED")
+            .map((row, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ width: "20%", textAlign: "center" }}>
+                  {row.id}
+                </TableCell>
+                <TableCell sx={cellStyles}>
+                  {row.serviceType
+                    ? capitaliseWords(row.serviceType)
+                    : row.serviceType}
+                </TableCell>
+                <TableCell sx={cellStyles}>
+                  {row.status ? capitaliseWords(row.status) : row.status}
+                </TableCell>
+                <TableCell sx={cellStyles}>
+                  {row.requestedDate
+                    ? formatDate(row.requestedDate)
+                    : row.requestedDate}
+                </TableCell>
+                <TableCell sx={cellStyles}>
+                  {row.scheduledEndDate
+                    ? formatDate(row.scheduledEndDate)
+                    : row.scheduledEndDate}
+                </TableCell>
+                <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
+                <TableCell>
+                  <Link
+                    href={{
+                      pathname: `/Service-Provider/ViewRequest/[id]`,
+                      query: { fromRequests: true, serviceProvider: true },
+                    }}
+                    as={`/Service-Provider/ViewRequest/${row.id}`}
+                    passHref
+                    legacyBehavior
+                  >
+                    <Button component="a" variant="outlined">
+                      View
+                    </Button>
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       <TablePagination
