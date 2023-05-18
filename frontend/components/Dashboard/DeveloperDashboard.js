@@ -135,9 +135,9 @@ const Developer = () => {
                 <Button
                   variant="contained"
                   align="center"
-                  href="./Admin"
+                  href="./ReviewTest"
                 >
-                  Test Admin Page
+                  Test Review Page
                 </Button>
               </Paper>
             </Grid>

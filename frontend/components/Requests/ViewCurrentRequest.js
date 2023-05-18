@@ -11,7 +11,7 @@ import jwtDecode from "jwt-decode";
 
 import { useRouter } from "next/router";
 
-import { Grid, Link, TextField } from "@mui/material";
+import { Divider, Grid, Link, TextField } from "@mui/material";
 
 import Box from "@mui/material/Box";
 
@@ -35,6 +35,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import ReviewTestComponent from "../Review/ReviewTestComponent";
 
 const theme = createTheme();
 
@@ -103,17 +104,28 @@ function CustomerView() {
       {responseData ? (
         <>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={4}>
-              <TextField
+            <Grid item xs={12} md={12}>
+              <Typography variant="h5" gutterBottom>
+                Request {responseData.id}
+              </Typography>
+              <Divider />
+              {/* <TextField
                 label="Request ID"
                 value={responseData.id}
                 disabled
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
+            <Grid item xs={12} md={12}>
+              <Typography variant="h7" gutterBottom>
+                Status:{" "}
+                {responseData.status
+                  ? capitaliseWords(responseData.status)
+                  : responseData.status}
+              </Typography>
+
+              {/* <TextField
                 label="Status: "
                 value={
                   responseData.status
@@ -123,10 +135,19 @@ function CustomerView() {
                 disabled
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
+            <Grid item xs={12} md={12} sx={
+              {mt: 1}
+            }>
+              <Typography variant="h7" gutterBottom>
+                Type:{" "}
+                {responseData.serviceType
+
+                  ? capitaliseWords(responseData.serviceType)
+                  : responseData.serviceType}
+              </Typography>
+              {/* <TextField
                 label="Type: "
                 value={
                   responseData.serviceType
@@ -136,10 +157,18 @@ function CustomerView() {
                 disabled
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
+            <Grid item xs={12} md={4} sx={
+              {mt: 1}
+            }>
+              <Typography variant="h7" gutterBottom>
+                Date Submitted:{" "}
+                {responseData.requestedDate
+                  ? formatDate(responseData.requestedDate)
+                  : responseData.requestedDate}
+              </Typography>
+              {/* <TextField
                 label="Date Submitted"
                 value={
                   responseData.requestedDate
@@ -149,10 +178,19 @@ function CustomerView() {
                 disabled
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
+            <Grid item xs={12} md={12} sx={
+              {mt: 1}
+            }>
+              <Typography variant="h7" gutterBottom>
+                Scheduled Date:{" "}
+                {responseData.scheduledStartDate
+
+                  ? formatDate(responseData.scheduledStartDate)
+                  : responseData.scheduledStartDate}
+              </Typography>
+              {/* <TextField
                 label="Scheduled Date"
                 value={
                   responseData.scheduledStartDate
@@ -162,10 +200,19 @@ function CustomerView() {
                 disabled
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
+            <Grid item xs={12} md={12} sx={
+              {mt: 1}
+            }>
+              <Typography variant="h7" gutterBottom>
+                Scheduled Finish:{" "}
+                {responseData.scheduledEndDate
+                  ? formatDate(responseData.scheduledEndDate)
+                  : responseData.scheduledEndDate}
+              </Typography>
+              
+              {/* <TextField
                 label="Scheduled Finish"
                 value={
                   responseData.scheduledEndDate
@@ -175,17 +222,28 @@ function CustomerView() {
                 disabled
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
-              />
+              /> */}
             </Grid>
-            <Grid item xs={12}>
-              <TextField
+            <Grid item xs={12} sx={
+              {mt: 1}
+            }>
+              <Typography variant="h7" gutterBottom>
+                Description:{" "}
+                {responseData.description
+                  ? responseData.description
+                  : responseData.description}
+              </Typography>
+              <br /><br />
+              <Divider />
+              {/* <TextField
                 label="Description"
                 value={responseData.description}
                 disabled
                 InputLabelProps={{ shrink: true }}
                 multiline={true}
                 fullWidth
-              />
+              /> */}
+              
             </Grid>
             {/*maybe nest grid inside the tradie table function*/}
             <Grid item xs={12}>
@@ -193,6 +251,16 @@ function CustomerView() {
                 <TradieTable data={responseData} />
               ) : null}
             </Grid>
+            
+            <Grid item xs={12}>
+              {responseData.status == "COMPLETED" ? (
+                // <Link href="./Review" passHref legacyBehavior color="inherit">
+                //   <Button variant="contained" color="primary">Leave a Review</Button>
+                // </Link>
+                <ReviewTestComponent />
+              ) : null}
+            </Grid>
+            
           </Grid>
         </>
       ) : (

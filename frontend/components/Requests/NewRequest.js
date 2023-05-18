@@ -21,7 +21,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import jwt_decode from "jwt-decode";
 import { useEffect } from "react";
 import Link from "next/link";
 import {Stack} from "@mui/material";
@@ -56,7 +55,7 @@ export default function NewRequest() {
 
   var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
   var token = Cookies.get("JWT");
-  var customer_type = jwt_decode(token).role;
+
 
   const [multiplier, setMultiplier] = React.useState(0);
 
@@ -167,10 +166,6 @@ export default function NewRequest() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    //TODO take the token and get the customer subscription type and then display cost
-    // console.log(token);
-    // console.log(jwt_decode(token).role)
 
     //validation for start and end date
     if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
