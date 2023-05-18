@@ -11,9 +11,12 @@ import { CSVLink, CSVDownload } from "react-csv";
 import useFetchData from "../hooks/fetchData";
 import { Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
+
 import autoTable from "jspdf-autotable";
 
 export default function Report() {
+  
+
   const today = new Date();
   const fileName = "Tradie_Connect_Report_" + today.toLocaleDateString("en-AU");
   //URLs for fetching data
@@ -50,14 +53,6 @@ export default function Report() {
         "COMPLETE_DATE",
         request.status,
         "$" + request.cost,
-        //if the request.applicants is not empty, return all applicant's company name, otherwise return "No Applicants"
-        request.applicants.length > 0
-            ? request.applicants.map((applicant) => {
-                return applicant.serviceProvider.companyName + " (" + applicant.serviceProvider.suburb.name + ")" + ", ";
-            })
-            : "No Applicants",
-
-        
 
       ];
     });
@@ -139,7 +134,6 @@ export default function Report() {
           "Completed Date",
           "Status",
           "Cost",
-          "Applicants",
         ],
       ],
       body: requests,
