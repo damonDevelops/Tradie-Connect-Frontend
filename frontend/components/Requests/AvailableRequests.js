@@ -76,7 +76,7 @@ export default function AvailableRequest() {
       id,
       serviceType,
       status,
-      requestedDate,
+      scheduledStartDate,
       scheduledEndDate,
       cost,
       customer: {
@@ -87,7 +87,7 @@ export default function AvailableRequest() {
       id,
       serviceType,
       status,
-      requestedDate,
+      scheduledStartDate,
       scheduledEndDate,
       cost,
       customer: { suburbName },
@@ -181,9 +181,9 @@ function RequestTable({ data }) {
                 {row.status ? capitaliseWords(row.status) : row.status}
               </TableCell> */}
               <TableCell sx={cellStyles}>
-                {row.requestedDate
-                  ? formatDate(row.requestedDate)
-                  : row.requestedDate}
+                {row.scheduledStartDate
+                  ? formatDate(row.scheduledStartDate)
+                  : row.scheduledStartDate}
               </TableCell>
               <TableCell sx={cellStyles}>
                 {row.scheduledEndDate

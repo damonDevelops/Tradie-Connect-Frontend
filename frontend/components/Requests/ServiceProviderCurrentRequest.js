@@ -61,11 +61,18 @@ export default function CurrentRequest() {
 
   // maps the data from the request into a rows array with only the data required to be shown
   const rows = data.map(
-    ({ id, serviceType, status, requestedDate, scheduledEndDate, cost }) => ({
+    ({
       id,
       serviceType,
       status,
-      requestedDate,
+      scheduledStartDate,
+      scheduledEndDate,
+      cost,
+    }) => ({
+      id,
+      serviceType,
+      status,
+      scheduledStartDate,
       scheduledEndDate,
       cost,
     })
@@ -152,9 +159,9 @@ function RequestTable({ data }) {
                   {row.status ? capitaliseWords(row.status) : row.status}
                 </TableCell>
                 <TableCell sx={cellStyles}>
-                  {row.requestedDate
-                    ? formatDate(row.requestedDate)
-                    : row.requestedDate}
+                  {row.scheduledStartDate
+                    ? formatDate(row.scheduledStartDate)
+                    : row.scheduledStartDate}
                 </TableCell>
                 <TableCell sx={cellStyles}>
                   {row.scheduledEndDate
