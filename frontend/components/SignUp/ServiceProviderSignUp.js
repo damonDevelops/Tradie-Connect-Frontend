@@ -138,6 +138,13 @@ export default function CustomerSignUp() {
     { value: "POOL_CLEANING", label: "Pool Cleaning" },
   ];
 
+  // used if no rating available to show functionality
+  function returnRandomRating() {
+    const max = 5.0;
+    const min = 2.5;
+    return Math.random() * (max - min) + min;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
@@ -160,6 +167,7 @@ export default function CustomerSignUp() {
             abn: abn,
             phoneNumber: newPhoneNumber,
             streetAddress: address,
+            rating: returnRandomRating(),
             skills: [returnTrade], // this needs to be updated since returnTrade returns "Tree Removal" and not the capitalised version
             suburb: {
               name: city,
