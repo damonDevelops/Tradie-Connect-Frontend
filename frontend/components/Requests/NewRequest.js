@@ -234,12 +234,12 @@ export default function NewRequest() {
           </FormControl>
           <br />
           <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
-            Work Description
+            Work Instructions
           </Typography>
           <TextField
             fullWidth
             id="outlined-m<form onSubmit={handleSubmit}>ultiline-static"
-            label="Description"
+            label="Instructions"
             required
             multiline
             rows={4}

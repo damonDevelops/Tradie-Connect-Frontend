@@ -295,12 +295,20 @@ function ServiceDash(props) {
                 </ListItemIcon>
                 <ListItemText primary="Account Details" />
               </ListItemButton>
-              <ListItemButton>
+              <Link
+                href="/Service-Provider/Report"
+                passHref
+                legacyBehavior
+                color="inherit"
+              >
+                <ListItemButton>
                 <ListItemIcon>
                   <BarChartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Reports" />
               </ListItemButton>
+              </Link>
+              
             </React.Fragment>
           </List>
         </Drawer>
