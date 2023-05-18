@@ -212,7 +212,10 @@ export default function NewRequest() {
       console.log(startDate);
       console.log(endDate);
       handleDateAlert("Invalid Date Format, please use DD/MM/YYYY");
-    } else if (startDate > endDate || startDate == endDate) {
+    } else if (
+      datePickerStart.isAfter(datePickerEnd) ||
+      datePickerStart.isSame(datePickerEnd)
+    ) {
       console.log(startDate);
       console.log(endDate);
       handleDateAlert("Start date must be before end date");
@@ -320,7 +323,6 @@ export default function NewRequest() {
               onChange={(event) => settingStartDate(event)}
               format="DD/MM/YYYY"
               sx={{ marginTop: "16px" }}
-              maxDate={datePickerEnd}
               minDate={minDate}
             />
             <br />
