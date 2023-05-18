@@ -21,7 +21,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import jwt_decode from "jwt-decode";
 import { useEffect } from "react";
 import Link from "next/link";
 import {Stack} from "@mui/material";
@@ -56,7 +55,7 @@ export default function NewRequest() {
 
   var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
   var token = Cookies.get("JWT");
-  var customer_type = jwt_decode(token).role;
+
 
   const [multiplier, setMultiplier] = React.useState(0);
 
@@ -64,8 +63,8 @@ export default function NewRequest() {
 
   const [WorkType, setWorkType] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [cost, setCost] = React.useState(200);
   const [membershipType, setMembershipType] = React.useState("");
+  var cost = diffDays * multiplier + 200
 
 
   const [dateAlertOpen, setDateAlertOpen] = React.useState(false);
@@ -167,11 +166,7 @@ export default function NewRequest() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    //TODO take the token and get the customer subscription type and then display cost
-    // console.log(token);
-    // console.log(jwt_decode(token).role)
-
+    alert("Cost: " + (diffDays * multiplier + 200))
     //validation for start and end date
     if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
       handleDateAlert("Invalid Date Format, please use DD/MM/YYYY");
@@ -182,7 +177,7 @@ export default function NewRequest() {
         //post request
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
-            cost: 1000.0,
+            cost: diffDays * multiplier + 200,
             description: description,
             serviceType: WorkType.toUpperCase(),
             dateTimeRange: {
@@ -239,12 +234,12 @@ export default function NewRequest() {
           </FormControl>
           <br />
           <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
-            Work Description
+            Work Instructions
           </Typography>
           <TextField
             fullWidth
             id="outlined-m<form onSubmit={handleSubmit}>ultiline-static"
-            label="Description"
+            label="Instructions"
             required
             multiline
             rows={4}
