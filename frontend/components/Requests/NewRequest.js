@@ -63,8 +63,8 @@ export default function NewRequest() {
 
   const [WorkType, setWorkType] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [cost, setCost] = React.useState(200);
   const [membershipType, setMembershipType] = React.useState("");
+  var cost = diffDays * multiplier + 200
 
 
   const [dateAlertOpen, setDateAlertOpen] = React.useState(false);
@@ -166,7 +166,7 @@ export default function NewRequest() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    alert("Cost: " + (diffDays * multiplier + 200))
     //validation for start and end date
     if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
       handleDateAlert("Invalid Date Format, please use DD/MM/YYYY");
@@ -177,7 +177,7 @@ export default function NewRequest() {
         //post request
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
-            cost: 1000.0,
+            cost: diffDays * multiplier + 200,
             description: description,
             serviceType: WorkType.toUpperCase(),
             dateTimeRange: {
