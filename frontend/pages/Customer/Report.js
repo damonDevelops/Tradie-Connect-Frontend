@@ -1,6 +1,6 @@
 // import statements
 import * as React from "react";
-import Report  from "../../components/Report/Report";
+import Report from "../../components/Report/Report";
 import CustomerDash from "../../components/Dashboard/CustomerDashboard";
 
 export default function AccountScreen() {
