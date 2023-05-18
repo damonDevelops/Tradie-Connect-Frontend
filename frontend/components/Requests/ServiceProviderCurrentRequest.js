@@ -131,7 +131,7 @@ function RequestTable({ data }) {
             <TableCell sx={headerStyles}>Work Status</TableCell>
             <TableCell sx={headerStyles}>Start Date</TableCell>
             <TableCell sx={headerStyles}>Finish Date</TableCell>
-            <TableCell sx={headerStyles}>Cost ($)</TableCell>
+            <TableCell sx={headerStyles}>Pays ($)</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

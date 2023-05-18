@@ -50,13 +50,22 @@ export default function PastRequests() {
 
   // maps the data from the request into a rows array with only the data required to be shown
   const rows = data.map(
-    ({ id, serviceType, status, requestedDate, scheduledEndDate, cost }) => ({
+    ({
       id,
       serviceType,
       status,
       requestedDate,
       scheduledEndDate,
       cost,
+      completedOn,
+    }) => ({
+      id,
+      serviceType,
+      status,
+      requestedDate,
+      scheduledEndDate,
+      cost,
+      completedOn,
     })
   );
   return (
@@ -118,7 +127,8 @@ function RequestTable({ data }) {
             <TableCell sx={headerStyles}>Work Type</TableCell>
             <TableCell sx={headerStyles}>Work Status</TableCell>
             <TableCell sx={headerStyles}>Start Date</TableCell>
-            <TableCell sx={headerStyles}>Finish Date</TableCell>
+            <TableCell sx={headerStyles}>Expected Finish Date</TableCell>
+            <TableCell sx={headerStyles}>Actual Completion Date</TableCell>
             <TableCell sx={headerStyles}>Cost ($)</TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -148,6 +158,11 @@ function RequestTable({ data }) {
                   {row.scheduledEndDate
                     ? formatDate(row.scheduledEndDate)
                     : row.scheduledEndDate}
+                </TableCell>
+                <TableCell sx={cellStyles}>
+                  {row.completedOn
+                    ? formatDate(row.completedOn)
+                    : row.completedOn}
                 </TableCell>
                 <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
                 <TableCell>
