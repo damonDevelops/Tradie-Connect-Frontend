@@ -60,16 +60,18 @@ export default function CurrentRequest() {
   };
 
   // maps the data from the request into a rows array with only the data required to be shown
-  const rows = data.map(
-    ({ id, serviceType, status, requestedDate, scheduledEndDate, cost }) => ({
-      id,
-      serviceType,
-      status,
-      requestedDate,
-      scheduledEndDate,
-      cost,
-    })
-  );
+  const rows = data
+    .filter((row) => row.status !== "COMPLETED") // uses filter to filter the rows we need
+    .map(
+      ({ id, serviceType, status, requestedDate, scheduledEndDate, cost }) => ({
+        id,
+        serviceType,
+        status,
+        requestedDate,
+        scheduledEndDate,
+        cost,
+      })
+    );
 
   return <RequestTable data={rows} />;
 }
@@ -86,14 +88,6 @@ function RequestTable({ data }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleViewClick = (id) => {
-    // Navigate to the dynamic route page with a query parameter
-    Router.push({
-      pathname: `/Customer/ViewRequest/${id}`,
-      query: { fromRequests: true, customer: true },
-    });
   };
 
   // styles for the header row
@@ -127,49 +121,47 @@ function RequestTable({ data }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rowsToDisplay
-            .filter((row) => row.status !== "COMPLETED") // uses filter to filter the rows we need
-            .map((row, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ width: "20%", textAlign: "center" }}>
-                  {row.id}
-                </TableCell>
-                <TableCell sx={cellStyles}>
-                  {row.serviceType
-                    ? capitaliseWords(row.serviceType)
-                    : row.serviceType}
-                </TableCell>
-                <TableCell sx={cellStyles}>
-                  {row.status ? capitaliseWords(row.status) : row.status}
-                </TableCell>
-                <TableCell sx={cellStyles}>
-                  {row.requestedDate
-                    ? formatDate(row.requestedDate)
-                    : row.requestedDate}
-                </TableCell>
-                <TableCell sx={cellStyles}>
-                  {row.scheduledEndDate
-                    ? formatDate(row.scheduledEndDate)
-                    : row.scheduledEndDate}
-                </TableCell>
-                <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
-                <TableCell>
-                  <Link
-                    href={{
-                      pathname: `/Customer/ViewRequest/[id]`,
-                      query: { fromRequests: true, customer: true },
-                    }}
-                    as={`/Customer/ViewRequest/${row.id}`}
-                    passHref
-                    legacyBehavior
-                  >
-                    <Button component="a" variant="outlined">
-                      View
-                    </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+          {rowsToDisplay.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell sx={{ width: "20%", textAlign: "center" }}>
+                {row.id}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.serviceType
+                  ? capitaliseWords(row.serviceType)
+                  : row.serviceType}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.status ? capitaliseWords(row.status) : row.status}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.requestedDate
+                  ? formatDate(row.requestedDate)
+                  : row.requestedDate}
+              </TableCell>
+              <TableCell sx={cellStyles}>
+                {row.scheduledEndDate
+                  ? formatDate(row.scheduledEndDate)
+                  : row.scheduledEndDate}
+              </TableCell>
+              <TableCell sx={cellStyles}>{"$" + row.cost}</TableCell>
+              <TableCell>
+                <Link
+                  href={{
+                    pathname: `/Customer/ViewRequest/[id]`,
+                    query: { fromRequests: true, customer: true },
+                  }}
+                  as={`/Customer/ViewRequest/${row.id}`}
+                  passHref
+                  legacyBehavior
+                >
+                  <Button component="a" variant="outlined">
+                    View
+                  </Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <TablePagination

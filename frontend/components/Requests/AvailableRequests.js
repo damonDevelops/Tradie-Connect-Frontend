@@ -41,15 +41,19 @@ const theme = createTheme();
 export default function AvailableRequest() {
   const fetchURL = "http://localhost:8080/api/service-providers";
 
-  const { data: responseData } = useFetchData(fetchURL);
+  const { data: responseData } = useFetchData(fetchURL); // fetches currently logged in service-provider
   const [serviceRequests, setRequests] = useState([]);
 
+  console.log("service provider");
   console.log(responseData);
 
   const instance = axios.create({
     withCredentials: true,
   });
 
+  // use effect checks if responseData and qualified service requests exists
+  // then uses the ID's from qualified service requests to map individual objects into an array
+  // using the service-request + id to get the individual service request object
   useEffect(() => {
     const fetchData = async () => {
       if (responseData && responseData.qualifiedServiceRequests) {
@@ -66,28 +70,7 @@ export default function AvailableRequest() {
 
   console.log(serviceRequests);
 
-  // const rows = serviceRequests.map(
-  //   ({
-  //     id,
-  //     serviceType,
-  //     status,
-  //     requestedDate,
-  //     scheduledEndDate,
-  //     cost,
-  //     customer: {
-  //       suburb: { name: suburbName },
-  //     },
-  //   }) => ({
-  //     id,
-  //     serviceType,
-  //     status,
-  //     requestedDate,
-  //     scheduledEndDate,
-  //     cost,
-  //     customer: { suburbName },
-  //   })
-  // );
-
+  // maps service requests and only includes the data we need to show in a row
   const rows = serviceRequests.map(
     ({
       id,

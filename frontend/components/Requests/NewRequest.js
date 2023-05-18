@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-import Cookies from "js-cookie";
+
 import { Divider } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -21,13 +21,18 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import jwt_decode from "jwt-decode";
 import { useEffect } from "react";
 import Link from "next/link";
-import {Stack} from "@mui/material";
-import {Snackbar} from "@mui/material";
-import {Alert} from "@mui/material";
+import { Stack } from "@mui/material";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 
+import dayjs, { Dayjs } from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useState } from "react";
 
 const theme = createTheme();
 
@@ -38,11 +43,9 @@ function returnCost() {
 }
 
 export default function NewRequest() {
-
   const instance = axios.create({
     withCredentials: true,
   });
-
 
   useEffect(() => {
     fetchData();
@@ -52,11 +55,7 @@ export default function NewRequest() {
     window.location.href = "../Customer/Dashboard";
   };
 
-  
-
   var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
-  var token = Cookies.get("JWT");
-  var customer_type = jwt_decode(token).role;
 
   const [multiplier, setMultiplier] = React.useState(0);
 
@@ -67,10 +66,8 @@ export default function NewRequest() {
   const [cost, setCost] = React.useState(200);
   const [membershipType, setMembershipType] = React.useState("");
 
-
   const [dateAlertOpen, setDateAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
-  
 
   const [startDate, setStartDate] = React.useState(
     new Date().toLocaleDateString("en-GB")
@@ -80,6 +77,44 @@ export default function NewRequest() {
   const [endDate, setEndDate] = React.useState(
     new Date().toLocaleDateString("en-GB")
   );
+
+  /*  Start block of code for handling date picker */
+  // function formats return date of dayjs object into string
+  const formatDate = (date) => {
+    var day = date.$D;
+    var month = date.$M + 1;
+    var year = date.$y;
+
+    var newDate;
+
+    // if else adds leading 0 if <10
+    if (day < 10) newDate = "0" + day + "/";
+    else newDate = day + "/";
+
+    if (month < 10) newDate += "0" + month + "/";
+    else newDate += month + "/";
+
+    newDate += year;
+
+    return newDate;
+  };
+
+  // useState variables to update date pickers value
+  const [datePickerStart, setDatePickerStart] = React.useState(dayjs());
+  const [datePickerEnd, setDatePickerEnd] = React.useState(dayjs());
+  const [minDate] = React.useState(dayjs());
+
+  const settingStartDate = (date) => {
+    setStartDate(formatDate(date));
+    setDatePickerStart(date);
+  };
+
+  const settingEndDate = (date) => {
+    setEndDate(formatDate(date));
+    setDatePickerEnd(date);
+  };
+
+  /*  End block of code for handling date picker */
 
   var startDateParts = startDate.split("/");
   var endDateParts = endDate.split("/");
@@ -103,6 +138,7 @@ export default function NewRequest() {
     startDate.split("/")[1] - 1,
     startDate.split("/")[0]
   );
+
   var splitEndDate = new Date(
     endDate.split("/")[2],
     endDate.split("/")[1] - 1,
@@ -146,7 +182,6 @@ export default function NewRequest() {
       );
 
       setMembershipType(response.data.membership.membershipType);
-
     } catch (error) {
       console.error(error);
     }
@@ -174,12 +209,18 @@ export default function NewRequest() {
 
     //validation for start and end date
     if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
+      console.log(startDate);
+      console.log(endDate);
       handleDateAlert("Invalid Date Format, please use DD/MM/YYYY");
     } else if (startDate > endDate || startDate == endDate) {
+      console.log(startDate);
+      console.log(endDate);
       handleDateAlert("Start date must be before end date");
     } else {
       try {
         //post request
+        console.log(submitStartDateFormat);
+        console.log(submitEndDateFormat);
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
             cost: 1000.0,
@@ -211,94 +252,126 @@ export default function NewRequest() {
           height: 700,
         }}
       >
-        <form onSubmit={handleSubmit}>
-          <Typography variant="h4" gutterBottom>
-            New Request
-          </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <form onSubmit={handleSubmit}>
+            <Typography variant="h4" gutterBottom>
+              New Request
+            </Typography>
 
-          <Divider />
-          <Typography sx={{ mt: 2 }} variant="h5" gutterBottom>
-            Request Details
-          </Typography>
-          <FormControl sx={{ width: "40%" }}>
-            <InputLabel id="demo-simple-select-label">Work Type</InputLabel>
-            <Select
+            <Divider />
+            <Typography sx={{ mt: 2 }} variant="h5" gutterBottom>
+              Request Details
+            </Typography>
+            <FormControl sx={{ width: "40%" }}>
+              <InputLabel id="demo-simple-select-label">Work Type</InputLabel>
+              <Select
+                required
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={WorkType}
+                label="Work Type"
+                onChange={handleChange}
+              >
+                <MenuItem value="TREE_REMOVAL">Tree Removal</MenuItem>
+                <MenuItem value="ROOF_CLEANING">Roof Cleaning</MenuItem>
+                <MenuItem value="FENCE_INSTALLATION">
+                  Fence Installation
+                </MenuItem>
+                <MenuItem value="OVEN_REPAIRS">Oven Repair</MenuItem>
+                <MenuItem value="POOL_CLEANING">Pool Cleaning</MenuItem>
+              </Select>
+            </FormControl>
+            <br />
+            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
+              Work Instructions
+            </Typography>
+            <TextField
+              fullWidth
+              id="outlined-m<form onSubmit={handleSubmit}>ultiline-static"
+              label="Instructions"
               required
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={WorkType}
-              label="Work Type"
-              onChange={handleChange}
-            >
-              <MenuItem value="TREE_REMOVAL">Tree Removal</MenuItem>
-              <MenuItem value="ROOF_CLEANING">Roof Cleaning</MenuItem>
-              <MenuItem value="FENCE_INSTALLATION">Fence Installation</MenuItem>
-              <MenuItem value="OVEN_REPAIRS">Oven Repair</MenuItem>
-              <MenuItem value="POOL_CLEANING">Pool Cleaning</MenuItem>
-            </Select>
-          </FormControl>
-          <br />
-          <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
-            Work Description
-          </Typography>
-          <TextField
-            fullWidth
-            id="outlined-m<form onSubmit={handleSubmit}>ultiline-static"
-            label="Description"
-            required
-            multiline
-            rows={4}
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            defaultValue="Insert any relevant information about the job here"
-          />
-          <TextField
-            sx={{ width: "30%" }}
-            margin="normal"
-            required
-            id="outlined-required"
-            label="Start Date"
-            name="date"
-            onChange={(event) => setStartDate(event.target.value)}
-            value={startDate}
-            InputLabelProps={{ shrink: true }}
-          />
-          <br />
-          <TextField
-            sx={{ width: "30%" }}
-            margin="normal"
-            required
-            id="outlined-required"
-            label="End Date"
-            name="date"
-            onChange={(event) => setEndDate(event.target.value)}
-            value={endDate}
-            InputLabelProps={{ shrink: true }}
-          />
-          <br />
-          {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
-          {membershipType == "PAY_ON_DEMAND" && (
-            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: ${diffDays * multiplier + 200}</Typography>
-          )}
-          {membershipType == "CLIENT_SUBSCRIPTION" && (
-            <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>Total Cost: $0, you're a loyal subscriber!</Typography>
-          )}
-          <Button color="success" fullWidth type="submit" variant="contained">
-            Submit New Work Request
-          </Button>
-          
-          <br />
-          <br />
+              multiline
+              rows={4}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              defaultValue="Insert any relevant information about the job here"
+            />
+            {/* <TextField
+              sx={{ width: "30%" }}
+              margin="normal"
+              required
+              id="outlined-required"
+              label="Start Date"
+              name="date"
+              onChange={(event) => setStartDate(event.target.value)}
+              value={startDate}
+              InputLabelProps={{ shrink: true }}
+            /> */}
+            {/* <DatePicker
+              label="Uncontrolled picker"
+              defaultValue={dayjs("2022-04-17")}
+              sx={{ width: "30%" }}
+              onChange={(event) => setStartDate(formatDate(event))}
+              margin="normal"
+            /> */}
+            <DatePicker
+              label="Start Date"
+              value={datePickerStart}
+              onChange={(event) => settingStartDate(event)}
+              format="DD/MM/YYYY"
+              sx={{ marginTop: "16px" }}
+              maxDate={datePickerEnd}
+              minDate={minDate}
+            />
+            <br />
+            <DatePicker
+              label="End Date"
+              value={datePickerEnd}
+              onChange={(event) => settingEndDate(event)}
+              format="DD/MM/YYYY"
+              sx={{ marginTop: "16px" }}
+              minDate={minDate}
+            />
+            {/* <TextField
+              sx={{ width: "30%" }}
+              margin="normal"
+              required
+              id="outlined-required"
+              label="End Date"
+              name="date"
+              onChange={(event) => setEndDate(event.target.value)}
+              value={endDate}
+              InputLabelProps={{ shrink: true }}
+            /> */}
+            <br />
+            {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
+            {membershipType == "PAY_ON_DEMAND" && (
+              <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
+                Total Cost: ${diffDays * multiplier + 200}
+              </Typography>
+            )}
+            {membershipType == "CLIENT_SUBSCRIPTION" && (
+              <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
+                Total Cost: $0, you're a loyal subscriber!
+              </Typography>
+            )}
+            <Button color="success" fullWidth type="submit" variant="contained">
+              Submit New Work Request
+            </Button>
 
-          <Button
-            color="primary"
-            fullWidth
-            onclick={redirect}
-            variant="contained"
-          >
-            Back to Dashboard
-          </Button>
-        </form>
+            <br />
+            <br />
+
+            <Button
+              color="primary"
+              fullWidth
+              onclick={redirect}
+              variant="contained"
+            >
+              Back to Dashboard
+            </Button>
+          </form>
+        </LocalizationProvider>
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
             open={dateAlertOpen}
@@ -355,18 +428,16 @@ export default function NewRequest() {
             }}
           >
             <Link href="./" passHref legacyBehavior color="inherit">
-            <Button
-              style={{
-                backgroundColor: "#4caf50",
-                color: "white",
-              }}
-              
-              autoFocus
-            >
-              Back to Dashboard
-            </Button>
+              <Button
+                style={{
+                  backgroundColor: "#4caf50",
+                  color: "white",
+                }}
+                autoFocus
+              >
+                Back to Dashboard
+              </Button>
             </Link>
-            
           </DialogActions>
         </Dialog>
       </Paper>
