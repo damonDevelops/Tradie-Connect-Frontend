@@ -11,7 +11,8 @@ import jwtDecode from "jwt-decode";
 
 import { useRouter } from "next/router";
 
-import { Grid, Link, TextField } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
+import Link from "next/link";
 
 import Box from "@mui/material/Box";
 
@@ -56,39 +57,38 @@ export default function ViewRequest() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Paper
-        sx={{
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          height: "auto",
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Service Request Details
-        </Typography>
 
-        {router.query.customer ? <CustomerView /> : null}
-        {router.query.serviceProvider ? <ServiceProviderView /> : null}
-      </Paper>
+      <Typography variant="h4" gutterBottom>
+        Service Request Details
+      </Typography>
+
+      {router.query.customer ? <CustomerView /> : null}
+      {router.query.serviceProvider ? <ServiceProviderView /> : null}
     </ThemeProvider>
   );
 }
 
-// takes a string and capitalises the first letter of each word. Makes every other letter lower case.
-function capitaliseWords(str) {
-  return str
-    .toLowerCase()
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+// return (
+//   <ThemeProvider theme={theme}>
+//     <CssBaseline />
+//     <Paper
+//       sx={{
+//         p: 2,
+//         display: "flex",
+//         flexDirection: "column",
+//         height: "auto",
+//       }}
+//     >
+//       <Typography variant="h4" gutterBottom>
+//         Service Request Details
+//       </Typography>
 
-// formats date specific to how it is held in the date array
-// date[0] = year, date[1] = month, date[2] = day
-function formatDate(date) {
-  return date[2] + "/" + date[1] + "/" + date[0];
-}
+//       {router.query.customer ? <CustomerView /> : null}
+//       {router.query.serviceProvider ? <ServiceProviderView /> : null}
+//     </Paper>
+//   </ThemeProvider>
+// );
+// }
 
 // this function returns the customer view of the current request
 function CustomerView() {
@@ -99,106 +99,216 @@ function CustomerView() {
   console.log(responseData);
 
   return (
-    <Box sx={{ p: 2 }}>
-      {responseData ? (
-        <>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Request ID"
-                value={responseData.id}
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
+    <>
+      <Paper sx={{ p: 2 }}>
+        {responseData ? (
+          <>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Request ID:"
+                  value={responseData.id}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Status:"
+                  value={
+                    responseData.status
+                      ? capitaliseWords(responseData.status)
+                      : responseData.status
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Type:"
+                  value={
+                    responseData.serviceType
+                      ? capitaliseWords(responseData.serviceType)
+                      : responseData.serviceType
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Date Submitted:"
+                  value={
+                    responseData.requestedDate
+                      ? formatDate(responseData.requestedDate)
+                      : responseData.requestedDate
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Scheduled Date:"
+                  value={
+                    responseData.scheduledStartDate
+                      ? formatDate(responseData.scheduledStartDate)
+                      : responseData.scheduledStartDate
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Scheduled Finish:"
+                  value={
+                    responseData.scheduledEndDate
+                      ? formatDate(responseData.scheduledEndDate)
+                      : responseData.scheduledEndDate
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              {responseData.status == "COMPLETED" && (
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="Actual Finish Date:"
+                    value={
+                      responseData.completedOn
+                        ? formatDate(responseData.completedOn)
+                        : responseData.completedOn
+                    }
+                    disabled
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ mb: 2 }}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Cost:"
+                  value={"$" + responseData.cost}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Instructions:"
+                  value={responseData.description}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  multiline={true}
+                  fullWidth
+                />
+              </Grid>
+              {/*maybe nest grid inside the tradie table function*/}
+              <Grid item xs={12}>
+                {responseData.status == "PENDING" ? (
+                  <TradieTable data={responseData} />
+                ) : null}
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Status: "
-                value={
-                  responseData.status
-                    ? capitaliseWords(responseData.status)
-                    : responseData.status
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Type: "
-                value={
-                  responseData.serviceType
-                    ? capitaliseWords(responseData.serviceType)
-                    : responseData.serviceType
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Date Submitted"
-                value={
-                  responseData.requestedDate
-                    ? formatDate(responseData.requestedDate)
-                    : responseData.requestedDate
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Scheduled Date"
-                value={
-                  responseData.scheduledStartDate
-                    ? formatDate(responseData.scheduledStartDate)
-                    : responseData.scheduledStartDate
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Scheduled Finish"
-                value={
-                  responseData.scheduledEndDate
-                    ? formatDate(responseData.scheduledEndDate)
-                    : responseData.scheduledEndDate
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Description"
-                value={responseData.description}
-                disabled
-                InputLabelProps={{ shrink: true }}
-                multiline={true}
-                fullWidth
-              />
-            </Grid>
-            {/*maybe nest grid inside the tradie table function*/}
-            <Grid item xs={12}>
-              {responseData.status == "PENDING" ? (
-                <TradieTable data={responseData} />
-              ) : null}
-            </Grid>
-          </Grid>
-        </>
-      ) : (
-        <Typography variant="h6">Loading...</Typography>
+          </>
+        ) : (
+          <Typography variant="h6">Loading...</Typography>
+        )}
+      </Paper>
+      {(responseData.status == "COMPLETED" ||
+        responseData.status == "ACCEPTED") && (
+        <ServiceProviderInfo serviceProvider={responseData.serviceProvider} />
       )}
-    </Box>
+    </>
+  );
+}
+
+function ServiceProviderInfo({ serviceProvider }) {
+  console.log(serviceProvider);
+  return (
+    <>
+      <Typography variant="h6">Service Provider Information:</Typography>
+      <Paper sx={{ p: 2 }}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Company Name:"
+              value={serviceProvider.companyName}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Contact No."
+              value={serviceProvider.phoneNumber}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="ABN:"
+              value={serviceProvider.abn}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Business Address:"
+              value={serviceProvider.streetAddress}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Suburb"
+              value={serviceProvider.suburb.name}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Postcode:"
+              value={serviceProvider.postCode}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Typography>
+              <b>Rating:</b>
+            </Typography>
+            <Rating
+              readOnly
+              value={
+                serviceProvider.Rating
+                  ? serviceProvider.Rating
+                  : returnRandomRating()
+              }
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+    </>
   );
 }
 
@@ -241,31 +351,40 @@ function TradieTable({ data }) {
     }
   };
 
+  // styles for the header row
+  const headerStyles = {
+    textAlign: "center",
+    fontWeight: "bold",
+  };
+
+  // styles for cell content
+  const cellStyles = {
+    textAlign: "center",
+  };
+
   return (
     <TableContainer component={Paper} style={{ maxHeight: 400 }}>
       <Table stickyHeader>
         <TableRow>
-          <TableCell>Service Provider ID</TableCell>
-          <TableCell>Company Name</TableCell>
-          <TableCell>Rating</TableCell>
+          <TableCell sx={headerStyles}>Company Name</TableCell>
+          <TableCell sx={headerStyles}>Rating</TableCell>
           <TableCell></TableCell>
         </TableRow>
         <TableBody>
           {rows.map((row, index) => (
             <TableRow key={index}>
-              <TableCell>{row.id}</TableCell>
-              <TableCell>{row.companyName}</TableCell>
-              <TableCell>
+              <TableCell sx={cellStyles}>{row.companyName}</TableCell>
+              <TableCell sx={cellStyles}>
                 {
                   <SmallerRating
                     name="rating"
-                    value={row.Rating}
+                    value={row.Rating ? row.Rating : returnRandomRating()}
                     precision={0.5}
                     readOnly
                   />
                 }
               </TableCell>
-              <TableCell>
+              <TableCell sx={cellStyles}>
                 <Button
                   component="a"
                   variant="outlined"
@@ -339,10 +458,25 @@ function TradieTable({ data }) {
 // function returns the serrvice provider view of the current request
 function ServiceProviderView() {
   const router = useRouter();
+
   // for the get request
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
+
+  // used to set suburb/postcode
+  // as trying to directly access throws error
+  const [suburb, setSuburb] = useState();
+  const [postCode, setPostcode] = useState();
+
+  useEffect(() => {
+    try {
+      setSuburb(responseData.customer.suburb.name);
+      setPostcode(responseData.customer.postCode);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [responseData]);
 
   // to get user id
   const userInfo = jwtDecode(Cookies.get("JWT"));
@@ -401,7 +535,7 @@ function ServiceProviderView() {
 
   // useState for the final alert diaglog
   const [finalAlertDialogOpen, setFinalOpen] = useState(false);
-  //
+
   // handles mark as completed button
   const handleOnCompleted = async () => {
     try {
@@ -419,201 +553,328 @@ function ServiceProviderView() {
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      {responseData ? (
-        <>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Request ID"
-                value={responseData.id}
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Status: "
-                value={
-                  responseData.status
-                    ? capitaliseWords(responseData.status)
-                    : responseData.status
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Type: "
-                value={
-                  responseData.serviceType
-                    ? capitaliseWords(responseData.serviceType)
-                    : responseData.serviceType
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Date Submitted"
-                value={
-                  responseData.requestedDate
-                    ? formatDate(responseData.requestedDate)
-                    : responseData.requestedDate
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Scheduled Date"
-                value={
-                  responseData.scheduledStartDate
-                    ? formatDate(responseData.scheduledStartDate)
-                    : responseData.scheduledStartDate
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                label="Scheduled Finish"
-                value={
-                  responseData.scheduledEndDate
-                    ? formatDate(responseData.scheduledEndDate)
-                    : responseData.scheduledEndDate
-                }
-                disabled
-                InputLabelProps={{ shrink: true }}
-                sx={{ mb: 2 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Description"
-                value={responseData.description}
-                disabled
-                InputLabelProps={{ shrink: true }}
-                multiline={true}
-                fullWidth
-              />
-            </Grid>
-            {canApply && !hasApplied && (
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleOnApply}
-                >
-                  Apply
-                </Button>
-              </Grid>
-            )}
-            {canApply && hasApplied && (
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
+    <>
+      <Paper sx={{ p: 2 }}>
+        {responseData ? (
+          <>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Request ID:"
+                  value={responseData.id}
                   disabled
-                  style={{ backgroundColor: "lightgreen", color: "black" }}
-                >
-                  Applied
-                </Button>
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
               </Grid>
-            )}
-            {canComplete && !hasCompleted && (
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleOnCompleted}
-                >
-                  Mark job as completed
-                </Button>
-              </Grid>
-            )}
-            {canComplete && hasCompleted && (
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ backgroundColor: "lightgreen", color: "black" }}
-                  onClick={handleOnCompleted}
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Status:"
+                  value={
+                    responseData.status
+                      ? capitaliseWords(responseData.status)
+                      : responseData.status
+                  }
                   disabled
-                >
-                  Completed
-                </Button>
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
               </Grid>
-            )}
-            <Dialog
-              open={finalAlertDialogOpen}
-              //onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle
-                style={{
-                  backgroundColor: "#4caf50",
-                  color: "white",
-                }}
-                id="alert-dialog-title"
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Type:"
+                  value={
+                    responseData.serviceType
+                      ? capitaliseWords(responseData.serviceType)
+                      : responseData.serviceType
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Date Submitted:"
+                  value={
+                    responseData.requestedDate
+                      ? formatDate(responseData.requestedDate)
+                      : responseData.requestedDate
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Scheduled Date:"
+                  value={
+                    responseData.scheduledStartDate
+                      ? formatDate(responseData.scheduledStartDate)
+                      : responseData.scheduledStartDate
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Scheduled Finish:"
+                  value={
+                    responseData.scheduledEndDate
+                      ? formatDate(responseData.scheduledEndDate)
+                      : responseData.scheduledEndDate
+                  }
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              {responseData.status == "COMPLETED" && (
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="Actual Finish Date:"
+                    value={
+                      responseData.completedOn
+                        ? formatDate(responseData.completedOn)
+                        : responseData.completedOn
+                    }
+                    disabled
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ mb: 2 }}
+                  />
+                </Grid>
+              )}
+              {(responseData.status == "ACCEPTED" ||
+                responseData.status == "COMPLETED") && (
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    label="Street Address:"
+                    value={responseData.customer.streetAddress}
+                    disabled
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ mb: 2 }}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Suburb:"
+                  value={suburb}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Postcode:"
+                  value={postCode}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Pays:"
+                  value={"$" + responseData.cost}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ mb: 2 }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  label="Instructions:"
+                  value={responseData.description}
+                  disabled
+                  InputLabelProps={{ shrink: true }}
+                  multiline={true}
+                  fullWidth
+                />
+              </Grid>
+
+              {canApply && !hasApplied && (
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOnApply}
+                  >
+                    Apply
+                  </Button>
+                </Grid>
+              )}
+              {canApply && hasApplied && (
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled
+                    style={{ backgroundColor: "lightgreen", color: "black" }}
+                  >
+                    Applied
+                  </Button>
+                </Grid>
+              )}
+              {canComplete && !hasCompleted && (
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOnCompleted}
+                  >
+                    Mark job as completed
+                  </Button>
+                </Grid>
+              )}
+              {canComplete && hasCompleted && (
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ backgroundColor: "lightgreen", color: "black" }}
+                    onClick={handleOnCompleted}
+                    disabled
+                  >
+                    Completed
+                  </Button>
+                </Grid>
+              )}
+              <Dialog
+                open={finalAlertDialogOpen}
+                //onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
               >
-                {"Success!"} <TaskAltIcon />
-              </DialogTitle>
-              <DialogContent
-                style={{
-                  backgroundColor: "#4caf50",
-                }}
-              >
-                <DialogContentText
+                <DialogTitle
                   style={{
                     backgroundColor: "#4caf50",
                     color: "white",
                   }}
-                  id="alert-dialog-description"
+                  id="alert-dialog-title"
                 >
-                  You have successfully completed the job! The customers payment
-                  will be paid into your account shortly. To see the history of
-                  your completed jobs, check out the Finished Requests page.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions
-                style={{
-                  backgroundColor: "#4caf50",
-                }}
-              >
-                <Link
-                  href="../Current-Requests"
-                  passHref
-                  legacyBehavior
-                  color="inherit"
+                  {"Success!"} <TaskAltIcon />
+                </DialogTitle>
+                <DialogContent
+                  style={{
+                    backgroundColor: "#4caf50",
+                  }}
                 >
-                  <Button
+                  <DialogContentText
                     style={{
                       backgroundColor: "#4caf50",
                       color: "white",
                     }}
-                    autoFocus
+                    id="alert-dialog-description"
                   >
-                    Back to Current Requests
-                  </Button>
-                </Link>
-              </DialogActions>
-            </Dialog>
-          </Grid>
-        </>
-      ) : (
-        <Typography variant="h6">Loading...</Typography>
+                    You have successfully completed the job! The customers
+                    payment will be paid into your account shortly. To see the
+                    history of your completed jobs, check out the Finished
+                    Requests page.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions
+                  style={{
+                    backgroundColor: "#4caf50",
+                  }}
+                >
+                  <Link
+                    href="../Current-Requests"
+                    passHref
+                    legacyBehavior
+                    color="inherit"
+                  >
+                    <Button
+                      style={{
+                        backgroundColor: "#4caf50",
+                        color: "white",
+                      }}
+                      autoFocus
+                    >
+                      Back to Current Requests
+                    </Button>
+                  </Link>
+                </DialogActions>
+              </Dialog>
+            </Grid>
+          </>
+        ) : (
+          <Typography variant="h6">Loading...</Typography>
+        )}
+      </Paper>
+      {(responseData.status == "COMPLETED" ||
+        responseData.status == "ACCEPTED") && (
+        <CustomerInfo customer={responseData.customer} />
       )}
-    </Box>
+    </>
   );
+}
+
+// function returns box of customer information for service provider to view
+function CustomerInfo({ customer }) {
+  console.log(customer);
+  return (
+    <>
+      <Typography variant="h6">Customer Information:</Typography>
+      <Paper sx={{ p: 2 }}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Customer Name:"
+              value={customer.firstName + " " + customer.lastName}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Contact No."
+              value={customer.phoneNumber}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Contact Email:"
+              value={customer.email}
+              disabled
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+    </>
+  );
+}
+
+// takes a string and capitalises the first letter of each word. Makes every other letter lower case.
+function capitaliseWords(str) {
+  return str
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+// formats date specific to how it is held in the date array
+// date[0] = year, date[1] = month, date[2] = day
+function formatDate(date) {
+  return date[2] + "/" + date[1] + "/" + date[0];
+}
+
+// used if no rating available to show functionality
+function returnRandomRating() {
+  const max = 5.0;
+  const min = 2.5;
+  return Math.random() * (max - min) + min;
 }
