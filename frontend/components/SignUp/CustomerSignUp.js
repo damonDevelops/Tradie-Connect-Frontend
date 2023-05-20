@@ -23,6 +23,10 @@ import Backdrop from "@mui/material/Backdrop";
 import axios from "axios";
 import postCodeToState from "../functional_components/postcodeToState";
 
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -54,6 +58,8 @@ export default function CustomerSignUp() {
   const [flag, setFlag] = React.useState(true);
   const [noPayment, setNoPaymentOpen] = React.useState(false);
   const [hasCustomerPaid, setHasCustomerPaid] = React.useState(false);
+
+  const [minDate] = React.useState(dayjs());
 
   //function to close the add payment method dialog
   const closeCard = () => {
@@ -213,14 +219,21 @@ export default function CustomerSignUp() {
               name: city,
               state: returnState,
             },
+            paymentInformation: {
+              cardName: cardName.toString(),
+              cardNumber: cardNumber.toString(),
+              expiryDate: expiryDate.toString(),
+              cvv: cvv.toString(),
+            },
             postCode: postcode,
             membership: {
               membershipType: returnMemberType,
-              "price": 49.99,
-              "description": "Yearly customer membership"
-            }
+              price: 49.99,
+              description: "Yearly customer membership",
+            },
           }
         );
+        
         setBackdropOpen(true);
         timer.current = window.setTimeout(() => {
           setBackdropOpen(false);
@@ -247,16 +260,13 @@ export default function CustomerSignUp() {
               option.value === value.value
             }
             onInputChange={(event, newInputValue) => {
-              if(newInputValue == "Subscription"){
+              if (newInputValue == "Subscription") {
                 setMembershipType("CLIENT_SUBSCRIPTION");
-              }
-              else if (newInputValue == "Pay on Demand"){
+              } else if (newInputValue == "Pay on Demand") {
                 setMembershipType("PAY_ON_DEMAND");
-              }
-              else{
+              } else {
                 setMembershipType("ACC_CREATED");
               }
-              
             }}
             disablePortal
             id="combo-box-demo"
@@ -410,73 +420,65 @@ export default function CustomerSignUp() {
           </Button>
         </Grid>
         <Dialog open={paymentDialogOpen} onClose={handlePaymentClose}>
-          <DialogTitle>Payment Method</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  id="cardName"
-                  label="Name on Card"
-                  onChange={(event) => setCardName(event.target.value)}
-                  value={cardName}
-                  required
-                />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DialogTitle>Payment Method</DialogTitle>
+            <DialogContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    autoFocus
+                    fullWidth
+                    id="cardName"
+                    label="Name on Card"
+                    sx={{marginTop: 1}}
+                    onChange={(event) => setCardName(event.target.value)}
+                    value={cardName}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    autoFocus
+                    type="number"
+                    fullWidth
+                    id="cardNumber"
+                    label="Card Number"
+                    value={cardNumber}
+                    onChange={(event) => handleCardNumberChange(event)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <DatePicker 
+                  label={"MM / YY"} 
+                  views={['month', 'year']} 
+                  format="MM/YY"
+                  //change the width to match the other fields
+                  slotProps={{ textField: { fullWidth: true } }}
+                  onChange={(event) => setExpiryDate(event.format("MM/YY"))}
+                  minDate={minDate}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    autoFocus
+                    type="number"
+                    fullWidth
+                    id="cvv"
+                    label="CVV"
+                    value={cvv}
+                    onChange={(event) => handleCVVChange(event)}
+                    required
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  type="number"
-                  fullWidth
-                  id="cardNumber"
-                  label="Card Number"
-                  value={cardNumber}
-                  onChange={(event) => handleCardNumberChange(event)}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  id="expiryDate"
-                  label="Expiry Date"
-                  onChange={(event) => setExpiryDate(event.target.value)}
-                  value={expiryDate}
-                  required
-                />
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker", "DatePicker"]}>
-                    <DatePicker
-                      label={"Expiry Date"}
-                      views={["month", "year"]}
-                      value={expiryDate}
-                      minDate={dayjs()}
-                      onChange={(event) => setExpiryDate(event)}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider> */}
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoFocus
-                  type="number"
-                  fullWidth
-                  id="cvv"
-                  label="CVV"
-                  value={cvv}
-                  onChange={(event) => handleCVVChange(event)}
-                  required
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeCard} disabled={!validateCardInfo()}>
-              Add Payment Method
-            </Button>
-          </DialogActions>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeCard} disabled={!validateCardInfo()}>
+                Add Payment Method
+              </Button>
+            </DialogActions>
+          </LocalizationProvider>
         </Dialog>
         <Grid item xs={6}>
           <Button
