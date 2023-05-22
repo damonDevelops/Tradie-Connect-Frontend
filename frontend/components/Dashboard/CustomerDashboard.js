@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -13,6 +12,10 @@ import Container from "@mui/material/Container";
 
 //import Link from "@mui/material/Link";
 import Link from "next/link";
+
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import HistoryIcon from "@mui/icons-material/History";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
 //import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
@@ -48,7 +51,6 @@ import { DialogContent } from "@mui/material";
 import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
-
 
 import Cookies from "js-cookie";
 import {
@@ -246,7 +248,7 @@ export default function CustomerDash(props) {
                   >
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                        <StarBorder />
+                        <AddBoxIcon />
                       </ListItemIcon>
                       <ListItemText primary="New Request" />
                     </ListItemButton>
@@ -263,7 +265,7 @@ export default function CustomerDash(props) {
                   >
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                        <StarBorder />
+                        <ContentPasteIcon />
                       </ListItemIcon>
                       <ListItemText primary="Current Requests" />
                     </ListItemButton>
@@ -280,7 +282,7 @@ export default function CustomerDash(props) {
                   >
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                        <StarBorder />
+                        <HistoryIcon />
                       </ListItemIcon>
                       <ListItemText primary="Past Requests" />
                     </ListItemButton>

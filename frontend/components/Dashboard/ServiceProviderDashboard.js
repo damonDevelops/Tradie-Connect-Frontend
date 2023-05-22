@@ -21,6 +21,10 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 import Collapse from "@mui/material/Collapse";
+import HistoryIcon from "@mui/icons-material/History";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -248,7 +252,7 @@ function ServiceDash(props) {
                   >
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                        <StarBorder />
+                        <CheckBoxIcon />
                       </ListItemIcon>
                       <ListItemText primary="Available Requests" />
                     </ListItemButton>
@@ -265,7 +269,7 @@ function ServiceDash(props) {
                   >
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                        <StarBorder />
+                        <ContentPasteIcon />
                       </ListItemIcon>
                       <ListItemText primary="Current Requests" />
                     </ListItemButton>
@@ -282,7 +286,7 @@ function ServiceDash(props) {
                   >
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                        <StarBorder />
+                        <HistoryIcon />
                       </ListItemIcon>
                       <ListItemText primary="Finished Requests" />
                     </ListItemButton>
@@ -302,13 +306,12 @@ function ServiceDash(props) {
                 color="inherit"
               >
                 <ListItemButton>
-                <ListItemIcon>
-                  <BarChartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Reports" />
-              </ListItemButton>
+                  <ListItemIcon>
+                    <BarChartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Reports" />
+                </ListItemButton>
               </Link>
-              
             </React.Fragment>
           </List>
         </Drawer>
