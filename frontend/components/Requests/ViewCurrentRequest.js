@@ -39,6 +39,10 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
 const theme = createTheme();
 
+const instance = axios.create({
+  withCredentials: true,
+});
+
 export default function ViewRequest() {
   const router = useRouter();
   const requestId = router.query.id;
@@ -320,26 +324,16 @@ function ReviewTestComponent({ dataObject, userType }) {
   const [value, setValue] = React.useState(0);
   const [comment, setComment] = React.useState("");
   const [reviewExists, setReviewExists] = React.useState(
-    dataObject.serviceProvider.reviews != null ? true : false
+    dataObject.review != null ? true : false
   );
-  const instance = axios.create({
-    withCredentials: true,
-  });
 
+  //if reviewExists, set the value and comment
   useEffect(() => {
     if (reviewExists) {
-      //make a GET request to get the review data
-      instance
-        .get("http://localhost:8080/api/reviews/" + dataObject.id)
-        .then((response) => {
-          console.log(response.data);
-          setValue(response.data.rating);
-          setComment(response.data.comment);
-        });
+      setValue(dataObject.review.rating);
+      setComment(dataObject.review.comment);
     }
   }, []);
-
-  console.log(dataObject);
 
   const handleReview = async () => {
     try {
@@ -353,7 +347,6 @@ function ReviewTestComponent({ dataObject, userType }) {
         })
         .then((response) => {
           if (response.status == 200) {
-            alert("Review submitted successfully!");
             setReviewExists(true);
           }
         });
@@ -365,108 +358,121 @@ function ReviewTestComponent({ dataObject, userType }) {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        Review Request
-      </Typography>
-      <Paper
-        sx={{
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          height: "auto",
-        }}
-      >
-        <Box
+      {userType == "customer" && (
+        <Typography variant="h6" gutterBottom>
+          Review Request
+        </Typography>
+      )}
+
+      {userType == "customer" && (
+        <Paper
           sx={{
-            "& > legend": { mt: 2 },
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            height: "auto",
           }}
         >
-          {userType == "customer" && (
-            <>
-              <Typography variant="h7" gutterBottom>
-                Please leave a review about the quality of the service you
-                received from {dataObject.serviceProvider.companyName}
-              </Typography>
-              <br />
-              <br />
-              <Typography variant="h6">Rating:</Typography>
-              <Rating
-                readOnly={reviewExists}
-                precision={0.5}
-                name="simple-controlled"
-                value={value}
-                onChange={(event, newValue) => {
-                  setValue(newValue);
-                }}
-              />
-              <br />
-              <br />
-              <TextField
-                InputProps={{
-                  readOnly: reviewExists,
-                }}
-                sx={{ width: "100%" }}
-                id="outlined-multiline-static"
-                label="Additional Feedback"
-                multiline
-                rows={3}
-                variant="outlined"
-                onChange={(event) => setComment(event.target.value)}
-                value={comment}
-              />
-              <br />
-              <br />
+          <Box
+            sx={{
+              "& > legend": { mt: 2 },
+            }}
+          >
+            <Typography variant="h7" gutterBottom>
+              Please leave a review about the quality of the service you
+              received from {dataObject.serviceProvider.companyName}
+            </Typography>
+            <br />
+            <br />
+            <Typography variant="h6">Rating:</Typography>
+            <Rating
+              readOnly={reviewExists}
+              precision={0.5}
+              name="simple-controlled"
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+            <br />
+            <br />
+            <TextField
+              InputProps={{
+                readOnly: reviewExists,
+              }}
+              sx={{ width: "100%" }}
+              id="outlined-multiline-static"
+              label="Additional Feedback"
+              multiline
+              rows={3}
+              variant="outlined"
+              onChange={(event) => setComment(event.target.value)}
+              value={comment}
+            />
+            <br />
+            <br />
 
-              {!reviewExists && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleReview}
-                >
-                  Submit Review
-                </Button>
-              )}
-              {reviewExists && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled
-                  style={{ backgroundColor: "lightgreen", color: "black" }}
-                >
-                  Review Submitted
-                </Button>
-              )}
-            </>
-          )}
-          {userType == "service_provider" && (
-            <>
-              <Typography variant="h5" gutterBottom>
-                Review from {dataObject.customer.firstName}{" "}
-              </Typography>
-              <Typography variant="h7">Rating:</Typography>
-              <br />
-              <Rating
-                readOnly={reviewExists}
-                precision={0.5}
-                name="simple-controlled"
-                value={value}
-                onChange={(event, newValue) => {
-                  setValue(newValue);
-                }}
-              />
-              <Divider />
-              <br />
-              
-              <Typography variant="h7">Additional Feedback:</Typography>
-              <br />
-              <Typography variant="h7" fontStyle={{ fontStyle: "italic" }}>
-                "{comment}"
-              </Typography>
+            {!reviewExists && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleReview}
+              >
+                Submit Review
+              </Button>
+            )}
+            {reviewExists && (
+              <Button
+                variant="contained"
+                color="primary"
+                disabled
+                style={{ backgroundColor: "lightgreen", color: "black" }}
+              >
+                Review Submitted
+              </Button>
+            )}
+          </Box>
+        </Paper>
+      )}
+      {reviewExists && userType == "service_provider" && (
+        <Paper
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            height: "auto",
+          }}
+        >
+          <Box
+            sx={{
+              "& > legend": { mt: 2 },
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Review from {dataObject.customer.firstName}{" "}
+            </Typography>
+            <Typography variant="h7">Rating:</Typography>
+            <br />
+            <Rating
+              readOnly={reviewExists}
+              precision={0.5}
+              name="simple-controlled"
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+            <Divider />
+            <br />
 
-            </>
-          )}
-        </Box>
-      </Paper>
+            <Typography variant="h7">Additional Feedback:</Typography>
+            <br />
+            <Typography variant="h7" fontStyle={{ fontStyle: "italic" }}>
+              "{comment}"
+            </Typography>
+          </Box>
+        </Paper>
+      )}
     </>
   );
 }
@@ -641,9 +647,7 @@ function ServiceProviderView() {
   const userInfo = jwtDecode(Cookies.get("JWT"));
 
   // for the post request
-  const instance = axios.create({
-    withCredentials: true,
-  });
+  
 
   console.log(responseData);
   console.log(userInfo);
