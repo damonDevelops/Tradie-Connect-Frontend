@@ -222,8 +222,8 @@ export default function CustomerSignUp() {
             paymentInformation: {
               cardName: cardName.toString(),
               cardNumber: cardNumber.toString(),
-              expiryDate: expiryDate.toString(),
-              cvv: cvv.toString(),
+              cardExpiry: expiryDate.toString(),
+              cardCVV: cvv.toString(),
             },
             postCode: postcode,
             membership: {
