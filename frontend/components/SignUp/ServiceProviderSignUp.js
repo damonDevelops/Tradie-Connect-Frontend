@@ -273,7 +273,7 @@ export default function CustomerSignUp() {
             required
             fullWidth
             id="phoneNumber"
-            label="Phone Number"
+            label="Phone"
             name="phone"
             onChange={(event) => setNewPhoneNumber(event.target.value)}
             value={newPhoneNumber}

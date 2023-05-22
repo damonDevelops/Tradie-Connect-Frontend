@@ -96,6 +96,7 @@ function CustomerView() {
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
+  console.log("RESPONSE DATA")
   console.log(responseData);
 
   return (
@@ -228,6 +229,9 @@ function CustomerView() {
         responseData.status == "ACCEPTED") && (
         <ServiceProviderInfo serviceProvider={responseData.serviceProvider} />
       )}
+      {(responseData.status == "COMPLETED") && (
+        <ReviewTestComponent dataObject={responseData}  />
+      )}
     </>
   );
 }
@@ -308,6 +312,138 @@ function ServiceProviderInfo({ serviceProvider }) {
           </Grid>
         </Grid>
       </Paper>
+    </>
+  );
+}
+
+function ReviewTestComponent({dataObject}) {
+  const [value, setValue] = React.useState(0);
+  const [comment, setComment] = React.useState("");
+  const [reviewExists, setReviewExists] = React.useState(dataObject.serviceProvider.reviews != null ? true : false);
+  const instance = axios.create({
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    if(reviewExists){
+      
+      //make a GET request to get the review data
+      instance.get("http://localhost:8080/api/reviews/" + dataObject.id)
+      .then((response) => {
+        console.log(response.data);
+        setValue(response.data.rating);
+        setComment(response.data.comment);
+      })
+    }
+  }, [])
+
+  console.log(dataObject);
+
+
+
+  const handleReview = async () => {
+    try {
+      const response = instance.post(
+        "http://localhost:8080/api/reviews",
+        {
+          customerId: dataObject.customer.id,
+          serviceProviderId: dataObject.serviceProvider.id,
+          serviceRequestId: dataObject.id,
+          rating: value,
+          comment: comment,
+        }
+      )
+      .then((response) => {
+        if(response.status == 200){
+          alert("Review submitted successfully!");
+          setReviewExists(true);
+        }
+      })
+    } 
+    catch (error) {
+      alert("Review Failed!");
+      console.log(error);
+    }
+  }
+
+  return (
+    <>
+      <Typography variant="h6" gutterBottom>
+          Review Request
+        </Typography>
+      <Paper
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: "auto",
+        }}
+      >
+        <Box
+          sx={{
+            "& > legend": { mt: 2 },
+          }}
+        >
+          <Typography variant="h7" gutterBottom>
+            Please leave a review about the quality of the service you received
+            from {dataObject.serviceProvider.companyName}
+          </Typography>
+          <Typography component="legend">
+            How would you rate your service overall
+          </Typography>
+          <Rating
+            readOnly={reviewExists}
+            precision={0.5}
+            name="simple-controlled"
+            value={value}
+            onChange={(event, newValue) => {
+              setValue(newValue);
+            }}
+          />
+          <br />
+          <br />
+          <TextField
+            InputProps={{
+              readOnly: reviewExists,
+            }}
+            sx={{ width: "100%" }}
+            id="outlined-multiline-static"
+            label="Additional Feedback"
+            multiline
+            rows={3}
+            variant="outlined"
+            
+            onChange={(event) => setComment(event.target.value)}
+            value={comment}
+          />
+          <br />
+          <br />
+
+          {
+            !reviewExists &&(
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleReview}
+              >
+                Submit Review
+              </Button>
+            )
+          }
+          {
+            reviewExists &&(
+                <Button
+                variant="contained"
+                color="primary"
+                disabled
+                style={{ backgroundColor: "lightgreen", color: "black" }}
+              >
+                Review Submitted
+              </Button>
+            )
+          }
+        </Box>
+        </Paper>
     </>
   );
 }
