@@ -63,9 +63,8 @@ export default function NewRequest() {
 
   const [WorkType, setWorkType] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [cost, setCost] = React.useState(200);
   const [membershipType, setMembershipType] = React.useState("");
-
+  var cost = diffDays * multiplier + 200
   const [dateAlertOpen, setDateAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
 
@@ -182,6 +181,7 @@ export default function NewRequest() {
       );
 
       setMembershipType(response.data.membership.membershipType);
+
     } catch (error) {
       console.error(error);
     }
@@ -226,7 +226,7 @@ export default function NewRequest() {
         console.log(submitEndDateFormat);
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
-            cost: 1000.0,
+            cost: membershipType == "CLIENT_SUBSCRIPTION" ? 0 : diffDays * multiplier + 200,
             description: description,
             serviceType: WorkType.toUpperCase(),
             dateTimeRange: {
