@@ -11,7 +11,7 @@ import jwtDecode from "jwt-decode";
 
 import { useRouter } from "next/router";
 
-import { Grid, TextField } from "@mui/material";
+import { Divider, Grid, TextField } from "@mui/material";
 import Link from "next/link";
 
 import Box from "@mui/material/Box";
@@ -96,7 +96,7 @@ function CustomerView() {
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
-  console.log("RESPONSE DATA")
+  console.log("RESPONSE DATA");
   console.log(responseData);
 
   return (
@@ -229,8 +229,8 @@ function CustomerView() {
         responseData.status == "ACCEPTED") && (
         <ServiceProviderInfo serviceProvider={responseData.serviceProvider} />
       )}
-      {(responseData.status == "COMPLETED") && (
-        <ReviewTestComponent dataObject={responseData}  />
+      {responseData.status == "COMPLETED" && (
+        <ReviewTestComponent dataObject={responseData} userType="customer" />
       )}
     </>
   );
@@ -316,61 +316,58 @@ function ServiceProviderInfo({ serviceProvider }) {
   );
 }
 
-function ReviewTestComponent({dataObject}) {
+function ReviewTestComponent({ dataObject, userType }) {
   const [value, setValue] = React.useState(0);
   const [comment, setComment] = React.useState("");
-  const [reviewExists, setReviewExists] = React.useState(dataObject.serviceProvider.reviews != null ? true : false);
+  const [reviewExists, setReviewExists] = React.useState(
+    dataObject.serviceProvider.reviews != null ? true : false
+  );
   const instance = axios.create({
     withCredentials: true,
   });
 
   useEffect(() => {
-    if(reviewExists){
-      
+    if (reviewExists) {
       //make a GET request to get the review data
-      instance.get("http://localhost:8080/api/reviews/" + dataObject.id)
-      .then((response) => {
-        console.log(response.data);
-        setValue(response.data.rating);
-        setComment(response.data.comment);
-      })
+      instance
+        .get("http://localhost:8080/api/reviews/" + dataObject.id)
+        .then((response) => {
+          console.log(response.data);
+          setValue(response.data.rating);
+          setComment(response.data.comment);
+        });
     }
-  }, [])
+  }, []);
 
   console.log(dataObject);
 
-
-
   const handleReview = async () => {
     try {
-      const response = instance.post(
-        "http://localhost:8080/api/reviews",
-        {
+      const response = instance
+        .post("http://localhost:8080/api/reviews", {
           customerId: dataObject.customer.id,
           serviceProviderId: dataObject.serviceProvider.id,
           serviceRequestId: dataObject.id,
           rating: value,
           comment: comment,
-        }
-      )
-      .then((response) => {
-        if(response.status == 200){
-          alert("Review submitted successfully!");
-          setReviewExists(true);
-        }
-      })
-    } 
-    catch (error) {
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            alert("Review submitted successfully!");
+            setReviewExists(true);
+          }
+        });
+    } catch (error) {
       alert("Review Failed!");
       console.log(error);
     }
-  }
+  };
 
   return (
     <>
       <Typography variant="h6" gutterBottom>
-          Review Request
-        </Typography>
+        Review Request
+      </Typography>
       <Paper
         sx={{
           p: 2,
@@ -384,66 +381,92 @@ function ReviewTestComponent({dataObject}) {
             "& > legend": { mt: 2 },
           }}
         >
-          <Typography variant="h7" gutterBottom>
-            Please leave a review about the quality of the service you received
-            from {dataObject.serviceProvider.companyName}
-          </Typography>
-          <Typography component="legend">
-            How would you rate your service overall
-          </Typography>
-          <Rating
-            readOnly={reviewExists}
-            precision={0.5}
-            name="simple-controlled"
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-          />
-          <br />
-          <br />
-          <TextField
-            InputProps={{
-              readOnly: reviewExists,
-            }}
-            sx={{ width: "100%" }}
-            id="outlined-multiline-static"
-            label="Additional Feedback"
-            multiline
-            rows={3}
-            variant="outlined"
-            
-            onChange={(event) => setComment(event.target.value)}
-            value={comment}
-          />
-          <br />
-          <br />
+          {userType == "customer" && (
+            <>
+              <Typography variant="h7" gutterBottom>
+                Please leave a review about the quality of the service you
+                received from {dataObject.serviceProvider.companyName}
+              </Typography>
+              <br />
+              <br />
+              <Typography variant="h6">Rating:</Typography>
+              <Rating
+                readOnly={reviewExists}
+                precision={0.5}
+                name="simple-controlled"
+                value={value}
+                onChange={(event, newValue) => {
+                  setValue(newValue);
+                }}
+              />
+              <br />
+              <br />
+              <TextField
+                InputProps={{
+                  readOnly: reviewExists,
+                }}
+                sx={{ width: "100%" }}
+                id="outlined-multiline-static"
+                label="Additional Feedback"
+                multiline
+                rows={3}
+                variant="outlined"
+                onChange={(event) => setComment(event.target.value)}
+                value={comment}
+              />
+              <br />
+              <br />
 
-          {
-            !reviewExists &&(
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleReview}
-              >
-                Submit Review
-              </Button>
-            )
-          }
-          {
-            reviewExists &&(
+              {!reviewExists && (
                 <Button
-                variant="contained"
-                color="primary"
-                disabled
-                style={{ backgroundColor: "lightgreen", color: "black" }}
-              >
-                Review Submitted
-              </Button>
-            )
-          }
+                  variant="contained"
+                  color="primary"
+                  onClick={handleReview}
+                >
+                  Submit Review
+                </Button>
+              )}
+              {reviewExists && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled
+                  style={{ backgroundColor: "lightgreen", color: "black" }}
+                >
+                  Review Submitted
+                </Button>
+              )}
+            </>
+          )}
+          {userType == "service_provider" && (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Review from {dataObject.customer.firstName}{" "}
+              </Typography>
+              <Typography variant="h7">Rating:</Typography>
+              <br />
+              <Rating
+                readOnly={reviewExists}
+                precision={0.5}
+                name="simple-controlled"
+                value={value}
+                onChange={(event, newValue) => {
+                  setValue(newValue);
+                }}
+              />
+              <Divider />
+              <br />
+              
+              <Typography variant="h7">Additional Feedback:</Typography>
+              <br />
+              <Typography variant="h7" fontStyle={{ fontStyle: "italic" }}>
+                "{comment}"
+              </Typography>
+
+            </>
+          )}
         </Box>
-        </Paper>
+      </Paper>
     </>
   );
 }
@@ -947,6 +970,12 @@ function ServiceProviderView() {
       {(responseData.status == "COMPLETED" ||
         responseData.status == "ACCEPTED") && (
         <CustomerInfo customer={responseData.customer} />
+      )}
+      {responseData.status == "COMPLETED" && (
+        <ReviewTestComponent
+          dataObject={responseData}
+          userType="service_provider"
+        />
       )}
     </>
   );
