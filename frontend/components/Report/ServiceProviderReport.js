@@ -39,8 +39,6 @@ export default function ServiceProviderReport() {
     fetchData();
   }, [responseData]);
 
-  
-
   const today = new Date();
   const fileName = "Tradie_Connect_Report_" + today.toLocaleDateString("en-AU");
   //URLs for fetching data
@@ -48,83 +46,79 @@ export default function ServiceProviderReport() {
   const serviceProviderInfoURL = "http://localhost:8080/api/service-providers";
   const { data: serviceProvider } = useFetchData(serviceProviderInfoURL);
 
-  const currentRequestURL = "http://localhost:8080/api/service-requests/user-requests";
-
+  const currentRequestURL =
+    "http://localhost:8080/api/service-requests/user-requests";
 
   const { data: requestData } = useFetchData(currentRequestURL);
 
-  console.log("REQUESTED DATA")
+  console.log("REQUESTED DATA");
   console.log(requestData);
 
-
   const currentRequests = serviceRequests
-  .filter((request) => {
-    return request.status == "ACCEPTED" || request.status == "PENDING";
-  })
-  .map((request) => {
-    return [
-      request.id,
-      capitaliseWords(request.serviceType),
-      capitaliseWords(request.status),
-      request.customer.firstName,
-      request.customer.phoneNumber,
-      request.customer.suburb.name,
-      formatDate(request.scheduledStartDate),
-      formatDate(request.scheduledEndDate),
-      "$" + request.cost,
-    ];
-  });
-
-
-    const completedRequests = serviceRequests
     .filter((request) => {
-        return request.status == "COMPLETED";
+      return request.status == "ACCEPTED" || request.status == "PENDING";
     })
     .map((request) => {
-        return [
-            request.id,
-            capitaliseWords(request.serviceType),
-            request.description,
-            request.customer.firstName,
-            request.customer.phoneNumber,
-            formatDate(request.scheduledStartDate),
-            formatDate(request.scheduledEndDate),
-            formatCompleteDate(request.completedAt, request.completedOn),
-            "$"+request.cost,
-        ];
+      return [
+        request.id,
+        capitaliseWords(request.serviceType),
+        capitaliseWords(request.status),
+        request.customer.firstName,
+        request.customer.phoneNumber,
+        request.customer.suburb.name,
+        formatDate(request.scheduledStartDate),
+        formatDate(request.scheduledEndDate),
+        "$" + request.cost,
+      ];
     });
-  
 
-    const reviews = serviceRequests
+  const completedRequests = serviceRequests
     .filter((request) => {
-        return request.status == "COMPLETED" && request.review != null;
+      return request.status == "COMPLETED";
     })
     .map((request) => {
-        return [
-            request.id,
-            capitaliseWords(request.serviceType),
-            request.description,
-            request.customer.firstName,
-            request.review.rating,
-            request.review.comment,
-        ];
+      return [
+        request.id,
+        capitaliseWords(request.serviceType),
+        request.description,
+        request.customer.firstName,
+        request.customer.phoneNumber,
+        request.customer.suburb.name,
+        formatDate(request.scheduledStartDate),
+        formatDate(request.scheduledEndDate),
+        formatCompleteDate(request.completedAt, request.completedOn),
+        "$" + request.cost,
+      ];
     });
 
-    const totalCost = requestData.reduce((total, request) => {
-      return total + request.cost;
-    }, 0);
-  
-    const averageCost =
+  const reviews = serviceRequests
+    .filter((request) => {
+      return request.status == "COMPLETED" && request.review != null;
+    })
+    .map((request) => {
+      return [
+        request.id,
+        capitaliseWords(request.serviceType),
+        request.description,
+        request.customer.firstName,
+        request.review.rating,
+        request.review.comment,
+      ];
+    });
+
+  const totalCost = requestData.reduce((total, request) => {
+    return total + request.cost;
+  }, 0);
+
+  const averageCost =
     requestData.length > 0 ? totalCost / requestData.length : 0;
 
-    const averageReview =
+  const averageReview =
     reviews.length > 0
-        ? reviews.reduce((total, review) => {
-
-            return total + review[4];
+      ? reviews.reduce((total, review) => {
+          return total + review[4];
         }, 0) / reviews.length
-        : 0;
-
+      : 0;
 
   const createPDF = () => {
     const doc = new jsPDF({ orientation: "p" });
@@ -133,11 +127,7 @@ export default function ServiceProviderReport() {
     doc.setFontSize(20);
     doc.text("Service Provider Information", 10, 30);
     doc.setFontSize(12);
-    doc.text(
-      "Name: " + serviceProvider.companyName,
-      10,
-      40
-    );
+    doc.text("Name: " + serviceProvider.companyName, 10, 40);
     doc.text("Email: " + serviceProvider.email, 10, 50);
     doc.text("Phone Number: " + serviceProvider.phoneNumber, 10, 60);
     doc.text("ABN: " + serviceProvider.abn, 10, 70);
@@ -154,77 +144,82 @@ export default function ServiceProviderReport() {
       80
     );
 
-    
     //add some statistics
     doc.setFontSize(20);
     doc.text("Statistics", 10, 100);
     doc.setFontSize(12);
     doc.text("Total Requests: " + requestData.length, 10, 110);
     doc.text("Total Completed Requests: " + completedRequests.length, 10, 120);
-    doc.text("Total Money Made: $" + totalCost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'), 10, 130);
-    doc.text("Average Cost: $" + averageCost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'), 10, 140);
+    doc.text(
+      "Total Money Made: $" +
+        totalCost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,"),
+      10,
+      130
+    );
+    doc.text(
+      "Average Cost: $" +
+        averageCost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,"),
+      10,
+      140
+    );
     doc.text("Average Rating: " + averageReview.toFixed(2), 10, 150);
-
 
     //check if there are any current requests otherwise print no current requests to the pdf
     if (currentRequests.length > 0) {
-        doc.addPage(null, "l");
-        doc.setFontSize(20);
-        doc.text("Current Requests", 10, 15);
-        autoTable(doc, {
-            margin: { top: 20 },
-            styles: { halign: "center", fontSize: 14 },
-            head: [
-            [
-                "Request ID",
-                "Service Type",
-                "Instructions",
-                "Customer Name",
-                "Customer Phone Number",
-                "Location",
-                "Start Date",
-                "End Date",
-                "Cost",
-            ],
-            ],
-            body: currentRequests,
-        });
+      doc.addPage(null, "l");
+      doc.setFontSize(20);
+      doc.text("Current Requests", 10, 15);
+      autoTable(doc, {
+        margin: { top: 20 },
+        styles: { halign: "center", fontSize: 14 },
+        head: [
+          [
+            "Request ID",
+            "Service Type",
+            "Instructions",
+            "Customer Name",
+            "Customer Phone Number",
+            "Location",
+            "Start Date",
+            "End Date",
+            "Cost",
+          ],
+        ],
+        body: currentRequests,
+      });
+    } else {
+      doc.text("No Current Requests", 10, 280);
     }
-    else {
-        doc.text("No Current Requests", 10, 280);
-    }
-
 
     //check if there are any completed requests otherwise print no completed requests to the pdf
     if (completedRequests.length > 0) {
-
-        doc.addPage(null, "l");
-        doc.setFontSize(20);
-        doc.text("Completed Requests", 10, 15);
-        autoTable(doc, {
-            margin: { top: 20 },
-            styles: { halign: "center", fontSize: 14 },
-            head: [
-                [
-                    "Request ID",
-                    "Service Type",
-                    "Instructions",
-                    "Customer Name",
-                    "Customer Phone Number",
-                    "Location",
-                    "Start Date",
-                    "End Date",
-                    "Cost",
-                ],
-            ],
-            body: completedRequests,
-        });
+      doc.addPage(null, "l");
+      doc.setFontSize(20);
+      doc.text("Completed Requests", 10, 15);
+      autoTable(doc, {
+        margin: { top: 20 },
+        styles: { halign: "center", fontSize: 14 },
+        head: [
+          [
+            "Request ID",
+            "Service Type",
+            "Instructions",
+            "Customer Name",
+            "Customer Phone Number",
+            "Location",
+            "Start Date",
+            "End Date",
+            "Actual Completion Date",
+            "Cost",
+          ],
+        ],
+        body: completedRequests,
+      });
+    } else {
+      doc.text("No Completed Requests", 10, 270);
     }
-    else {
-        doc.text("No Completed Requests", 10, 270);
-    }
 
-    if(completedRequests.length > 0){
+    if (completedRequests.length > 0) {
       doc.addPage(null, "l");
       doc.setFontSize(20);
       doc.text("Reviews", 10, 15);
@@ -244,11 +239,7 @@ export default function ServiceProviderReport() {
         ],
         body: reviews,
       });
-
-      
-
-    }
-    else{
+    } else {
       doc.text("No Reviews", 10, 110);
     }
 
@@ -296,7 +287,7 @@ function formatDate(date) {
   return date[2] + "/" + date[1] + "/" + date[0];
 }
 
-function formatCompleteDate(time, date){
+function formatCompleteDate(time, date) {
   let hour = time[0];
   const minute = time[1];
   let period = "AM";
@@ -310,6 +301,5 @@ function formatCompleteDate(time, date){
 
   const rTime = `${hour}:${minute.toString().padStart(2, "0")} ${period}`;
 
-  
   return rTime + ", " + date[2] + "/" + date[1] + "/" + date[0];
 }

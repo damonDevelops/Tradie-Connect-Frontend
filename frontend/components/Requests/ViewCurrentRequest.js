@@ -242,6 +242,7 @@ function CustomerView() {
 
 function ServiceProviderInfo({ serviceProvider }) {
   console.log(serviceProvider);
+
   return (
     <>
       <Typography variant="h6">Service Provider Information:</Typography>
@@ -307,9 +308,10 @@ function ServiceProviderInfo({ serviceProvider }) {
             </Typography>
             <Rating
               readOnly
+              precision={0.5}
               value={
-                serviceProvider.Rating
-                  ? serviceProvider.Rating
+                serviceProvider.rating
+                  ? serviceProvider.rating
                   : returnRandomRating()
               }
             />
@@ -543,7 +545,7 @@ function TradieTable({ data }) {
                 {
                   <SmallerRating
                     name="rating"
-                    value={row.Rating ? row.Rating : returnRandomRating()}
+                    value={row.rating ? row.rating : returnRandomRating()}
                     precision={0.5}
                     readOnly
                   />
@@ -647,7 +649,6 @@ function ServiceProviderView() {
   const userInfo = jwtDecode(Cookies.get("JWT"));
 
   // for the post request
-  
 
   console.log(responseData);
   console.log(userInfo);
