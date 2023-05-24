@@ -1,12 +1,9 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 
-import { TextField } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -16,9 +13,6 @@ import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
 
 // for displaying data:
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -26,8 +20,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 //import { DataGrid } from "@mui/x-data-grid";
 
@@ -53,7 +45,6 @@ export default function CurrentRequest() {
         }
       );
       setData(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }

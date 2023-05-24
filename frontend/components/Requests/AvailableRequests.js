@@ -5,7 +5,6 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { TextField } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -17,9 +16,6 @@ import useFetchData from "../hooks/fetchData";
 import axios from "axios";
 
 // for displaying data:
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -27,8 +23,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 
@@ -44,8 +38,6 @@ export default function AvailableRequest() {
   const { data: responseData } = useFetchData(fetchURL); // fetches currently logged in service-provider
   const [serviceRequests, setRequests] = useState([]);
 
-  console.log("service provider");
-  console.log(responseData);
 
   const instance = axios.create({
     withCredentials: true,
@@ -68,7 +60,6 @@ export default function AvailableRequest() {
     fetchData();
   }, [responseData]);
 
-  console.log(serviceRequests);
 
   // maps service requests and only includes the data we need to show in a row
   const rows = serviceRequests.map(
@@ -126,7 +117,6 @@ function RequestTable({ data }) {
     setPage(newPage);
   };
 
-  console.log(data);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -136,7 +126,6 @@ function RequestTable({ data }) {
   // to get user id
   const userInfo = jwtDecode(Cookies.get("JWT"));
 
-  console.log(userInfo);
 
   // styles for the header row
   const headerStyles = {

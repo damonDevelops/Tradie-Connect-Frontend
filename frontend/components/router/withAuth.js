@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { checkRole, checkLogin } from "../hooks/checkUser";
+import { checkRole } from "../hooks/checkUser";
 
 // could possibly add auth to determine if there is a token in the system as well.
 const withAuth = (WrappedComponent, allowedRoles) => {

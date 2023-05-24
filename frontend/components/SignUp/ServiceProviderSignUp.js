@@ -1,12 +1,11 @@
 //import statements for mui components
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Autocomplete } from "@mui/material";
-import PropTypes from "prop-types";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
@@ -21,7 +20,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import postCodeToState from "../functional_components/postcodeToState";
 import axios from "axios";
-import LogoutIcon from "@mui/icons-material/Logout";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -187,10 +185,8 @@ export default function CustomerSignUp() {
           setBackdropOpen(false);
           handleAlert("final");
         }, 3000);
-        console.log(response);
       } catch (error) {
         alert("Registration failed!");
-        console.log(error);
       }
     }
   };

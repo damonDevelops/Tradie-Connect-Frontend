@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -21,11 +19,9 @@ import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { Stack } from "@mui/material";
-import { useCurrentUser } from "../components/hooks/CurrentUserContext";
 import { useRouter } from "next/router";
 
 import { checkRole } from "../components/hooks/checkUser";
-import jwtDecode from "jwt-decode";
 
 const theme = createTheme();
 

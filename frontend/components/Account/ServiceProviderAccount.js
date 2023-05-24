@@ -1,10 +1,8 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
 import { TextField } from "@mui/material";
@@ -15,9 +13,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { useEffect } from "react";
-import {Stack} from "@mui/material";
-import {Snackbar} from "@mui/material";
-import {Alert} from "@mui/material";
+import { Stack } from "@mui/material";
+import { Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 
 export default function Account() {
   const [companyName, setCompanyName] = useState("");
@@ -113,15 +111,6 @@ export default function Account() {
             postCode: postcode,
           })
           .then((res) => {
-            // alert(companyName +
-            //     " " + abn +
-            //     " " + phone +
-            //     " " + address +
-            //     " " + city +
-            //     " " + postcode +
-            //     " " + state)
-            console.log(res);
-            console.log(res.data);
             window.location.reload(true);
           });
       } catch (error) {

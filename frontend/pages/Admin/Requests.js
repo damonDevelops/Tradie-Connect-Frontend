@@ -1,6 +1,5 @@
 // import statements
 import * as React from "react";
-import CustomerDash from "../../components/Dashboard/CustomerDashboard";
 import AdminDash from "../../components/Dashboard/AdminDashboard";
 import Requests from "../../components/Admin/Requests";
 

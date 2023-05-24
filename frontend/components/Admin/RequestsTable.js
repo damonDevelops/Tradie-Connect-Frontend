@@ -1,19 +1,12 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
-import { Link, TextField } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 
 // for displaying data:
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -49,7 +42,6 @@ export default function ServiceProviders() {
         }
       );
       setData(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }

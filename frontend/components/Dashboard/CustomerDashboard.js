@@ -22,7 +22,6 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 import Collapse from "@mui/material/Collapse";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -37,13 +36,10 @@ import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
-import { useCurrentUser } from "../../components/hooks/CurrentUserContext";
-import withAuth from "../../components/router/withAuth";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Home from "./CustomerHome";
-import axios from "axios";
 
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
@@ -54,9 +50,7 @@ import { Button } from "@mui/material";
 
 import Cookies from "js-cookie";
 import {
-  Experimental_CssVarsProvider as CssVarsProvider,
-  experimental_extendTheme as extendTheme,
-  useColorScheme,
+  Experimental_CssVarsProvider as CssVarsProvider, useColorScheme
 } from "@mui/material/styles";
 
 const drawerWidth = 240;
