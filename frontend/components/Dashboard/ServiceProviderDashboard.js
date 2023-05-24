@@ -1,6 +1,6 @@
 // import statements
 import * as React from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -14,16 +14,13 @@ import Container from "@mui/material/Container";
 import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 import Collapse from "@mui/material/Collapse";
 import HistoryIcon from "@mui/icons-material/History";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
 import ListItemButton from "@mui/material/ListItemButton";

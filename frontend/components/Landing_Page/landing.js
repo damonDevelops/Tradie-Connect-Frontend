@@ -6,8 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { Fab } from "@mui/material";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Grid } from "@mui/material";
 import Link from "next/link";
 

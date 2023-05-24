@@ -1,7 +1,7 @@
 //import statements
 //TODO: Change the alert system to a single alert, see NewRequest for implementation example
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -26,7 +26,7 @@ import postCodeToState from "../functional_components/postcodeToState";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {

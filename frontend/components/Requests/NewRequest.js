@@ -1,11 +1,10 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 
 import Button from "@mui/material/Button";
 
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import axios from "axios";
 
 import { Divider } from "@mui/material";
@@ -27,12 +26,10 @@ import { Stack } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
 
-import dayjs, { Dayjs } from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState } from "react";
 
 const theme = createTheme();
 
