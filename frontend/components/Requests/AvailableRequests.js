@@ -44,8 +44,6 @@ export default function AvailableRequest() {
   const { data: responseData } = useFetchData(fetchURL); // fetches currently logged in service-provider
   const [serviceRequests, setRequests] = useState([]);
 
-  console.log("service provider");
-  console.log(responseData);
 
   const instance = axios.create({
     withCredentials: true,
@@ -68,7 +66,6 @@ export default function AvailableRequest() {
     fetchData();
   }, [responseData]);
 
-  console.log(serviceRequests);
 
   // maps service requests and only includes the data we need to show in a row
   const rows = serviceRequests.map(
@@ -126,7 +123,6 @@ function RequestTable({ data }) {
     setPage(newPage);
   };
 
-  console.log(data);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -136,7 +132,6 @@ function RequestTable({ data }) {
   // to get user id
   const userInfo = jwtDecode(Cookies.get("JWT"));
 
-  console.log(userInfo);
 
   // styles for the header row
   const headerStyles = {

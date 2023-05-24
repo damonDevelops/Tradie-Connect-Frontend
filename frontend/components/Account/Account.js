@@ -112,15 +112,6 @@ export default function Account() {
             postCode: postcode,
           })
           .then((res) => {
-            // alert(firstName +
-            //     " " + lastName +
-            //     " " + phone +
-            //     " " + address +
-            //     " " + city +
-            //     " " + postcode +
-            //     " " + state)
-            console.log(res);
-            console.log(res.data);
             window.location.reload(true);
           });
       } catch (error) {

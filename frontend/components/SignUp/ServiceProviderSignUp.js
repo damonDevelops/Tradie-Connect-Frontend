@@ -187,10 +187,8 @@ export default function CustomerSignUp() {
           setBackdropOpen(false);
           handleAlert("final");
         }, 3000);
-        console.log(response);
       } catch (error) {
         alert("Registration failed!");
-        console.log(error);
       }
     }
   };

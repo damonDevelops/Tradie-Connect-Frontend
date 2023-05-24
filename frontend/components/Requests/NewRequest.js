@@ -203,27 +203,16 @@ export default function NewRequest() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    //TODO take the token and get the customer subscription type and then display cost
-    // console.log(token);
-    // console.log(jwt_decode(token).role)
-
     //validation for start and end date
     if (!date_regex.test(startDate) || !date_regex.test(endDate)) {
-      console.log(startDate);
-      console.log(endDate);
       handleDateAlert("Invalid Date Format, please use DD/MM/YYYY");
     } else if (
       datePickerStart.isAfter(datePickerEnd) ||
       datePickerStart.isSame(datePickerEnd)
     ) {
-      console.log(startDate);
-      console.log(endDate);
       handleDateAlert("Start date must be before end date");
     } else {
       try {
-        //post request
-        console.log(submitStartDateFormat);
-        console.log(submitEndDateFormat);
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
             cost: membershipType == "CLIENT_SUBSCRIPTION" ? 0 : diffDays * multiplier + 200,

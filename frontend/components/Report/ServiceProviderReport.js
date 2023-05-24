@@ -21,7 +21,6 @@ export default function ServiceProviderReport() {
   const { data: responseData } = useFetchData(fetchURL);
   const [serviceRequests, setRequests] = useState([]);
 
-  console.log(responseData);
   const instance = axios.create({
     withCredentials: true,
   });
@@ -51,8 +50,6 @@ export default function ServiceProviderReport() {
 
   const { data: requestData } = useFetchData(currentRequestURL);
 
-  console.log("REQUESTED DATA");
-  console.log(requestData);
 
   const currentRequests = serviceRequests
     .filter((request) => {
