@@ -52,9 +52,10 @@ export default function ServiceProviders() {
 
   // maps the data from the request into a rows array with only the data required to be shown
   const rows = data.map(
-    ({ id, email, companyName, membership, postCode }) => ({
+    ({ id, email, companyName, skills, membership, postCode }) => ({
       id,
       companyName,
+      skills: skills[0],
       email,
       membership,
       postCode,
@@ -103,6 +104,7 @@ function ServiceProvidersTable({ data }) {
           <TableCell sx={headerStyles}>Customer (ID)</TableCell>
             <TableCell sx={headerStyles}>Email</TableCell>
             <TableCell sx={headerStyles}>Business Name</TableCell>
+            <TableCell sx={headerStyles}>Business Type</TableCell>
             <TableCell sx={headerStyles}>Membership Type</TableCell>
             <TableCell sx={headerStyles}>Postcode</TableCell>
           </TableRow>
@@ -115,6 +117,7 @@ function ServiceProvidersTable({ data }) {
               </TableCell>
               <TableCell sx={cellStyles}>{row.email}</TableCell>
               <TableCell sx={cellStyles}>{row.companyName}</TableCell>
+              <TableCell sx={cellStyles}>{capitaliseWords(row.skills)}</TableCell>
               <TableCell sx={cellStyles}>{row.membership.membershipType
                   ? capitaliseWords(row.membership.membershipType)
                   : row.membership.membershipType}</TableCell>
