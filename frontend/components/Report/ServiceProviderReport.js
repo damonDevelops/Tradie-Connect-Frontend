@@ -7,13 +7,11 @@ import axios from "axios";
 
 import { useState } from "react";
 import { useEffect } from "react";
-import { CSVLink, CSVDownload } from "react-csv";
 import useFetchData from "../hooks/fetchData";
 import { Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
 
 import autoTable from "jspdf-autotable";
-import { convertLength } from "@mui/material/styles/cssUtils";
 
 export default function ServiceProviderReport() {
   const fetchURL = "http://localhost:8080/api/service-providers";
@@ -21,7 +19,6 @@ export default function ServiceProviderReport() {
   const { data: responseData } = useFetchData(fetchURL);
   const [serviceRequests, setRequests] = useState([]);
 
-  console.log(responseData);
   const instance = axios.create({
     withCredentials: true,
   });
@@ -51,8 +48,6 @@ export default function ServiceProviderReport() {
 
   const { data: requestData } = useFetchData(currentRequestURL);
 
-  console.log("REQUESTED DATA");
-  console.log(requestData);
 
   const currentRequests = serviceRequests
     .filter((request) => {
@@ -240,7 +235,7 @@ export default function ServiceProviderReport() {
         body: reviews,
       });
     } else {
-      doc.text("No Reviews", 10, 110);
+      doc.text("No Reviews", 10, 290);
     }
 
     doc.save(fileName + ".pdf");

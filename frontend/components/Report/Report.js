@@ -7,7 +7,6 @@ import axios from "axios";
 
 import { useState } from "react";
 import { useEffect } from "react";
-import { CSVLink, CSVDownload } from "react-csv";
 import useFetchData from "../hooks/fetchData";
 import { Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
@@ -49,8 +48,6 @@ export default function Report() {
     fetchData();
   }, [customerData]);
 
-  console.log(serviceRequests);
-  console.log(payments);
 
   //for each request in requestData, store the total cost in a variable called totalCost
   const totalCost = requestData.reduce((total, request) => {
@@ -78,8 +75,7 @@ export default function Report() {
       ];
     });
 
-    console.log("DUCK")
-    console.log(serviceRequests)
+
 
   //make an array of arrays from requestedData that only contains requests where the status is COMPLETED
   const completedRequests = serviceRequests

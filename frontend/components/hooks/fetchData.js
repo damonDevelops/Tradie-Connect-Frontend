@@ -15,13 +15,11 @@ const useFetchData = (url) => {
         setData(response.data);
       } catch (error) {
         setError(error);
-        console.log(error);
       }
     };
     fetchData();
   }, [url]);
 
-  // console.log(data);
 
   return { data };
 };

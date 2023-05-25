@@ -1,17 +1,17 @@
 //import statements for mui components
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Autocomplete } from "@mui/material";
-import PropTypes from "prop-types";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,7 +21,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import postCodeToState from "../functional_components/postcodeToState";
 import axios from "axios";
-import LogoutIcon from "@mui/icons-material/Logout";
 
 //Alert component
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -187,10 +186,8 @@ export default function CustomerSignUp() {
           setBackdropOpen(false);
           handleAlert("final");
         }, 3000);
-        console.log(response);
       } catch (error) {
-        alert("Registration failed!");
-        console.log(error);
+        setFailedSignUp(true);
       }
     }
   };
@@ -442,19 +439,6 @@ export default function CustomerSignUp() {
               Sign Up Successful! Redirecting to Sign In Page.
             </Alert>
           </Snackbar>
-          <Snackbar
-            open={failedSignUp}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              A network error has occurred, please try again later.
-            </Alert>
-          </Snackbar>
         </Stack>
         <Grid container justifyContent="flex-end">
           <Grid item>
@@ -510,6 +494,36 @@ export default function CustomerSignUp() {
             autoFocus
           >
             Sign In
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={failedSignUp}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+
+          id="alert-dialog-title"
+        >
+          {" Sign Up Failed!"} <ErrorOutlineIcon />
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+          >
+            Unfortunately, sign up failed. Please ensure the email address you
+            entered is not already in use. If it is not in use, please try again later. 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+        >
+          <Button
+            onClick={handleClose}
+            autoFocus
+          >
+            Go Back
           </Button>
         </DialogActions>
       </Dialog>

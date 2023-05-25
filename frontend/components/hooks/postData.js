@@ -17,7 +17,6 @@ const usePostData = (url, postData = null) => {
         setData(response.data);
       } catch (error) {
         setError(error);
-        console.log(error);
       }
     };
 

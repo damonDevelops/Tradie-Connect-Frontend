@@ -3,13 +3,9 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CustomersTable from "../Admin/CustomersTable";
-import ServiceProvidersTable from "../Admin/ServiceProvidersTable";
-import RequestsTable from "../Admin/RequestsTable";
-import { Button, Divider } from "@mui/material";
+import { Button } from "@mui/material";
 import AvailableRequest from "../Requests/AvailableRequests";
 import Grid from "@mui/material/Grid";
-import Item from "@mui/material/Grid";
 import Link from "next/link";
 
 const theme = createTheme();

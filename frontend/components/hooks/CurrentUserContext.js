@@ -29,14 +29,4 @@ export const CurrentUserProvider = ({ children }) => {
 
 export const useCurrentUser = () => React.useContext(CurrentUserContext);
 
-// can be used in other components to retrieve user info
-// const { currentUser, fetchCurrentUser } = useCurrentUser();
-// React.useEffect(() => {
-//   const getCurrentUser = async () => {
-//     fetchCurrentUser();
-//   };
 
-//   getCurrentUser();
-// }, []);
-
-// console.log(currentUser);

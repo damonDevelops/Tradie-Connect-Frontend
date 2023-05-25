@@ -26,9 +26,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TablePagination from "@mui/material/TablePagination";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -100,8 +98,6 @@ function CustomerView() {
   const fetchURL =
     "http://localhost:8080/api/service-requests/" + router.query.id;
   const { data: responseData } = useFetchData(fetchURL);
-  console.log("RESPONSE DATA");
-  console.log(responseData);
 
   return (
     <>
@@ -241,8 +237,6 @@ function CustomerView() {
 }
 
 function ServiceProviderInfo({ serviceProvider }) {
-  console.log(serviceProvider);
-
   return (
     <>
       <Typography variant="h6">Service Provider Information:</Typography>
@@ -354,7 +348,6 @@ function ReviewTestComponent({ dataObject, userType }) {
         });
     } catch (error) {
       alert("Review Failed!");
-      console.log(error);
     }
   };
 
@@ -484,7 +477,6 @@ function ReviewTestComponent({ dataObject, userType }) {
 function TradieTable({ data }) {
   // rows variable holds list of applicants
   const rows = data.applicants.map((applicant) => applicant.serviceProvider);
-  console.log(rows);
 
   // useState for the final alert diaglog
   const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
@@ -509,12 +501,9 @@ function TradieTable({ data }) {
         data.id +
         "/accept-service-provider/" +
         id;
-      console.log(postURL);
       const response = instance.post(postURL);
-      console.log(response);
       setFinalOpen(true);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -641,17 +630,11 @@ function ServiceProviderView() {
       setSuburb(responseData.customer.suburb.name);
       setPostcode(responseData.customer.postCode);
     } catch (error) {
-      console.log(error);
     }
   }, [responseData]);
 
   // to get user id
   const userInfo = jwtDecode(Cookies.get("JWT"));
-
-  // for the post request
-
-  console.log(responseData);
-  console.log(userInfo);
 
   // to determine whether appy button should show
   const [canApply, setCanApply] = useState(false);
@@ -666,7 +649,6 @@ function ServiceProviderView() {
       const applicantIds = responseData.applicants.map(
         (applicant) => applicant.serviceProvider.id
       );
-      console.log(applicantIds);
       if (applicantIds.includes(userInfo.userId)) setHasApplied(true);
       else setHasApplied(false);
     } catch (error) {
@@ -682,10 +664,8 @@ function ServiceProviderView() {
         responseData.id +
         "/apply";
       const response = instance.post(postURL);
-      console.log(response);
       setHasApplied(true);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -708,11 +688,9 @@ function ServiceProviderView() {
         responseData.id +
         "/complete";
       const response = instance.post(postURL);
-      console.log(response);
       setHasCompleted(true);
       setFinalOpen(true);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -988,7 +966,6 @@ function ServiceProviderView() {
 
 // function returns box of customer information for service provider to view
 function CustomerInfo({ customer }) {
-  console.log(customer);
   return (
     <>
       <Typography variant="h6">Customer Information:</Typography>
