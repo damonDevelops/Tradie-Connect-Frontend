@@ -35,7 +35,7 @@ export default function Home() {
               Current Requests{" "}
             </Typography>
             <br />
-            <Link href="/ServiceProvider/CurrentRequests" passHref legacyBehavior color="inherit">
+            <Link href="/Service-Provider/Current-Requests" passHref legacyBehavior color="inherit">
             <Button
               variant="contained"
               sx={{ width: "100%" }}
@@ -61,7 +61,7 @@ export default function Home() {
               Finished Requests{" "}
             </Typography>
             <br />
-            <Link href="/Customer/FinishedRequests" passHref legacyBehavior color="inherit">
+            <Link href="/Service-Provider/Finished-Requests" passHref legacyBehavior color="inherit">
             <Button
               variant="contained"
               sx={{ width: "100%" }}
@@ -87,11 +87,11 @@ export default function Home() {
               Reports{" "}
             </Typography>
             <br />
-            <Link href="/Customer/Reports" passHref legacyBehavior color="inherit">
+            <Link href="/Service-Provider/Report" passHref legacyBehavior color="inherit">
             <Button
               variant="contained"
               sx={{ width: "100%" }}
-              href="/Customer/NewRequest"
+
             >
               Reports{" "}
             </Button>
