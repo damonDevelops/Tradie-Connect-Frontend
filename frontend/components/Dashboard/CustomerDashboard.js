@@ -122,6 +122,16 @@ export default function CustomerDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
+    //if the drawer is open, close it
+    if (newOpen === true) {
+      setnewOpen(false);
+    }
+
+    //if the drawer is opened, open it
+    if (open === false) {
+      setnewOpen(true);
+    }
+    
   };
 
   const [newOpen, setnewOpen] = React.useState(true);
@@ -210,6 +220,7 @@ export default function CustomerDash(props) {
             }}
           >
             <IconButton onClick={toggleDrawer}>
+              
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>

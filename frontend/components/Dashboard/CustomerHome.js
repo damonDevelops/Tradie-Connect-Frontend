@@ -15,20 +15,21 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
+      <Grid container justifyContent="space-between" spacing={2}>
+        <Grid item xs={12} lg={4}>
           <Paper
             sx={{
               p: 2,
-              width: "100%",
+              width: "auto",
               display: "flex",
               flexDirection: "column",
+              justifyContent: "space-between",
               height: "auto",
               marginTop: 2,
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Make a New Request{" "}
+              New Request{" "}
             </Typography>
             <br />
             <Link
@@ -43,7 +44,7 @@ export default function Home() {
             </Link>
           </Paper>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} lg={4}>
           <Paper
             sx={{
               p: 2,
@@ -70,7 +71,7 @@ export default function Home() {
             </Link>
           </Paper>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} lg={4}>
           <Paper
             sx={{
               p: 2,

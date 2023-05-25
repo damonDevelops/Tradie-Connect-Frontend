@@ -251,7 +251,7 @@ export default function NewRequest() {
             <Typography sx={{ mt: 2 }} variant="h5" gutterBottom>
               Request Details
             </Typography>
-            <FormControl sx={{ width: "40%" }}>
+            <FormControl fullWidth >
               <InputLabel id="demo-simple-select-label">Work Type</InputLabel>
               <Select
                 required
