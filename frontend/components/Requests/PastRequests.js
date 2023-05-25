@@ -80,7 +80,7 @@ export default function PastRequests() {
           height: "auto",
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
           Past Requests
         </Typography>
         <RequestTable data={rows} />

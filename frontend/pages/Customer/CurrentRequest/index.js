@@ -21,7 +21,7 @@ export default function CurrentRequestScreen() {
             height: "auto",
           }}
         >
-          <Typography variant="h4" gutterBottom>
+          <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
             Current Requests
           </Typography>
           <CurrentRequest />

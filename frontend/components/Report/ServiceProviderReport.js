@@ -251,7 +251,7 @@ export default function ServiceProviderReport() {
           height: "auto",
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
           Reports
         </Typography>
         <Divider />

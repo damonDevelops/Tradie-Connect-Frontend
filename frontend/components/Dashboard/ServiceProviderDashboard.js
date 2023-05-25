@@ -132,6 +132,16 @@ function ServiceDash(props) {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
+    //if the drawer is open, close it
+    if (newOpen === true) {
+      setnewOpen(false);
+    }
+
+    //if the drawer is opened, open it
+    if (open === false) {
+      setnewOpen(true);
+    }
+    
   };
 
   const [newOpen, setnewOpen] = React.useState(true);
@@ -190,12 +200,12 @@ function ServiceDash(props) {
             <ModeToggle />
             <IconButton color="inherit">
               <Link href="/Service-Provider/account" color="inherit">
-                {
+                
                   <AccountCircleRoundedIcon
                     style={{ color: "#FFFFFF" }}
                     fontSize="large"
                   />
-                }
+                
               </Link>
             </IconButton>
             <IconButton color="inherit" onClick={openDialog}>
@@ -290,12 +300,19 @@ function ServiceDash(props) {
                   </Link>
                 </List>
               </Collapse>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AccountCircleRoundedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Account Details" />
-              </ListItemButton>
+              <Link
+                href="/Service-Provider/account"
+                passHref
+                legacyBehavior
+                color="inherit"
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <AccountCircleRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Account" />
+                </ListItemButton>
+              </Link>
               <Link
                 href="/Service-Provider/Report"
                 passHref

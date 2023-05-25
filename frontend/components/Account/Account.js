@@ -128,7 +128,7 @@ export default function Account() {
           height: 750,
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
           Update Account Information
         </Typography>
 
