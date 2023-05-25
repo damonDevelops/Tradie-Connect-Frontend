@@ -82,7 +82,7 @@ export default function CurrentRequest() {
           height: "auto",
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
           Current Requests
         </Typography>
         <RequestTable data={rows} />

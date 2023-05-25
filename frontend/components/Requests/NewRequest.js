@@ -243,7 +243,7 @@ export default function NewRequest() {
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form onSubmit={handleSubmit}>
-            <Typography variant="h4" gutterBottom>
+          <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
               New Request
             </Typography>
 
@@ -335,6 +335,7 @@ export default function NewRequest() {
             {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
             {membershipType == "PAY_ON_DEMAND" && (
               <Typography sx={{ mt: 2 }} variant="h6" gutterBottom>
+                
                 Total Cost: ${diffDays * multiplier + 200}
               </Typography>
             )}

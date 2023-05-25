@@ -81,7 +81,7 @@ export default function FinishedRequests() {
           height: "auto",
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography sx={{overflow: "auto"}}  variant="h4" gutterBottom>
           Finished Requests
         </Typography>
         <RequestTable data={rows} />
