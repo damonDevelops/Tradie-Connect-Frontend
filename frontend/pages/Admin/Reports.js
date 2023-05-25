@@ -1,12 +1,12 @@
 // import statements
 import * as React from "react";
 import AdminDash from "../../components/Dashboard/AdminDashboard";
-import Reports from "../../components/Admin/Reports";
+import AdminReport from "../../components/Report/AdminReport";
 
 export default function RequestsPage() {
   return (
     <AdminDash>
-      <Reports />
+      <AdminReport />
     </AdminDash>
   );
 }
