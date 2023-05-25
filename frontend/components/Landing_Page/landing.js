@@ -86,25 +86,6 @@ export default function ButtonAppBar() {
             </Link>
           </Grid>
         </Grid>
-
-        {/* <Paper
-          sx={{
-            //backgroundImage: `url(https://www.tarauniforms.com.au/wp-content/uploads/2021/03/TU-Tradies-Header-1.jpg)`,
-            backgroundColor: "#414756",
-            width: "100%",
-            height: "100vh",
-            justifyContent: "center",
-          }}
-        >
-          <Typography
-            align="center"
-            variant="h2"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          >
-            TradieConnect
-          </Typography>
-        </Paper> */}
       </Box>
     </ThemeProvider>
   );

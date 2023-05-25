@@ -235,7 +235,7 @@ export default function ServiceProviderReport() {
         body: reviews,
       });
     } else {
-      doc.text("No Reviews", 10, 110);
+      doc.text("No Reviews", 10, 290);
     }
 
     doc.save(fileName + ".pdf");

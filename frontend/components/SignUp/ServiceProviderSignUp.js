@@ -11,6 +11,7 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -186,7 +187,7 @@ export default function CustomerSignUp() {
           handleAlert("final");
         }, 3000);
       } catch (error) {
-        alert("Registration failed!");
+        setFailedSignUp(true);
       }
     }
   };
@@ -438,19 +439,6 @@ export default function CustomerSignUp() {
               Sign Up Successful! Redirecting to Sign In Page.
             </Alert>
           </Snackbar>
-          <Snackbar
-            open={failedSignUp}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              A network error has occurred, please try again later.
-            </Alert>
-          </Snackbar>
         </Stack>
         <Grid container justifyContent="flex-end">
           <Grid item>
@@ -506,6 +494,36 @@ export default function CustomerSignUp() {
             autoFocus
           >
             Sign In
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={failedSignUp}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+
+          id="alert-dialog-title"
+        >
+          {" Sign Up Failed!"} <ErrorOutlineIcon />
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+          >
+            Unfortunately, sign up failed. Please ensure the email address you
+            entered is not already in use. If it is not in use, please try again later. 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+        >
+          <Button
+            onClick={handleClose}
+            autoFocus
+          >
+            Go Back
           </Button>
         </DialogActions>
       </Dialog>
