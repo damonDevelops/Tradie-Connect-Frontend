@@ -12,6 +12,7 @@ import { Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
 
 import autoTable from "jspdf-autotable";
+import { useMemo } from "react";
 
 export default function Report() {
   const today = new Date();
@@ -34,37 +35,28 @@ export default function Report() {
 
   const [adminRequests, setAdminRequests] = useState([]);
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//        //make a for loop the length of requestData
-//         for (let i = 1; i < requestData.length; i++) {
-//             //get the request using i as the index
-//             //using 
-//             await
-//             instance.get(`http://localhost:8080/api/service-requests/${i}`)
-//             .then((response) => {
-//                 //add the request to adminRequests
-//                 setAdminRequests((adminRequests) => [...adminRequests, response.data]);
-//             }
-//             )
-//         }
-//     };
-//     fetchData();
-//   }, [requestData]);
+  const [serviceRequestsArray, setServiceRequestsArray] = useState([]);
 
-
-  //in a use effect, get the id of each request from requestData and call an instance get of that request using http://localhost:8080/api/service-requests/${i}
-  //then map this data to a new array called adminRequests
+  const serviceRequestArray = useMemo(() => {
+    const array = customerData.map((customer) => customer.serviceRequests);
+    return array.flat();
+  }, [customerData]);
 
   useEffect(() => {
     const fetchData = async () => {
-       
+      if (serviceRequestArray) {
+        const promises = serviceRequestArray.map((id) =>
+          instance.get("http://localhost:8080/api/service-requests/" + id)
+        );
+        const requests = await Promise.all(promises);
+        setServiceRequestsArray(requests.map((response) => response.data));
+        console.log("getting service requests");
+      }
     };
     fetchData();
-    }, [requestData]);
+  }, [serviceRequestArray]);
 
-
-
+  console.log(serviceRequestsArray);
   console.log(adminRequests);
   //for each request in requestData, store the total cost in a variable called totalCost
   const totalCost = requestData.reduce((total, request) => {
@@ -206,6 +198,8 @@ export default function Report() {
           head: [
             [
               "Request ID",
+              "Customer Name",
+              "Service Provider Name",
               "Service Type",
               "Scheduled Start Date",
               "Scheduled End Date",
@@ -213,17 +207,23 @@ export default function Report() {
               "Cost",
             ],
           ],
-          body: requestData.map((request) => {
-            return [
-              request.id,
-              capitaliseWords(request.serviceType),
-              formatDate(request.scheduledStartDate),
-              formatDate(request.scheduledEndDate),
-              request.status,
-              "$" + request.cost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
-            ];
-          }
-            ),
+          body: 
+          //for each element in serviceRequestArray, return an array of the values of the keys in the head array
+            serviceRequestsArray.map((serviceRequest) => {
+              return [
+                serviceRequest.id,
+                serviceRequest.customer.firstName,
+                serviceRequest.serviceProvider.companyName,
+                capitaliseWords(serviceRequest.serviceType),
+                formatDate(serviceRequest.scheduledStartDate),
+                formatDate(serviceRequest.scheduledEndDate),
+                capitaliseWords(serviceRequest.status),
+                "$" + serviceRequest.cost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+              ];
+            }
+          ),
+
+           
         });
       } else {
         doc.setFontSize(12);
