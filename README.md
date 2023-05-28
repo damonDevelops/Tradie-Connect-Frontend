@@ -62,8 +62,16 @@ This repository is for the development of a system for the University of Wollong
   
   #### Running the Frontend in Visual Studio Code
   * Run the frontend after the backend has been successfully run
-  * Open a new terminal (Terminal > New Terminal) (Ctrl + Shift + `)
-  * In the new terminal, enter 'cd frontend'
+  * Open a new terminal (Terminal > New Terminal) (Ctrl + Shift + `)<br />
+  ![terminal_AdobeExpress](/Images/terminal_AdobeExpress.gif)
+  * After opening a new terminal, enter 'cd frontend':<br />
+  ![cd_frontend_AdobeExpress](/Images/cd_frontend_AdobeExpress.gif)
+  * Now enter 'npm i'. Note if this is the first time running it may take a while to install dependencies
+  ![npm_i-mh](/Images/npm_i-mh.png)
+  * After all dependencies have been successfully installed, enter 'npm run dev'
+  ![npm_run_dev_AdobeExpress](/Images/npm_run_dev_AdobeExpress.gif)
+  * If successful, you will see the port it has started on, hover over the link and Ctrl + click on the link to open it in your browser
+  ![link](/Images/link.png)
   
  
 </details>
