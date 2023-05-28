@@ -1,10 +1,9 @@
+// Page is for the customer to view their account details and update them if necessary
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-
 import { TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -16,8 +15,11 @@ import { useEffect } from "react";
 import { Stack } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
+import postCodeToState from "../functional_components/postcodeToState";
+
 
 export default function Account() {
+  //state variables for account details
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -26,11 +28,13 @@ export default function Account() {
   const [postcode, setPostcode] = useState("");
   const [state, setState] = useState("");
 
+  //state variables for confirmation dialog
   const [confirmationOpen, setConfirmationOpen] = React.useState(false);
 
   //open variables for alerts
   const [postCodeAlertOpen, setPostCodeAlertOpen] = useState(false);
 
+  //regex for postcode
   const postcodeRegex = new RegExp("^(0[289][0-9]{2})|([1-9][0-9]{3})");
   const postcodeLimitChar = 4;
 
@@ -196,7 +200,7 @@ export default function Account() {
           autoComplete="postcode"
           name="postcode"
           onChange={(event) => handlePostcodeChange(event)}
-          value={postcode}
+          value={postcode || ''}
           required
           fullWidth
           id="postcode"
@@ -208,7 +212,7 @@ export default function Account() {
           autoComplete="state"
           name="state"
           onChange={(event) => setState(event.target.value)}
-          value={state}
+          value={state || ''}
           required
           fullWidth
           id="state"
