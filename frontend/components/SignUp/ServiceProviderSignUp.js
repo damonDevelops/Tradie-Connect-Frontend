@@ -1,3 +1,6 @@
+//Sign up for the service providers
+//Same as customer sign up but without payment component and with ABN
+
 //import statements for mui components
 import * as React from "react";
 import { useState } from "react";
@@ -52,7 +55,7 @@ export default function CustomerSignUp() {
     };
   }, []);
 
-
+  //function to handle the alerts
   const handleAllAlerts = (message) => {
     setMainAlert(true);
     setAlertMessage(message);
@@ -68,7 +71,7 @@ export default function CustomerSignUp() {
     if (reason === "clickaway") {
       return;
     }
-    
+    setFailedSignUp(false);
     setMainAlert(false);
   };
 
@@ -100,7 +103,6 @@ export default function CustomerSignUp() {
     }
   };
 
- 
   //const to hold the trade options
   const serviceAreas = [
     { value: "TREE_REMOVAL", label: "Tree Removal" },
@@ -117,6 +119,9 @@ export default function CustomerSignUp() {
     return Math.random() * (max - min) + min;
   }
 
+  //function for handling the submission of the form
+  //Checks for invalid input and throws an error message to the user
+  //Otherwise, the system makes a post request to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
@@ -157,7 +162,7 @@ export default function CustomerSignUp() {
         setBackdropOpen(true);
         timer.current = window.setTimeout(() => {
           setBackdropOpen(false);
-          handleAlert("final");
+          setFinalOpen(true);
         }, 3000);
       } catch (error) {
         setFailedSignUp(true);
