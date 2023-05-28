@@ -1,4 +1,8 @@
-//import statements
+
+// Customer sign up page is for customers to sign up to the website.
+// it contains a form for the customer to fill out their details and sign up to the website.
+
+
 //TODO: Change the alert system to a single alert, see NewRequest for implementation example
 import * as React from "react";
 import { useState } from "react";
@@ -6,6 +10,9 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
+
+
+
 import { Autocomplete } from "@mui/material";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
@@ -36,11 +43,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 //default function for the customer sign up page
 export default function CustomerSignUp() {
   //state variables for the alerts
-  const [postCodeAlertOpen, setPostCodeOpen] = React.useState(false);
-  const [emailAlertOpen, setEmailOpen] = React.useState(false);
-  const [successfulSignUpDialogOpen, setSuccessfulSignUp] =
-    React.useState(false);
-  const [passwordAlertOpen, setPasswordOpen] = React.useState(false);
+  const [mainAlert, setMainAlert] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState("");
+
   const [failedSignUpOpen, setFailedSignUp] = React.useState(false);
   const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
 
@@ -56,9 +61,7 @@ export default function CustomerSignUp() {
   //const [expiryDate, setExpiryDate] = React.useState(dayjs());
   const [cvv, setCVV] = React.useState("");
   const [flag, setFlag] = React.useState(true);
-  const [noPayment, setNoPaymentOpen] = React.useState(false);
   const [hasCustomerPaid, setHasCustomerPaid] = React.useState(false);
-
   const [minDate] = React.useState(dayjs());
 
   //function to close the add payment method dialog
@@ -78,23 +81,10 @@ export default function CustomerSignUp() {
     };
   }, []);
 
-  //function to handle the alerts
-  const handleAlert = (warning_type) => {
-    if (warning_type == "email") {
-      setEmailOpen(true);
-    } else if (warning_type == "postcode") {
-      setPostCodeOpen(true);
-    } else if (warning_type == "successful") {
-      setSuccessfulSignUp(true);
-    } else if (warning_type == "password") {
-      setPasswordOpen(true);
-    } else if (warning_type == "failed") {
-      setFailedSignUp(true);
-    } else if (warning_type == "final") {
-      setFinalOpen(true);
-    } else if (warning_type == "noPayment") {
-      setNoPaymentOpen(true);
-    }
+ 
+  const handleAllAlerts = (message) => {
+    setMainAlert(true);
+    setAlertMessage(message);
   };
 
   const handlePaymentOpen = () => {
@@ -111,14 +101,7 @@ export default function CustomerSignUp() {
     if (reason === "clickaway") {
       return;
     }
-
-    setBackdropOpen(false);
-    setPostCodeOpen(false);
-    setEmailOpen(false);
-    setSuccessfulSignUp(false);
-    setPasswordOpen(false);
-    setFailedSignUp(false);
-    setPaymentOpen(false);
+    setMainAlert(false)
   };
 
   //function to handle the payment dialog
@@ -196,11 +179,11 @@ export default function CustomerSignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
-      handleAlert("email");
+      handleAllAlerts("Please enter a valid email address");
     } else if (!postcodeRegex.test(postcode)) {
-      handleAlert("postcode");
+      handleAllAlerts("Please enter a valid postcode");
     } else if (password != confirmPassword) {
-      handleAlert("password");
+      handleAllAlerts("Passwords do not match");
     } else {
       e.preventDefault();
 
@@ -237,7 +220,7 @@ export default function CustomerSignUp() {
         setBackdropOpen(true);
         timer.current = window.setTimeout(() => {
           setBackdropOpen(false);
-          handleAlert("final");
+          setFinalOpen(true);
         }, 3000);
       } catch (error) {
         setFailedSignUp(true);
@@ -497,7 +480,7 @@ export default function CustomerSignUp() {
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
-            open={emailAlertOpen}
+            open={mainAlert}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -506,60 +489,7 @@ export default function CustomerSignUp() {
               severity="warning"
               sx={{ width: "100%" }}
             >
-              Invalid Email Address, please try again
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={postCodeAlertOpen}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="warning"
-              sx={{ width: "100%" }}
-            >
-              Invalid Postcode, please try again
-            </Alert>
-          </Snackbar>
-
-          <Snackbar
-            open={successfulSignUpDialogOpen}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              Sign Up Successful! Redirecting to Sign In Page.
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={passwordAlertOpen}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="warning"
-              sx={{ width: "100%" }}
-            >
-              Passwords do not match, please try again.
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={noPayment}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="warning"
-              sx={{ width: "100%" }}
-            >
-              No Payment Method Entered, please enter one and try again.
+              {alertMessage}
             </Alert>
           </Snackbar>
         </Stack>
