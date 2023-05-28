@@ -1,3 +1,7 @@
+// Customer Dashboard provides the template for each page
+// It is a drawer that contains the navigation bar and the content of the page
+
+//import statements
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -9,15 +13,10 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
-
-//import Link from "@mui/material/Link";
 import Link from "next/link";
-
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import HistoryIcon from "@mui/icons-material/History";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-
-//import Account from "../../../components/Account";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -31,30 +30,25 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import HomeIcon from "@mui/icons-material/Home";
 import BarChartIcon from "@mui/icons-material/BarChart";
-
 import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-
-
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Home from "./CustomerHome";
-
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { DialogContent } from "@mui/material";
 import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
-
 import Cookies from "js-cookie";
 import {
   Experimental_CssVarsProvider as CssVarsProvider, useColorScheme
 } from "@mui/material/styles";
 
+//drawer and sidebar styling
 const drawerWidth = 240;
-
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -73,6 +67,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+//Drawer object
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -118,35 +113,47 @@ function ModeToggle() {
   );
 }
 
+//main dashboard function
+//props contains the page content
 export default function CustomerDash(props) {
+  //drawer and sidebar state
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+  //functionality for opening the sidebar
   const [newOpen, setnewOpen] = React.useState(true);
-
   const handleClick = () => {
     setnewOpen(!newOpen);
   };
 
+  //functionality for the logout dialog
   const [confirmLogout, setConfirmLogout] = React.useState(false);
+
+  //functionality for the home button
   const [home, setHomeWindow] = React.useState(false);
+
+  //router functionality
   const router = useRouter();
   const homePath = "/Customer";
+
 
   useEffect(() => {
     if (homePath === router.pathname) setHomeWindow(true);
   }, []);
 
+  //functionality for the logout button
   const openDialog = async () => {
     setConfirmLogout(true);
   };
 
+  //functionality for closing dialog
   const handleClose = () => {
     setConfirmLogout(false);
   };
 
+  //logs out the user and redirects to the login page
   const logoutUser = async () => {
     Cookies.remove("JWT");
     router.push("/SignIn");
@@ -195,7 +202,6 @@ export default function CustomerDash(props) {
               </Link>
             </IconButton>
             <IconButton color="inherit" onClick={openDialog}>
-              {/* TODO: add logout functionality to this link */}
               {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
             </IconButton>
           </Toolbar>
@@ -327,14 +333,13 @@ export default function CustomerDash(props) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {/* {home ? <Home /> : props.children} */}
             {props.children ? props.children : <Home />}
           </Container>
         </Box>
       </Box>
       <Dialog
         open={confirmLogout}
-        //onClose={handleClose}
+        onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -380,5 +385,4 @@ export default function CustomerDash(props) {
   );
 }
 
-//TODO: figure out why using withAuth causes flickering
 //export default withAuth(CustomerDash, ["ROLE_CUSTOMER"]);

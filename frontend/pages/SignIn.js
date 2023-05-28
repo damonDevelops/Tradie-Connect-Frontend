@@ -1,3 +1,6 @@
+//Sign In Page for all users
+
+//Import statements
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -20,12 +23,14 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { Stack } from "@mui/material";
 import { useRouter } from "next/router";
-
 import { checkRole } from "../components/hooks/checkUser";
 
+//theme for the page
 const theme = createTheme();
 
+
 export default function SignIn() {
+  //useEffect checks the role of the user and redirects them to the correct page
   useEffect(() => {
     if (checkRole() == "ROLE_CUSTOMER") {
       router.push("/Customer");
@@ -64,8 +69,6 @@ export default function SignIn() {
       clearTimeout(timer.current);
     };
   }, []);
-
-
 
   //function to handle the authentication
   const handleSubmit = async (e) => {

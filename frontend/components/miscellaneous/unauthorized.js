@@ -1,9 +1,12 @@
+//page for when a user tries to access a page they aren't meant to
+//Simply displays a message with a button to return them to the sign in page
+
+//imports
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Fab } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
 import { Grid } from "@mui/material";
 import Link from "next/link";
 

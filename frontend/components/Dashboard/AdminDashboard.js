@@ -1,3 +1,7 @@
+// Main dashboard for admin users
+// Provides the template (sidebar, header, etc.) for the admin dashboard
+// takes props from children to display the content
+
 // import statements
 import * as React from "react";
 import { styled } from "@mui/material/styles";
@@ -23,7 +27,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import withAuth from "../../components/router/withAuth";
-
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
 import { Dialog } from "@mui/material";
@@ -34,18 +37,16 @@ import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   experimental_extendTheme as extendTheme,
   useColorScheme,
 } from "@mui/material/styles";
 
+//styling for the drawer and appbar
 const drawerWidth = 240;
-
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -64,6 +65,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+//Drawer styling
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -90,6 +92,7 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+//custom theme for admin dashboard
 const theme = extendTheme({
   palette: {
     primary: {
@@ -121,34 +124,34 @@ function ModeToggle() {
 }
 
 function AdminDash(props) {
+  //state variables for logout
   const [confirmLogout, setConfirmLogout] = React.useState(false);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const [newOpen, setnewOpen] = React.useState(true);
-
-  const handleClick = () => {
-    setnewOpen(!newOpen);
-  };
-
+  //function to open the logout dialog
   const openDialog = async () => {
     setConfirmLogout(true);
   };
 
+  //function to close the logout dialog
   const handleClose = () => {
     setConfirmLogout(false);
   };
 
+  //router and home path for admin
   const router = useRouter();
   const homePath = "/Service-Provider";
 
+  //function to logout the user
   const logoutUser = async () => {
     Cookies.remove("JWT");
     router.push("/SignIn");
   };
 
+  //content
   return (
     <CssVarsProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
@@ -156,7 +159,7 @@ function AdminDash(props) {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: "24px", // keep right padding when drawer closed
+              pr: "24px", 
             }}
           >
             <IconButton
@@ -182,7 +185,6 @@ function AdminDash(props) {
             </Typography>
             <ModeToggle />
             <IconButton color="inherit" onClick={openDialog}>
-              {/* TODO: add logout functionality to this link */}
               {<LogoutIcon style={{ color: "#FFFFFF" }} fontSize="large" />}
             </IconButton>
           </Toolbar>

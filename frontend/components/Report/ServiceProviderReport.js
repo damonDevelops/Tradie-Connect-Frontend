@@ -1,28 +1,32 @@
+//page for generating the service provider report
+//contains data including their available service requests, current service requests and reviews
+
+//import statements
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-
 import { useState } from "react";
 import { useEffect } from "react";
 import useFetchData from "../hooks/fetchData";
 import { Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
-
 import autoTable from "jspdf-autotable";
 
 export default function ServiceProviderReport() {
+  //fetch url and data
   const fetchURL = "http://localhost:8080/api/service-providers";
-
   const { data: responseData } = useFetchData(fetchURL);
+  
+  //variable for storing service requests
   const [serviceRequests, setRequests] = useState([]);
-
   const instance = axios.create({
     withCredentials: true,
   });
 
+  //useEffect maps requests to the array.
+  //needs to be done this way because the data doesn't contain all data
   useEffect(() => {
     const fetchData = async () => {
       if (responseData && responseData.serviceRequests) {
@@ -36,19 +40,21 @@ export default function ServiceProviderReport() {
     fetchData();
   }, [responseData]);
 
+  //storing day for the file name
   const today = new Date();
   const fileName = "Tradie_Connect_Report_" + today.toLocaleDateString("en-AU");
-  //URLs for fetching data
-
+  
+  //variables for requests and payments
   const serviceProviderInfoURL = "http://localhost:8080/api/service-providers";
   const { data: serviceProvider } = useFetchData(serviceProviderInfoURL);
 
+  //URL for current request
   const currentRequestURL =
     "http://localhost:8080/api/service-requests/user-requests";
 
   const { data: requestData } = useFetchData(currentRequestURL);
 
-
+  //filtering requests by status for current requests
   const currentRequests = serviceRequests
     .filter((request) => {
       return request.status == "ACCEPTED" || request.status == "PENDING";
@@ -67,6 +73,7 @@ export default function ServiceProviderReport() {
       ];
     });
 
+  //filtering requests by status for completed requests
   const completedRequests = serviceRequests
     .filter((request) => {
       return request.status == "COMPLETED";
@@ -86,6 +93,7 @@ export default function ServiceProviderReport() {
       ];
     });
 
+  //filtering requests by status for reviews
   const reviews = serviceRequests
     .filter((request) => {
       return request.status == "COMPLETED" && request.review != null;
@@ -101,13 +109,16 @@ export default function ServiceProviderReport() {
       ];
     });
 
+  //gets the total cost of all requests
   const totalCost = requestData.reduce((total, request) => {
     return total + request.cost;
   }, 0);
 
+  //gets the average cost of all requests
   const averageCost =
     requestData.length > 0 ? totalCost / requestData.length : 0;
 
+  //gets the average rating of all reviews
   const averageReview =
     reviews.length > 0
       ? reviews.reduce((total, review) => {
@@ -115,6 +126,7 @@ export default function ServiceProviderReport() {
         }, 0) / reviews.length
       : 0;
 
+  //function to create the PDF
   const createPDF = () => {
     const doc = new jsPDF({ orientation: "p" });
     doc.setFontSize(30);
@@ -270,6 +282,7 @@ export default function ServiceProviderReport() {
   );
 }
 
+//function to convert capitalised strings to normal strings
 function capitaliseWords(str) {
   return str
     .toLowerCase()
@@ -278,10 +291,12 @@ function capitaliseWords(str) {
     .join(" ");
 }
 
+//function to format the date
 function formatDate(date) {
   return date[2] + "/" + date[1] + "/" + date[0];
 }
 
+//function to format the time
 function formatCompleteDate(time, date) {
   let hour = time[0];
   const minute = time[1];

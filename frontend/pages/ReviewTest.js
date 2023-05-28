@@ -1,11 +1,11 @@
 // import statements
 import * as React from "react";
 import CustomerDash from "../components/Dashboard/CustomerDashboard";
-import ReviewTestComponent from "../components/Review/ReviewTestComponent";
+import ReviewComponent from "../components/Review/ReviewComponent";
 export default function NewRequestScreen() {
   return (
     <CustomerDash>
-      <ReviewTestComponent />
+      <ReviewComponent />
     </CustomerDash>
   );
 }

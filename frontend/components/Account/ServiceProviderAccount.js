@@ -1,10 +1,9 @@
+// Page allows service provide to update their account details
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-
 import { TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -19,6 +18,7 @@ import { Alert } from "@mui/material";
 import postCodeToState from "../functional_components/postcodeToState";
 
 export default function Account() {
+  //state variables for account details
   const [companyName, setCompanyName] = useState("");
   const [abn, setABN] = useState("");
   const [phone, setPhone] = useState("");
@@ -27,18 +27,16 @@ export default function Account() {
   const [postcode, setPostcode] = useState("");
   const [state, setState] = useState("");
 
+  //state variables for confirmation dialog
   const [confirmationOpen, setConfirmationOpen] = React.useState(false);
 
   //open variables for alerts
   const [postCodeAlertOpen, setPostCodeAlertOpen] = useState(false);
-
+  //regex for postcode
   const postcodeRegex = new RegExp("^(0[289][0-9]{2})|([1-9][0-9]{3})");
   const postcodeLimitChar = 4;
 
-  const suburbHandler = (event) => {
-    setSuburb(event.target.value.toLowerCase());
-  };
-
+  //function to handle postcode change
   const handlePostcodeChange = (event) => {
     if (event.target.value.toString().length <= postcodeLimitChar) {
       setPostcode(event.target.value);
@@ -46,12 +44,14 @@ export default function Account() {
     }
   };
 
+  //function to handle alerts
   const handleAlert = (warning_type) => {
     if (warning_type == "postcode") {
       setPostCodeAlertOpen(true);
     }
   };
 
+  //function to handle closing alerts
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -60,6 +60,7 @@ export default function Account() {
     setConfirmationOpen(false);
   };
 
+  //function to handle opening confirmation dialog
   const handleConfirmOpen = () => {
     setConfirmationOpen(true);
   };
@@ -72,6 +73,7 @@ export default function Account() {
     withCredentials: true,
   });
 
+  //function to fetch data from backend to autofill
   const fetchData = async () => {
     try {
       const response = await instance.get(
@@ -92,6 +94,8 @@ export default function Account() {
     }
   };
 
+  //function to handle submit 
+  //updates customer details after confirmation, then refreshes page
   const handleSubmit = (event) => {
     event.preventDefault();
 

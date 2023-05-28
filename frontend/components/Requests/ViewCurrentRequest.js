@@ -45,10 +45,7 @@ export default function ViewRequest() {
   const router = useRouter();
   const requestId = router.query.id;
   const fromRequests = router.query.fromRequests;
-  const fetchURL =
-    "http://localhost:8080/api/service-requests/" + router.query.id;
 
-  const { data: responseData } = useFetchData(fetchURL);
 
   useEffect(() => {
     if (!fromRequests) {
@@ -70,29 +67,7 @@ export default function ViewRequest() {
   );
 }
 
-// return (
-//   <ThemeProvider theme={theme}>
-//     <CssBaseline />
-//     <Paper
-//       sx={{
-//         p: 2,
-//         display: "flex",
-//         flexDirection: "column",
-//         height: "auto",
-//       }}
-//     >
-//       <Typography variant="h4" gutterBottom>
-//         Service Request Details
-//       </Typography>
 
-//       {router.query.customer ? <CustomerView /> : null}
-//       {router.query.serviceProvider ? <ServiceProviderView /> : null}
-//     </Paper>
-//   </ThemeProvider>
-// );
-// }
-
-// this function returns the customer view of the current request
 function CustomerView() {
   const router = useRouter();
   const fetchURL =
@@ -230,7 +205,7 @@ function CustomerView() {
         <ServiceProviderInfo serviceProvider={responseData.serviceProvider} />
       )}
       {responseData.status == "COMPLETED" && (
-        <ReviewTestComponent dataObject={responseData} userType="customer" />
+        <ReviewComponent dataObject={responseData} userType="customer" />
       )}
     </>
   );
@@ -316,7 +291,7 @@ function ServiceProviderInfo({ serviceProvider }) {
   );
 }
 
-function ReviewTestComponent({ dataObject, userType }) {
+function ReviewComponent({ dataObject, userType }) {
   const [value, setValue] = React.useState(0);
   const [comment, setComment] = React.useState("");
   const [reviewExists, setReviewExists] = React.useState(
@@ -955,7 +930,7 @@ function ServiceProviderView() {
         <CustomerInfo customer={responseData.customer} />
       )}
       {responseData.status == "COMPLETED" && (
-        <ReviewTestComponent
+        <ReviewComponent
           dataObject={responseData}
           userType="service_provider"
         />

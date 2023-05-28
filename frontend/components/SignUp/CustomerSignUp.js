@@ -1,18 +1,13 @@
-
 // Customer sign up page is for customers to sign up to the website.
 // it contains a form for the customer to fill out their details and sign up to the website.
 
 
-//TODO: Change the alert system to a single alert, see NewRequest for implementation example
 import * as React from "react";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
-
-
-
 import { Autocomplete } from "@mui/material";
 import validator from "validator";
 import Stack from "@mui/material/Stack";
@@ -29,7 +24,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import axios from "axios";
 import postCodeToState from "../functional_components/postcodeToState";
-
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -74,19 +68,19 @@ export default function CustomerSignUp() {
     }
   };
 
-  //function to handle the alerts
   React.useEffect(() => {
     return () => {
       clearTimeout(timer.current);
     };
   }, []);
 
- 
+  //function to handle alerts for invalid input
   const handleAllAlerts = (message) => {
     setMainAlert(true);
     setAlertMessage(message);
   };
 
+  //const to open the payment dialog
   const handlePaymentOpen = () => {
     setPaymentOpen(true);
   };
@@ -173,9 +167,8 @@ export default function CustomerSignUp() {
     { value: "Pay on Demand", label: "Pay on Demand" },
   ];
 
-  // handler for axios
-  // note: still throws error when accessing through event.target.xx.value
-  // Error: (Cannot read properties of undefined (reading 'value'))
+  //handle submit function for the form
+  //checks for invalid input and alerts the user otherwise makes a post request to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {

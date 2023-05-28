@@ -38,10 +38,8 @@ export default function Account() {
   const postcodeRegex = new RegExp("^(0[289][0-9]{2})|([1-9][0-9]{3})");
   const postcodeLimitChar = 4;
 
-  const suburbHandler = (event) => {
-    setSuburb(event.target.value.toLowerCase());
-  };
-
+  //function to handle postcode change
+  //Uses another component to check which state the postcode belongs to
   const handlePostcodeChange = (event) => {
     if (event.target.value.toString().length <= postcodeLimitChar) {
       setPostcode(event.target.value);
@@ -49,12 +47,14 @@ export default function Account() {
     }
   };
 
+  //function to handle alerts
   const handleAlert = (warning_type) => {
     if (warning_type == "postcode") {
       setPostCodeAlertOpen(true);
     }
   };
 
+  //function to handle closing alerts
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -63,18 +63,22 @@ export default function Account() {
     setConfirmationOpen(false);
   };
 
+  //function to handle opening confirmation dialog
   const handleConfirmOpen = () => {
     setConfirmationOpen(true);
   };
 
+  //function to fetch the customer data to display
   useEffect(() => {
     fetchData();
   }, []);
+
 
   const instance = axios.create({
     withCredentials: true,
   });
 
+  //fetchData function to get the customer data
   const fetchData = async () => {
     try {
       const response = await instance.get(
@@ -94,6 +98,7 @@ export default function Account() {
     }
   };
 
+  //function to handle submit
   const handleSubmit = (event) => {
     event.preventDefault();
 

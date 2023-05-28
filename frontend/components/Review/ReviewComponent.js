@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
-export default function ReviewTestComponent() {
+export default function ReviewComponent() {
   const [value, setValue] = React.useState(0);
   const [disableFields, setDisabledFields] = React.useState(false);
 

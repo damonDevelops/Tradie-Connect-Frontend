@@ -1,3 +1,5 @@
+// Main Admin Dashboard Home Page
+// contains tables for customers, service providers, and requests
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
@@ -17,6 +19,7 @@ const theme = createTheme();
 
 export default function Home() {
 
+  //useEffect to allow the admin to generate test data for the website
   useEffect(() => {
     const instance = axios.create({
       withCredentials: true,
@@ -35,17 +38,18 @@ export default function Home() {
     });
   }, []);
 
+  //state variables for data button
   const [loading, setLoading] = React.useState(false);
-
   const [disabled, setDisabled] = React.useState(false);
   const [buttonLabel, setButtonLabel] = React.useState("Generate Data");
 
+  //function to generate data
   const generateData = async () => {
     setLoading(true);
     const instance = axios.create({
       withCredentials: true,
     });
-
+    
     const dataURL = "http://localhost:8080/admin/generateTestData";
     try {
       await instance.post(dataURL);
