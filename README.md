@@ -37,6 +37,27 @@ This repository is for the development of a system for the University of Wollong
 * [Install Python](https://www.python.org/downloads/)
 * [Install Maven](https://www.baeldung.com/install-maven-on-windows-linux-mac)
 
+
+### Running the Backend & Frontend in Visual Studio Code
+<details>
+  <summary>Click me</summary>
+  
+  #### Importing the Project to Visual Studio Code
+  * Open Visual Studio Code 
+  * Click 'Clone Git Repository'
+  * In the input field, enter 'https://github.com/damonDevelops/Tradie-Connect-Frontend'
+  * Click 'Clone from URL'
+  * Select a location on your PC to store the repository folder
+  * Open the cloned repository
+  * At the bottom right hand side of screen, a dialog box should pop up saying 'This Workspace Has Extension Reccommendations'. Click install all
+  
+  #### Running the Backend in Visual Studio Code
+  * Let the project open in a new window of visual studio code and give it 30 seconds to process
+  * Once 'loading Java Projects' dialog has completed, navigate to Explorer (top icon of sidebar) > Java Projects > Tradie-Connect-Backend > press the play (triangle) button next to GroupProject
+  * If you don't see 'Java Projects' 
+ 
+</details>
+
 ### Running the Backend
 #### Running the Backend in Visual Studio Code
 * Open Visual Studio Code 
