@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { Stack } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
+import postCodeToState from "../functional_components/postcodeToState";
 
 export default function Account() {
   const [companyName, setCompanyName] = useState("");
@@ -209,7 +210,7 @@ export default function Account() {
           autoComplete="state"
           name="state"
           onChange={(event) => setState(event.target.value)}
-          value={state}
+          value={state || ''}
           required
           fullWidth
           id="state"
