@@ -40,33 +40,33 @@ This repository is for the development of a system for the University of Wollong
 
 ### Running the Backend & Frontend in Visual Studio Code
 <details>
-  <summary>Click me</summary>
+  <summary>Expand Visual Studio Code Instructions</summary>
   
   #### Importing the Project to Visual Studio Code
   * Open Visual Studio Code 
   * Click 'Clone Git Repository'
+  ![start_vscode](/Images/start_vscode.png)
   * In the input field, enter 'https://github.com/damonDevelops/Tradie-Connect-Frontend'
   * Click 'Clone from URL'
+  ![clone_repo](/Images/clone_repo.png)
   * Select a location on your PC to store the repository folder
   * Open the cloned repository
-  * At the bottom right hand side of screen, a dialog box should pop up saying 'This Workspace Has Extension Reccommendations'. Click install all
+  * At the bottom right hand side of screen, a dialog box should pop up saying 'This Workspace Has Extension Reccommendations'
+  ![extension_suggestions](/Images/extension_suggestions.png)
   
   #### Running the Backend in Visual Studio Code
   * Let the project open in a new window of visual studio code and give it 30 seconds to process
+  ![opening_java_projects](/Images/opening_java_projects.png)
   * Once 'loading Java Projects' dialog has completed, navigate to Explorer (top icon of sidebar) > Java Projects > Tradie-Connect-Backend > press the play (triangle) button next to GroupProject
-  * If you don't see 'Java Projects' 
+  ![run_backend_java_project](/Images/run_backend_java_project.png)
+  
+  #### Running the Frontend in Visual Studio Code
+  * Run the frontend after the backend has been successfully run
+  * Open a new terminal (Terminal > New Terminal) (Ctrl + Shift + `)
+  * In the new terminal, enter 'cd frontend'
+  
  
 </details>
-
-### Running the Backend
-#### Running the Backend in Visual Studio Code
-* Open Visual Studio Code 
-* Click 'Clone Git Repository'
-* In the input field, enter 'https://github.com/damonDevelops/Tradie-Connect-Frontend'
-* Click 'Clone from URL'
-* Select a location on your PC to store the repository folder
-* Open the cloned repository
-* Once 'loading Java Projects' dialog has completed, navigate to Explorer (top icon of sidebar) > Java Projects > Tradie-Connect-Backend > press the play (triangle) button next to GroupProject
 
 #### Running the Backend in Command Line
 
