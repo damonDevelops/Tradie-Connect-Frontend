@@ -38,7 +38,7 @@ This repository is for the development of a system for the University of Wollong
 * [Install Maven](https://www.baeldung.com/install-maven-on-windows-linux-mac)
 
 
-### Running the Backend & Frontend in Visual Studio Code
+## Running the Backend & Frontend in Visual Studio Code
 <details>
   <summary>Expand Visual Studio Code Instructions</summary>
   
@@ -74,33 +74,30 @@ This repository is for the development of a system for the University of Wollong
  
 </details>
 
-#### Running the Backend in Command Line
+## Running the Backend & Frontend in Command Line
+<details>
+  <summary>Expand Command Line Instructions</summary>
+  
+  #### Running the Backend in Command Line
+  * [Download the JAR file](https://www.dropbox.com/s/1gbdcc8va0gd0cq/TradieConnect.jar?dl=0)
+  * Save the file to your PC and open a terminal instance in that folder [instructions](https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/)
+  * If you wish to run the backend with generated data, enter 'java -jar TradieConnect.jar generateTestData'
+  * If you wish to run the backend without generated data, enter 'java -jar TradieConnect.jar'
+  * If successful, you should see 'Started TradieFinderApplication in 6.037 seconds (process running for 6.522)'. The backend has started successfully.
+  
+  
+  #### Running the Frontend in Command Line
+  * Download the zip file from the github page
+  * Extract the folder to your local machine
+  * Open the folder in command line (right click > open in Terminal)
+  * in the command line, enter 'cd frontend'
+  * run the command 'npm i' (this may take a while, just leave it until it has completed)
+  * After the packages have installed, run the command 'npm run dev'
+  * Once you see 'ready - started server on 0.0.0.0:3000, url: http://localhost:3000', control click on the link to open it in your respective browser OR
+  * Open your browser and navigate to the link 'http://localhost:3000'
+ 
+</details>
 
-
-### Running the Frontend
-#### Running the Frontend in Visual Studio Code
-* Open Visual Studio Code 
-* Click 'Clone Git Repository'
-* In the input field, enter 'https://github.com/damonDevelops/Tradie-Connect-Frontend'
-* Click 'Clone from URL'
-* Select a location on your PC to store the repository folder
-* Open the cloned repository
-* In the navbar, click View > New Terminal
-* Enter 'cd frontend'
-* Enter the command 'npm i'
-* Once the terminal has installed all the dependencies (this may take a while), enther the command 'npm run dev'
-* Once you see 'eady - started server on 0.0.0.0:3000, url: http://localhost:3000', control click on the link to open it in your respective browser OR
-* Open your browser and navigate to the link 'http://localhost:3000'
-
-#### Running the Frontend in Command Line
-* Download the zip file from the github page
-* Extract the folder to your local machine
-* Open the folder in command line (right click > open in Terminal)
-* in the command line, enter 'cd frontend'
-* run the command 'npm i' (this may take a while, just leave it until it has completed)
-* After the packages have installed, run the command 'npm run dev'
-* Once you see 'eady - started server on 0.0.0.0:3000, url: http://localhost:3000', control click on the link to open it in your respective browser OR
-* Open your browser and navigate to the link 'http://localhost:3000'
 
 ## Documentation
 To see the documentation visit our [Google Doc](https://docs.google.com/document/d/1PS9mC8sOwt8EZZLfs-ami2DYGCWrlpeQ2m_ioBLnk88/edit#heading=h.sjnh6yl2tkrf)
