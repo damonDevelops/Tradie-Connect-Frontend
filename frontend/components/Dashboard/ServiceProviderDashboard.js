@@ -1,3 +1,6 @@
+// Dashboard page for the service provider provides the template for the dashboard
+// Contains a sidebar, header bar, and main content area
+
 // import statements
 import * as React from "react";
 import { styled } from "@mui/material/styles";
@@ -22,13 +25,11 @@ import Collapse from "@mui/material/Collapse";
 import HistoryIcon from "@mui/icons-material/History";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import withAuth from "../../components/router/withAuth";
-
 import Home from "./ServiceProviderHome";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
@@ -40,18 +41,16 @@ import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   experimental_extendTheme as extendTheme,
   useColorScheme,
 } from "@mui/material/styles";
 
+//Drawer and appbar styling
 const drawerWidth = 240;
-
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -70,6 +69,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+//Drawer object
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -96,6 +96,7 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+//Custom theme for the service provider dashboard
 const theme = extendTheme({
   palette: {
     primary: {
@@ -146,21 +147,26 @@ function ServiceDash(props) {
 
   const [newOpen, setnewOpen] = React.useState(true);
 
+  //function to open and close the drawer
   const handleClick = () => {
     setnewOpen(!newOpen);
   };
 
+  //function to open the logout confirmation dialog
   const openDialog = async () => {
     setConfirmLogout(true);
   };
 
+  //function to close the logout confirmation dialog
   const handleClose = () => {
     setConfirmLogout(false);
   };
 
+  //router to redirect to the home page
   const router = useRouter();
   const homePath = "/Service-Provider";
 
+  //function to logout the user
   const logoutUser = async () => {
     Cookies.remove("JWT");
     router.push("/SignIn");

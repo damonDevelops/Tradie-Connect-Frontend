@@ -1,3 +1,7 @@
+// Home content for the service provider
+// Shows the available requests and buttons to various pages
+
+//import statements 
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
@@ -8,6 +12,7 @@ import AvailableRequest from "../Requests/AvailableRequests";
 import Grid from "@mui/material/Grid";
 import Link from "next/link";
 
+// theme for the page
 const theme = createTheme();
 
 export default function Home() {

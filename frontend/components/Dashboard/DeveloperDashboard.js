@@ -1,3 +1,7 @@
+// Main Developer Dashboard Page is for developers to access different links to the website.
+
+
+// import statements
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
@@ -19,6 +23,7 @@ const Developer = () => {
       <CssBaseline />
       <AppBar position="relative">
         <Toolbar>
+          {/* Title */}
           <Typography variant="h6" color="inherit" noWrap>
             Developer Homepage
           </Typography>

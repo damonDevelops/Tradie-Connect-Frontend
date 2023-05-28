@@ -1,3 +1,5 @@
+//Component for the home page for customers
+//Displays simple information and links to other pages
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Paper from "@mui/material/Paper";
@@ -8,6 +10,7 @@ import CurrentRequest from "../Requests/CustomerCurrentRequest";
 import Grid from "@mui/material/Grid";
 import Link from "next/link";
 
+// theme for the page
 const theme = createTheme();
 
 export default function Home() {

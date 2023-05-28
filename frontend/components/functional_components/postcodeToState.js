@@ -1,3 +1,4 @@
+//Simple function that checks the postcode value passed and returns a state
 export default function postCodeToState(event) {
   if (
     (event >= 1000 && event <= 1999) ||

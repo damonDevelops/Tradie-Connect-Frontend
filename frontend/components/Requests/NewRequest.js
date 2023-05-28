@@ -1,12 +1,12 @@
+//Component for the customer to make a new request
+
+//import statements
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-
 import Button from "@mui/material/Button";
-
 import Typography from "@mui/material/Typography";
 import { createTheme } from "@mui/material/styles";
 import axios from "axios";
-
 import { Divider } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -19,13 +19,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
 import { useEffect } from "react";
 import Link from "next/link";
 import { Stack } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
-
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -44,32 +42,37 @@ export default function NewRequest() {
     withCredentials: true,
   });
 
+  //useEffect to fetch the data
   useEffect(() => {
     fetchData();
   }, []);
 
+  //redirects them from the dashboard
   const redirect = () => {
     window.location.href = "../Customer/Dashboard";
   };
 
+  //checks if the date is valid
   var date_regex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
 
+  //a variable for the type of work
   const [multiplier, setMultiplier] = React.useState(0);
 
-  const [firstName, setFirstName] = React.useState("");
-
+  //variables for the request
   const [WorkType, setWorkType] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [membershipType, setMembershipType] = React.useState("");
-  var cost = diffDays * multiplier + 200
+  
+  //variable for the date error message
   const [dateAlertOpen, setDateAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
 
+  //variables for the start date
   const [startDate, setStartDate] = React.useState(
     new Date().toLocaleDateString("en-GB")
   );
 
-  //make a const variable which returns the day after startDate in the same format
+  //variables for the end date
   const [endDate, setEndDate] = React.useState(
     new Date().toLocaleDateString("en-GB")
   );
@@ -100,11 +103,13 @@ export default function NewRequest() {
   const [datePickerEnd, setDatePickerEnd] = React.useState(dayjs());
   const [minDate] = React.useState(dayjs());
 
+  // function to handle date picker change
   const settingStartDate = (date) => {
     setStartDate(formatDate(date));
     setDatePickerStart(date);
   };
 
+  // function to handle date picker change
   const settingEndDate = (date) => {
     setEndDate(formatDate(date));
     setDatePickerEnd(date);
@@ -112,6 +117,7 @@ export default function NewRequest() {
 
   /*  End block of code for handling date picker */
 
+  //code for converting the date into a format that can be submitted to the database
   var startDateParts = startDate.split("/");
   var endDateParts = endDate.split("/");
 
@@ -141,11 +147,13 @@ export default function NewRequest() {
     endDate.split("/")[0]
   );
 
+  //gets the difference between dates
   var timeDiff = Math.abs(splitEndDate.getTime() - splitStartDate.getTime());
   var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
   const [finalAlertDialogOpen, setFinalOpen] = React.useState(false);
 
+  //changes the type of work requested and the multiplier associated with it
   const handleChange = (event) => {
     setWorkType(event.target.value);
 
@@ -162,15 +170,7 @@ export default function NewRequest() {
     }
   };
 
-  const [checked, setChecked] = React.useState(true);
-
-  const [open, setOpen] = React.useState(true);
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
-
-  const [newOpen, setnewOpen] = React.useState(true);
-
+  //fetches the data from the database
   const fetchData = async () => {
     try {
       const response = await instance.get(
@@ -183,20 +183,19 @@ export default function NewRequest() {
       console.error(error);
     }
   };
-
-  const handleClick = () => {
-    setnewOpen(!newOpen);
-  };
-
+  
+  //handles the closing of the final alert
   const handleClose = () => {
     setDateAlertOpen(false);
   };
 
+  //handles the closing of the date alert
   const handleDateAlert = (message) => {
     setDateAlertOpen(true);
     setAlertMessage(message);
   };
 
+  //function to submit the new request
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -210,6 +209,7 @@ export default function NewRequest() {
       handleDateAlert("Start date must be before end date");
     } else {
       try {
+        //makes the post request to the backend
         instance
           .post(`http://localhost:8080/api/service-requests/create`, {
             cost: membershipType == "CLIENT_SUBSCRIPTION" ? 0 : diffDays * multiplier + 200,
@@ -320,17 +320,6 @@ export default function NewRequest() {
               sx={{ marginTop: "16px" }}
               minDate={minDate}
             />
-            {/* <TextField
-              sx={{ width: "30%" }}
-              margin="normal"
-              required
-              id="outlined-required"
-              label="End Date"
-              name="date"
-              onChange={(event) => setEndDate(event.target.value)}
-              value={endDate}
-              InputLabelProps={{ shrink: true }}
-            /> */}
             <br />
             {/* TODO: change the customer_type to a variable based on their subscription type to show cost */}
             {membershipType == "PAY_ON_DEMAND" && (

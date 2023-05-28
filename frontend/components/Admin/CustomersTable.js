@@ -1,12 +1,12 @@
+// Component for customer table.
+// Seperated in its own component because the customer table is used
+// in multiple places
+
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-
 import axios from "axios";
-
 import { useState } from "react";
 import { useEffect } from "react";
-
-// for displaying data:
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,9 +15,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 
-
 export default function ServiceProviders() {
+  // state variable to store the data from the request
   const [data, setData] = useState([]);
+
+  // state variable to store the sort model
   const [sortModel, setSortModel] = React.useState([
     {
       field: "id",
@@ -25,7 +27,7 @@ export default function ServiceProviders() {
     },
   ]);
 
-
+  //useEffect to fetch the data from the request
   useEffect(() => {
     fetchData();
   }, []);
@@ -34,6 +36,7 @@ export default function ServiceProviders() {
     withCredentials: true,
   });
 
+  // function to fetch the data from the request
   const fetchData = async () => {
     try {
       const response = await instance.get(
@@ -78,18 +81,22 @@ function CustomersTable({ data }) {
     textAlign: "center",
   };
 
+  //handles page table
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  //handles page table
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  //handles how many rows are displayed per page on the table
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
+  //function to show the rows
   const rowsToDisplay = data.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage

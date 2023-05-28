@@ -1,3 +1,6 @@
+//Sign up for the service providers
+//Same as customer sign up but without payment component and with ABN
+
 //import statements for mui components
 import * as React from "react";
 import { useState } from "react";
@@ -39,6 +42,9 @@ export default function CustomerSignUp() {
   const [finalOpen, setFinalOpen] = React.useState(false);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
 
+  const [mainAlert, setMainAlert] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState("");
+
   //state variable for the timer
   const timer = React.useRef();
 
@@ -50,22 +56,9 @@ export default function CustomerSignUp() {
   }, []);
 
   //function to handle the alerts
-  const handleAlert = (warning_type) => {
-    if (warning_type == "abn") {
-      setABNOpen(true);
-    } else if (warning_type == "email") {
-      setEmailOpen(true);
-    } else if (warning_type == "postcode") {
-      setPostCodeOpen(true);
-    } else if (warning_type == "successful") {
-      setSuccessfulSignUp(true);
-    } else if (warning_type == "password") {
-      setPasswordOpen(true);
-    } else if (warning_type == "failed") {
-      setFailedSignUp(true);
-    } else if (warning_type == "final") {
-      setFinalOpen(true);
-    }
+  const handleAllAlerts = (message) => {
+    setMainAlert(true);
+    setAlertMessage(message);
   };
 
   //function to handle the backdrop redirect
@@ -78,18 +71,11 @@ export default function CustomerSignUp() {
     if (reason === "clickaway") {
       return;
     }
-    setBackdropOpen(false);
-    setABNOpen(false);
-    setPostCodeOpen(false);
-    setEmailOpen(false);
-    setSuccessfulSignUp(false);
-    setPasswordOpen(false);
     setFailedSignUp(false);
+    setMainAlert(false);
   };
 
   //state variables for the form
-  const [returnMemberType, setMembershipType] = useState("");
-  const [returnMembership, setMembership] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [abn, setABN] = useState("");
   const [email, setEmail] = useState("");
@@ -117,17 +103,6 @@ export default function CustomerSignUp() {
     }
   };
 
-  // const to hold the state options
-  const stateOptions = [
-    { value: "NSW", label: "NSW" },
-    { value: "VIC", label: "VIC" },
-    { value: "QLD", label: "QLD" },
-    { value: "WA", label: "WA" },
-    { value: "SA", label: "SA" },
-    { value: "TAS", label: "TAS" },
-    { value: "NT", label: "NT" },
-  ];
-
   //const to hold the trade options
   const serviceAreas = [
     { value: "TREE_REMOVAL", label: "Tree Removal" },
@@ -144,14 +119,17 @@ export default function CustomerSignUp() {
     return Math.random() * (max - min) + min;
   }
 
+  //function for handling the submission of the form
+  //Checks for invalid input and throws an error message to the user
+  //Otherwise, the system makes a post request to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validator.isEmail(email) == false) {
-      handleAlert("email");
+      handleAllAlerts("Please enter a valid email address");
     } else if (!postcodeRegex.test(postcode)) {
-      handleAlert("postcode");
+      handleAllAlerts("Please enter a valid postcode");
     } else if (password != confirmPassword) {
-      handleAlert("password");
+      handleAllAlerts("Passwords do not match");
     } else {
       e.preventDefault();
 
@@ -184,7 +162,7 @@ export default function CustomerSignUp() {
         setBackdropOpen(true);
         timer.current = window.setTimeout(() => {
           setBackdropOpen(false);
-          handleAlert("final");
+          setFinalOpen(true);
         }, 3000);
       } catch (error) {
         setFailedSignUp(true);
@@ -375,7 +353,7 @@ export default function CustomerSignUp() {
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           <Snackbar
-            open={emailOpen}
+            open={mainAlert}
             autoHideDuration={6000}
             onClose={handleClose}
           >
@@ -384,59 +362,7 @@ export default function CustomerSignUp() {
               severity="warning"
               sx={{ width: "100%" }}
             >
-              Invalid Email Address, please try again
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={postCodeOpen}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="warning"
-              sx={{ width: "100%" }}
-            >
-              Invalid Postcode, please try again
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={ABNOpen}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="warning"
-              sx={{ width: "100%" }}
-            >
-              Invalid ABN Format, please try again
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={passwordOpen}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="warning"
-              sx={{ width: "100%" }}
-            >
-              Passwords do not match, please try again.
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={successfulSignUp}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              Sign Up Successful! Redirecting to Sign In Page.
+              {alertMessage}
             </Alert>
           </Snackbar>
         </Stack>

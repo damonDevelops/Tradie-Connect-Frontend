@@ -1,21 +1,21 @@
+// report generation for the customer. Allows them to click a button to download their data
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-
 import { useState } from "react";
 import { useEffect } from "react";
 import useFetchData from "../hooks/fetchData";
 import { Divider } from "@mui/material";
 import { jsPDF } from "jspdf";
-
 import autoTable from "jspdf-autotable";
 
 export default function Report() {
+  //gets the day for file name
   const today = new Date();
   const fileName = "Tradie_Connect_Report_" + today.toLocaleDateString("en-AU");
+  
   //URLs for fetching data
   const customerURL = "http://localhost:8080/api/customers";
   const requestURL = "http://localhost:8080/api/service-requests/user-requests";
@@ -29,9 +29,12 @@ export default function Report() {
     withCredentials: true,
   });
 
+  //variables for requests and payments
   const [serviceRequests, setRequests] = useState([]);
   const [payments, setPayments] = useState([]);
 
+  //useEffect maps the service requests and payments to the customer
+  //needs to be done this way because the customer data doesn't contain all data
   useEffect(() => {
     const fetchData = async () => {
       if (customerData && customerData.serviceRequests) {
@@ -48,18 +51,16 @@ export default function Report() {
     fetchData();
   }, [customerData]);
 
-
   //for each request in requestData, store the total cost in a variable called totalCost
   const totalCost = requestData.reduce((total, request) => {
     return total + request.cost;
   }, 0);
 
-  //make a const called averageCost that checks if there are any requests in requestData
-  //if there are, calculate the average cost
-  //if there aren't, set averageCost to 0
+  //average cost variable
   const averageCost =
     requestData.length > 0 ? totalCost / requestData.length : 0;
 
+  //filters request by created or pending
   const requests = requestData
     .filter((request) => {
       return request.status == "CREATED" || request.status == "PENDING";
@@ -74,8 +75,6 @@ export default function Report() {
         "$" + request.cost,
       ];
     });
-
-
 
   //make an array of arrays from requestedData that only contains requests where the status is COMPLETED
   const completedRequests = serviceRequests
@@ -97,6 +96,7 @@ export default function Report() {
       ];
     });
 
+  //function to make the pdf
   const createPDF = () => {
     const doc = new jsPDF({ orientation: "p" });
     doc.setFontSize(30);
@@ -252,6 +252,7 @@ export default function Report() {
   );
 }
 
+//function to format the capital letters
 function capitaliseWords(str) {
   return str
     .toLowerCase()
@@ -260,10 +261,12 @@ function capitaliseWords(str) {
     .join(" ");
 }
 
+//function to format the date
 function formatDate(date) {
   return date[2] + "/" + date[1] + "/" + date[0];
 }
 
+//function to convert time to 12 hour format
 function tConvert(time) {
   let hour = time[3];
   const minute = time[4];
@@ -275,13 +278,11 @@ function tConvert(time) {
   }
 
   hour = hour.toString().padStart(2, "0");
-
   const rTime = `${hour}:${minute.toString().padStart(2, "0")} ${period}`;
-
   return rTime;
 }
 
-
+//function to format the date and time
 function formatCompleteDate(time, date){
   let hour = time[0];
   const minute = time[1];
@@ -293,9 +294,7 @@ function formatCompleteDate(time, date){
   }
 
   hour = hour.toString().padStart(2, "0");
-
   const rTime = `${hour}:${minute.toString().padStart(2, "0")} ${period}`;
 
-  
   return rTime + ", " + date[2] + "/" + date[1] + "/" + date[0];
 }

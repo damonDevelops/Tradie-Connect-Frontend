@@ -1,12 +1,11 @@
+// component for request table which is used across multiple pages of admin
+
+// import statements
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-
 import axios from "axios";
-
 import { useState } from "react";
 import { useEffect } from "react";
-
-// for displaying data:
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,7 +16,10 @@ import TablePagination from "@mui/material/TablePagination";
 
 
 export default function ServiceProviders() {
+  // state variable to store the data from the request
   const [data, setData] = useState([]);
+
+  // state variable to store the sort model
   const [sortModel, setSortModel] = React.useState([
     {
       field: "id",
@@ -33,6 +35,7 @@ export default function ServiceProviders() {
     withCredentials: true,
   });
 
+  // function to fetch the data from the request
   const fetchData = async () => {
     try {
       const response = await instance.get(
@@ -81,18 +84,22 @@ function RequestTable({ data }) {
     textAlign: "center",
   };
 
+  //sets the page and rows per page
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  //handles change of page
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  //handles change of rows per page
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
+  //const to show how many rows to display
   const rowsToDisplay = data.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
